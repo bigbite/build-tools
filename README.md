@@ -30,9 +30,9 @@ The Build Tools work on an entrypoint system that not only allows you to define 
 
 ```
 /client-mu-plugins
-	/my-plugin
+  /my-plugin
 /plugins
-	/another-cutom-plugin
+  /another-cutom-plugin
 /themes
   /my-theme 
 ```
@@ -41,21 +41,21 @@ That would be very familiar for many. However, when taking entrypoints into acco
 
 ```
 /client-mu-plugins
-	/my-plugin
-		/src
-			/entrypoints
-				/editor.js
-				/frontend.js
+  /my-plugin
+    /src
+      /entrypoints
+        /editor.js
+        /frontend.js
 /plugins
-	/another-cutom-plugin
-		/src
-			/entrypoints
-				/editor.js
+  /another-cutom-plugin
+    /src
+      /entrypoints
+        /editor.js
 /themes
   /my-theme
-	  /src
-		  /endpoints
-			  /frontend.js
+    /src
+      /entrypoints
+        /frontend.js
 ```
 
 As you can see we do not work from a single entrypoint directory in the root of the site, but each project (plugin/theme) has their own directory with one or more entrypoint files inside. This allows us target specific projects for any build and to work on a single project (or multiple if you need to) in isolation, not having to worry or wait for all other plugins as part of the build. As you will find below, we build can build many, a few or even all from a single command.
@@ -102,7 +102,7 @@ The `project` flag can also take comma separated values if you need to build mor
 npm build:dev --env "project=my-plugin,my-theme"
 ```
 
-Notice that each defined project is not a full path, nor an entry point. We use the director name as the project and the build tools then look for those as defined in the [Structuring Your Project guide above](#structuring-your-project), seeking through `client-mu-plugins`,`plugins` and `themes`.
+Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide above](#structuring-your-project), seeking through `client-mu-plugins`,`plugins` and `themes`.
 
 ### Site-wide
 If you need to build an entire sites worth of projects, which will often be the case come deployment, you can build all applicable projects in an entire site with the `all-projects` flag.
@@ -116,37 +116,37 @@ As we're building each project as if it were its own entity, we do not create mo
 
 ```
 /client-mu-plugins
-	/my-plugin
-		/dist
-			/scripts
-				/editor-h12h2.js
-				/frontend-8sa8a.js
-		/inc
-			/asset-settings.php
-		/src
-			/entrypoints
-				/editor.js
-				/frontend.js
+  /my-plugin
+    /dist
+      /scripts
+        /editor-h12h2.js
+        /frontend-8sa8a.js
+      /inc
+        /asset-settings.php
+      /src
+        /entrypoints
+          /editor.js
+          /frontend.js
 /plugins
-	/another-cutom-plugin
-		/dist
-			/scripts
-				/editor-kajsj.js
-		/inc
-			/asset-settings.php
-		/src
-			/entrypoints
-				/editor.js
+  /another-cutom-plugin
+    /dist
+      /scripts
+        /editor-kajsj.js
+      /inc
+        /asset-settings.php
+      /src
+        /entrypoints
+          /editor.js
 /themes
   /my-theme
-		/dist
-			/scripts
-				/frontend-ha45a.js
-		/inc
-			/asset-settings.php
-	  /src
-		  /endpoints
-			  /frontend.js
+    /dist
+      /scripts
+        /frontend-ha45a.js
+      /inc
+        /asset-settings.php
+      /src
+        /entrypoints
+          /frontend.js
 ```
 
 Notice the random hash/string after the generated assets? These are different for each production asset and are changed every time it is run to aid in cache busting when we have new assets. Understandably, you might be asked how you can retrieve that if it is randomly generated. This is where the `{project-path}/inc/asset-settings.php` file that has also been created comes in. This holds definitions that reference the filenames that have been generated so you are able to use them and use those without having to worry about updating your code each time assets are updated. Here's an example:
