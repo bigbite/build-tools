@@ -1,0 +1,8 @@
+{
+    "script": {
+        "build:dev": "webpack --mode development --env",
+        "build:prod": "webpack --mode production --profile",
+        "watch:dev": "webpack --mode development --watch",
+        "watch:prod": "webpack --mode production --watch"
+    }
+}
