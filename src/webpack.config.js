@@ -14,7 +14,7 @@ module.exports = (_env, { mode, project = false, allProjects = false }) => {
 
   if (WEBPACK_VERSION[0] > '4') {
     projectName = _env.project ? _env.project : false;
-    isAllProjects = _env.allprojects ? _env.allprojects : false;
+    isAllProjects = _env['all-projects'] ? _env['all-projects'] : false;
   }
 
   let isProjectRoot = false;
