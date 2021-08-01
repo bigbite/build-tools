@@ -99,7 +99,7 @@ npm run build:dev --project=my-plugin
 The `project` flag can also take comma separated values if you need to build more than one project at a given time.
 
 ```bash
-npm run build:dev --project=my-plugin,my-theme
+npm run build:dev:all
 ```
 
 Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide above](#structuring-your-project), seeking through `client-mu-plugins`,`plugins` and `themes`.
