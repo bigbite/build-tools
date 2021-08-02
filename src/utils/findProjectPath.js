@@ -1,6 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
+const folderExists = (folder) => {
+  const exists = fs.existsSync(path.resolve(process.cwd(), `./${folder}`));
+
+  if (exists) {
+    return true;
+  } else {
+    console.warn(
+      '\x1b[1m\x1b[33mWarning:\x1b[0m',
+      `\x1b[1m\x1b[37mDirectory ${folder} does not exist.\x1b[0m`
+    );
+    return false;
+  }
+};
+
+const projectExists = (folder, projectName) => {
+  if (!folderExists(folder)) {
+    return false;
+  }
+
+  return fs.existsSync(
+    path.resolve(process.cwd(), `./${folder}/${projectName}`)
+  );
+};
+
 /**
  * Find the full project path
  * @param {String} projectName
@@ -8,30 +32,34 @@ const path = require('path');
  *
  * @return {String|Boolean}
  */
-const findProjectPath = (projectName, folders = ['client-mu-plugins', 'plugins', 'themes']) => {
-  const testFolderPath = folder =>
-    fs.existsSync(path.resolve(process.cwd(), `./${folder}/${projectName}`));
-
-  const found = folders.find(testFolderPath);
-
-  if (found) {
+const findProjectPath = (
+  projectName,
+  folders = ['client-mu-plugins', 'plugins', 'themes']
+) => {
+  if (folders.find((folder) => projectExists(folder, projectName))) {
     return path.resolve(process.cwd(), `./${found}/${projectName}`);
   }
 
   return false;
 };
 
-const findAllProjectPaths = (folders = ['client-mu-plugins', 'plugins', 'themes']) => {
+const findAllProjectPaths = (
+  folders = ['client-mu-plugins', 'plugins', 'themes']
+) => {
   let projects = [];
 
-  folders.forEach(dir => {
+  folders.filter(folderExists).forEach((folder) => {
     projects = projects.concat(
       fs
-        .readdirSync(dir, { withFileTypes: true })
+        .readdirSync(folder, { withFileTypes: true })
         .filter(
-          dirent => fs.existsSync(`${dir}/${dirent.name}/src/entrypoints`) && dirent.isDirectory(),
+          (dirent) =>
+            fs.existsSync(`${folder}/${dirent.name}/src/entrypoints`) &&
+            dirent.isDirectory()
         )
-        .map(dirent => path.resolve(process.cwd(), `./${dir}/${dirent.name}`)),
+        .map((dirent) =>
+          path.resolve(process.cwd(), `./${folder}/${dirent.name}`)
+        )
     );
   });
 
