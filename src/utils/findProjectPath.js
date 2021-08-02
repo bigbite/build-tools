@@ -36,11 +36,12 @@ const findProjectPath = (
   projectName,
   folders = ['client-mu-plugins', 'plugins', 'themes']
 ) => {
-  if (folders.find((folder) => projectExists(folder, projectName))) {
-    return path.resolve(process.cwd(), `./${found}/${projectName}`);
+  const folder = folders.find((folder) => projectExists(folder, projectName));
+  if (folder) {
+    return path.resolve(process.cwd(), `./${folder}/${projectName}`);
   }
 
-  return false;
+  throw new Error(`Project ${projectName} does not exist.`);
 };
 
 const findAllProjectPaths = (
@@ -62,6 +63,10 @@ const findAllProjectPaths = (
         )
     );
   });
+
+  if (projects.length <= 0) {
+    throw new Error('Cannot find any projects.');
+  }
 
   return projects;
 };

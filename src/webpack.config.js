@@ -17,11 +17,10 @@ module.exports = (_env, { mode, project = false, allProjects = false }) => {
     isAllProjects = _env['all-projects'] ? _env['all-projects'] : false;
   }
 
-  let isProjectRoot = false;
+  let isProjectRoot = !projectName && process.env.INIT_CWD;
 
-  if (!projectName && process.env.INIT_CWD) {
+  if (isProjectRoot) {
     projectName = path.parse(process.env.INIT_CWD);
-    isProjectRoot = true;
   }
 
   let PROJECT_PATHS = [];
@@ -33,15 +32,8 @@ module.exports = (_env, { mode, project = false, allProjects = false }) => {
     PROJECT_PATHS.push(path.resolve('./'));
   } else {
     projectName.split(',').forEach((projectItem) => {
-      const foundProject = findProjectPath(projectItem);
-      if (!foundProject)
-        throw new Error(`Project ${projectItem} does not exist.`);
-      PROJECT_PATHS.push(foundProject);
+      PROJECT_PATHS.push(findProjectPath(projectItem));
     });
-  }
-
-  if (PROJECT_PATHS.length <= 0) {
-    throw new Error("Can't find project files.");
   }
 
   const COMPILERS = [];
