@@ -10,6 +10,14 @@ npm i -D @bigbite/build-tools
 
 In the mean time, you may need to clone the package.
 
+### Setup Webpack.
+As the package contains a dependency of `webpack` and `webpack-cli` along with all the other features in the setup, you should not need to add those to your project. All you need to do is create your `webpack.config.js` file in the root of your project and add the following:
+
+```js
+module.exports = require('@bigbite/build-tools');
+```
+
+### Prettier
 You will need to set the prettier config as prettier does not support the ability to assign a config through code. Add the build tools under the `prettier` key to your `package.json`.
 
 ```json
@@ -19,13 +27,6 @@ You will need to set the prettier config as prettier does not support the abilit
   "prettier": "@bigbite/build-tools/prettier",
   "dependencies": {}
 }
-```
-
-### Setup Webpack.
-As the package contains a dependency of `webpack` and `webpack-cli` along with all the other features in the setup, you should not need to add those to your project. All you need to do is create your `webpack.config.js` file in the root of your project and add the following:
-
-```js
-module.exports = require('@bigbite/build-tools');
 ```
 
 ### Additional Setup.
