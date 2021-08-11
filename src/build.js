@@ -10,8 +10,10 @@ const { findProjectPath, findAllProjectPaths } = require('./utils/projectpaths')
  */
 module.exports = (env, { mode, project = '', allProjects = false }) => {
   // Use env variables if working on Webpack >=5.
-  const projects = (env.project ? env.project : project).split(',');
+  const projects = (env.project ? env.project : project).split(',').filter(item => item.length > 0);
   const isAllProjects = env['all-projects'] ? env['all-projects'] : allProjects;
+
+  console.log('projects:', projects);
 
   let paths = [];
 
