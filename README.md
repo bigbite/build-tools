@@ -5,7 +5,7 @@ The Big Bite Build Tools aim to cater for vary needs of the team when create new
 Once we have the package on a package manager, you should be able to simply use NPM to install it using the below command:
 
 ```bash
-npm i -D @bigbite/build-tools 
+npm i -D @bigbite/build-tools
 ```
 
 In the mean time, you may need to clone the package.
@@ -15,6 +15,13 @@ As the package contains a dependency of `webpack` and `webpack-cli` along with a
 
 ```js
 module.exports = require('@bigbite/build-tools');
+```
+
+### Babel
+To configure Babel you can use the configuration provided by Build Tools by creating a `babel.config.js` file in the root of your project and including the config as below.
+
+```js
+module.exports = require('@bigbite/build-tools/babel');
 ```
 
 ### Prettier
@@ -46,7 +53,7 @@ The Build Tools work on an entrypoint system that not only allows you to define 
 /plugins
   /another-cutom-plugin
 /themes
-  /my-theme 
+  /my-theme
 ```
 
 That would be very familiar for many. However, when taking entrypoints into account we would have this.
@@ -77,7 +84,7 @@ As you can see we do not work from a single entrypoint directory in the root of 
 The commands used for the build tools are colon notated with different observables and environment targets. A combination of any can be used in this format;
 
 ```bash
-npm {observable}:{environment} 
+npm {observable}:{environment}
 ```
 
 | **Observables** | |
