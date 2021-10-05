@@ -7,11 +7,11 @@
   "exports": {
     ".": "./index.js",
     "./babel": "./src/configs/babel.js",
-    "./browserlist":  "./src/configs/browserlist.js",
-    "./eslint":  "./src/configs/eslint.js",
-    "./postcss":  "./src/configs/postcss.js",
-    "./prettier":  "./src/configs/prettier.js",
-    "./stylelint":  "./src/configs/stylelint.js"
+    "./browserlist": "./src/configs/browserlist.js",
+    "./eslint": "./src/configs/eslint.js",
+    "./postcss": "./src/configs/postcss.js",
+    "./prettier": "./src/configs/prettier.js",
+    "./stylelint": "./src/configs/stylelint.js"
   },
   "scripts": {
     "build": "webpack --mode=development"
