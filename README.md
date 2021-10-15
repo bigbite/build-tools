@@ -21,7 +21,7 @@ module.exports = require('@bigbite/build-tools');
 To configure Babel you can use the configuration provided by Build Tools by creating a `babel.config.js` file in the root of your project and including the config as below.
 
 ```js
-module.exports = require('@bigbite/build-tools/babel');
+module.exports = require('@bigbite/build-tools/configs/babel');
 ```
 
 ### Prettier
@@ -31,7 +31,7 @@ You will need to set the prettier config as prettier does not support the abilit
 {
   "name": "my-package",
   "version": "1.0.0",
-  "prettier": "@bigbite/build-tools/prettier",
+  "prettier": "@bigbite/build-tools/configs/prettier",
   "dependencies": {}
 }
 ```
@@ -180,6 +180,8 @@ Which can then be used as such within your WordPress plugin or theme.
 ```php
 wp_enqueue_script( 'my-plugin-editor', plugins_url( 'dist/scripts/' . MY_PLUGIN_EDITOR_JS, __FILE__ ), [], '1.0.1' );
 ```
+
+These references are created by taking the `name` value from you `package.json` and combining that with the entry point and it's file type.
 
 ## Available Configs
 
