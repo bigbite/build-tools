@@ -1,5 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const postcssConfig = require('../configs/postcss');
+const postcssConfig = require('../../configs/postcss');
 
 /**
  * Compiles rules and presets for styles.

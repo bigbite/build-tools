@@ -1,5 +1,5 @@
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const StyleLintConfig = require('../configs/stylelint.js');
+const StyleLintConfig = require('../../configs/stylelint.js');
 
 module.exports = ({ paths }) => {
   return new StyleLintPlugin({
