@@ -175,6 +175,24 @@ define( 'MY_PLUGIN_EDITOR_JS', 'editor-h12h2.js' );
 define( 'MY_PLUGIN_FRONTEND_JS', 'frontend-8sa8a.js' );
 ```
 
+You should include these in your plugin;
+
+```php
+// my-plugin/my-plugin.php
+/*
+Plugin Name: My Plugin
+Plugin URI: https://bigbite.net/
+...etc
+...etc
+*/
+
+define( 'MY_PLUGIN_DIR', rtrim( plugin_dir_path( __FILE__ ), '/' ) );
+
+require_once MY_PLUGIN_DIR . 'src/asset-settings.php';
+
+// Other includes, code, etc...
+```
+
 Which can then be used as such within your WordPress plugin or theme.
 
 ```php
