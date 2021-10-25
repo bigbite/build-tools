@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 
 const webpack = require('webpack');
@@ -13,49 +12,12 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
 /**
  * Build the webpack configutation for the current project. 
  * 
- * @param {string} projectPath The current directory path of the project.
+ * @param {string} package.path The current directory path of the project.
  * @param {string} mode The build mode in which webpack is currently running (e.g. development or production).
  * @param {string} projectName The name of the project - this will be the director target.
  * @returns {object} The full webpack configuration for the current project.
  */
-module.exports = (projectPath, mode, projectName) => {
-  let assetsProjectName = projectName;
-  
-  try {
-    const packagePath = `${projectPath}/package.json`;
-    
-    if(!fs.existsSync(packagePath)) {
-      throw new Error(`package.json does not exist for ${projectName} project.\n\nPlease create one in: ${projectPath}`);
-    }
-
-    const packageJSON = require(packagePath);
-    const packageNames = packageJSON.name.split('/');
-    assetsProjectName = packageNames[packageNames.length - 1];
-  } catch(e) {
-    throw e.message;
-  }
-
-  /**
-   * Project config holds all information about a particular project,
-   * rather than directly pulling out paths from files or attempting
-   * to build them, use what is here.
-   */
-  __PROJECT_CONFIG__ = {
-    name: assetsProjectName,
-    paths: {
-      project: path.resolve(projectPath),
-      config: path.resolve(`${__dirname}/configs`),
-      src: path.resolve(`${projectPath}/src`),
-      dist: path.resolve(`${projectPath}/dist`),
-      clean: [`${projectPath}/dist/scripts/**/*`, `${projectPath}/dist/styles/**/*`],
-    },
-    clean: true,
-    copy: true,
-    mode,
-  };
-
-  console.log('compiling: ', __PROJECT_CONFIG__.name);
-
+module.exports = (__PROJECT_CONFIG__, mode) => {
   return {
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 

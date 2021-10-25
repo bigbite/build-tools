@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { terminal } = require('terminal-kit');
 
 const directoryExists = (directory) => {
   const exists = fs.existsSync(path.resolve(process.cwd(), `./${directory}`));
@@ -7,10 +8,8 @@ const directoryExists = (directory) => {
   if (exists) {
     return true;
   } else {
-    console.warn(
-      '\x1b[1m\x1b[33mWarning:\x1b[0m',
-      `\x1b[1m\x1b[37mDirectory ${directory} does not exist.\x1b[0m`,
-    );
+    terminal.yellow("Warning:\nDirectory %s does not exist.\n\n", directory);
+
     return false;
   }
 };
@@ -30,8 +29,8 @@ const projectExists = (directory, projectName) => {
  *
  * @return {String|Boolean}
  */
-const findProjectPath = (projectName, directorys = ['client-mu-plugins', 'plugins', 'themes']) => {
-  const directory = directorys.find((directory) => projectExists(directory, projectName));
+const findProjectPath = (projectName, directories) => {
+  const directory = directories.find((directory) => projectExists(directory, projectName));
   if (directory) {
     return path.resolve(process.cwd(), `./${directory}/${projectName}`);
   }
@@ -39,10 +38,10 @@ const findProjectPath = (projectName, directorys = ['client-mu-plugins', 'plugin
   throw new Error(`Project ${projectName} does not exist.`);
 };
 
-const findAllProjectPaths = (directorys = ['client-mu-plugins', 'plugins', 'themes']) => {
+const findAllProjectPaths = (directories) => {
   let projects = [];
 
-  directorys.filter(directoryExists).forEach((directory) => {
+  directories.filter(directoryExists).forEach((directory) => {
     projects = projects.concat(
       fs
         .readdirSync(directory, { withFileTypes: true })
