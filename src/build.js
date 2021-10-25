@@ -56,6 +56,7 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
      */
     const __PROJECT_CONFIG__ = {
       name: package.packageName,
+      version: package.package.version,
       paths: {
         project: path.resolve(package.path),
         config: path.resolve(`${__dirname}/configs`),
