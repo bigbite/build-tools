@@ -63,6 +63,7 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
         src: path.resolve(`${package.path}/src`),
         dist: path.resolve(`${package.path}/dist`),
         clean: [`${package.path}/dist/scripts/**/*`, `${package.path}/dist/styles/**/*`],
+        node_modules: path.resolve(package.path, 'node_modules'),
       },
       clean: true,
       copy: true,

@@ -21,6 +21,13 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
   return {
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
+    resolve: {
+      modules: [
+        __PROJECT_CONFIG__.paths.node_modules,
+        'node_modules'
+      ],
+    },
+
     output: {
       // @TODO: This should be overridable at some point to allow for custom naming convention.
       filename: () => {
