@@ -1,9 +1,11 @@
+const babelConfig = require('./babel.js');
+
 module.exports = {
   globals: {
-    "__DEV__": true,
-    "__PROD__": true,
-    "__TEST__": true,
-    wp: true
+    __DEV__: true,
+    __PROD__: true,
+    __TEST__: true,
+    wp: true,
   },
   env: {
     browser: true,
@@ -12,6 +14,12 @@ module.exports = {
   },
   extends: ['airbnb', 'prettier'],
   parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      ...babelConfig,
+    },
+  },
   plugins: ['@babel', 'react', 'prettier'],
   rules: {
     'prettier/prettier': 'error',
@@ -23,9 +31,9 @@ module.exports = {
     ],
     'react/jsx-uses-react': 'error',
     'react/jsx-uses-vars': 'error',
-    'react/jsx-filename-extension': [1, { "extensions": [".js", ".jsx"] }],
-    "react/react-in-jsx-scope": 0,
-    "react/forbid-prop-types": 0,
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/react-in-jsx-scope': 0,
+    'react/forbid-prop-types': 0,
     'arrow-parens': 2,
   },
 };
