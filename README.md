@@ -17,13 +17,6 @@ As the package contains a dependency of `webpack` and `webpack-cli` along with a
 module.exports = require('@bigbite/build-tools');
 ```
 
-### Babel
-To configure Babel you can use the configuration provided by Build Tools by creating a `babel.config.js` file in the root of your project and including the config as below.
-
-```js
-module.exports = require('@bigbite/build-tools/configs/babel');
-```
-
 ### Prettier
 You will need to set the prettier config as prettier does not support the ability to assign a config through code. Add the build tools under the `prettier` key to your `package.json`.
 
