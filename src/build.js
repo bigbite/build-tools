@@ -76,6 +76,8 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
       mode,
     };
 
+    console.log(__PROJECT_CONFIG__);
+
     return webpackConfig(__PROJECT_CONFIG__, mode);
   });
 };
