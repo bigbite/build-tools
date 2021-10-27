@@ -7,7 +7,7 @@ const postcssConfig = require('../../configs/postcss');
  * @returns {object} Rules and presets for styles.
  */
 module.exports = ({ mode }) => {
-  return {
+  return [{
     test: /\.(sa|sc|c)ss$/,
     use: [
       // Seperate CSS included in JS.
@@ -15,6 +15,7 @@ module.exports = ({ mode }) => {
       {
         loader: 'css-loader',
         options: {
+          url: false,
           sourceMap: true,
         },
       },
@@ -39,5 +40,5 @@ module.exports = ({ mode }) => {
         },
       },
     ],
-  };
+  }];
 };

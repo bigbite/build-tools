@@ -5,14 +5,16 @@ const { findProjectPath, findAllProjectPaths } = require('./utils/projectpaths')
 const { getPackage } = require('./utils/get-package');
 
 /**
- * 
+ *
  * @param {object} env Current environment information.
- * @param {object} args Arguments passed to webpack. 
- * @returns 
+ * @param {object} args Arguments passed to webpack.
+ * @returns
  */
 module.exports = (env, { mode, project = '', allProjects = false }) => {
   // Use env variables if working on Webpack >=5.
-  const projects = (env.project ? env.project : project).split(',').filter(item => item.length > 0);
+  const projects = (env.project ? env.project : project)
+    .split(',')
+    .filter((item) => item.length > 0);
   const isAllProjects = env['all-projects'] ? env['all-projects'] : allProjects;
 
   let paths = [];
@@ -35,18 +37,18 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
   let packages = [];
 
   try {
-    packages = paths.map((path) => getPackage(path, false)).filter(item => item);
-  } catch(e) {
+    packages = paths.map((path) => getPackage(path, false)).filter((item) => item);
+  } catch (e) {
     throw e.message;
   }
 
-  terminal("Processing the following projects:\n");
+  terminal('Processing the following projects:\n');
   packages.forEach((item) => {
     const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`)
+    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`);
     terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
   });
-  terminal("\n");
+  terminal('\n');
 
   return packages.map((package) => {
     /**
@@ -62,7 +64,11 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
         config: path.resolve(`${__dirname}/configs`),
         src: path.resolve(`${package.path}/src`),
         dist: path.resolve(`${package.path}/dist`),
-        clean: [`${package.path}/dist/scripts/**/*`, `${package.path}/dist/styles/**/*`],
+        clean: [
+          `${package.path}/dist/scripts/**/*`,
+          `${package.path}/dist/styles/**/*`,
+          `${package.path}/dist/static/**/*`,
+        ],
         node_modules: path.resolve(package.path, 'node_modules'),
       },
       clean: true,

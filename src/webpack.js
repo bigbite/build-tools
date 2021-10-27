@@ -10,8 +10,8 @@ const entrypoints = require('./utils/entrypoints');
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
 
 /**
- * Build the webpack configutation for the current project. 
- * 
+ * Build the webpack configutation for the current project.
+ *
  * @param {string} package.path The current directory path of the project.
  * @param {string} mode The build mode in which webpack is currently running (e.g. development or production).
  * @param {string} projectName The name of the project - this will be the director target.
@@ -22,10 +22,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
     resolve: {
-      modules: [
-        __PROJECT_CONFIG__.paths.node_modules,
-        'node_modules'
-      ],
+      modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
     },
 
     output: {
@@ -72,9 +69,9 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
 
     module: {
       rules: [
-        Rules.javascript(__PROJECT_CONFIG__),
+        ...Rules.javascript(__PROJECT_CONFIG__),
         ...Rules.images(__PROJECT_CONFIG__),
-        Rules.styles(__PROJECT_CONFIG__),
+        ...Rules.styles(__PROJECT_CONFIG__),
       ],
     },
   };
