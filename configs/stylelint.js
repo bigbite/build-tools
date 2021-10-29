@@ -5,7 +5,7 @@ module.exports = {
     'color-hex-case': 'lower',
     'color-hex-length': 'short',
     'color-no-invalid-hex': true,
-    'number-leading-zero': 'never',
+    'number-leading-zero': 'always',
     'number-no-trailing-zeros': true,
     'function-calc-no-unspaced-operator': true,
     'function-comma-newline-after': 'always-multi-line',
