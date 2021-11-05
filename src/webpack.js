@@ -5,7 +5,6 @@ const webpack = require('webpack');
 const Plugins = require('./plugins');
 const Rules = require('./rules');
 const entrypoints = require('./utils/entrypoints');
-const CustomSimpleClean = require('./plugins/custom/simple-clean');
 
 // Define the bundled BrowserList config location/directory.
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
@@ -60,15 +59,11 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
         __TEST__: JSON.stringify(process.env.NODE_ENV === 'test'),
       }),
 
-      new CustomSimpleClean({
-        verbose: true,
-        initialCleanPaths: __PROJECT_CONFIG__.paths.clean,
-      }),
       Plugins.ESLint(__PROJECT_CONFIG__),
       Plugins.HTMLWebpack(__PROJECT_CONFIG__),
       Plugins.MiniCssExtract(__PROJECT_CONFIG__),
       Plugins.StyleLint(__PROJECT_CONFIG__),
-      // Plugins.Clean(__PROJECT_CONFIG__),
+      Plugins.Clean(__PROJECT_CONFIG__),
       Plugins.Copy(__PROJECT_CONFIG__),
     ],
 
