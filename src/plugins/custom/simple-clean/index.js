@@ -101,7 +101,7 @@ class SimpleClean {
     removeDirectory(dir) {
         fs.rmdirSync(dir, { recursive: true });
                 
-        output(`Dir: ${dir} deleted`);
+        this.output(`Dir: ${dir} deleted`);
     }
 
     /**
@@ -112,7 +112,7 @@ class SimpleClean {
         fs.unlink(fsPath.resolve(`${this.path}/${file}`), (error) => {
             if (error) return;
             
-            output(`File: ${file} deleted`);
+            this.output(`File: ${file} deleted`);
 
             if(this.options.removeEmptyDirectories) {
                 this.removeEmptyDirectory(file); 
@@ -129,7 +129,7 @@ class SimpleClean {
             if(files && !files.length) {
                 fs.rmSync(dir, { recursive: true, force: true });
 
-                output(`Removed empty directory: ${dir}`);
+                this.output(`Removed empty directory: ${dir}`);
             }
         });
     }
