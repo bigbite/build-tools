@@ -49,9 +49,7 @@ class SimpleClean {
         // Run on each watch emitter when there are modified files.
         hooks.watchRun.tap('custom-simple-clean', (compilation) => {
             if(compilation.modifiedFiles) {
-                console.log(compilation.modifiedFiles);
                 const files = Array.from(compilation.modifiedFiles);
-                console.log(files);
                 this.processFiles(files);
             }
         });
