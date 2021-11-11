@@ -49,7 +49,9 @@ class SimpleClean {
         // Run on each watch emitter when there are modified files.
         hooks.watchRun.tap('custom-simple-clean', (compilation) => {
             if(compilation.modifiedFiles) {
+                console.log(compilation.modifiedFiles);
                 const files = Array.from(compilation.modifiedFiles);
+                console.log(files);
                 this.processFiles(files);
             }
         });
@@ -74,8 +76,6 @@ class SimpleClean {
      * @param {array} files List of files and directories to process.
      */
     processFiles(files) {
-        this.initial = false;
-
         files.forEach((file) => {
             // Bail early if the file does not exist.
             if(!fs.existsSync(file)) {
@@ -85,13 +85,16 @@ class SimpleClean {
             const fileStat = fs.lstatSync(file);
 
             // If target is a directory, remove it.
-            if(fileStat.isDirectory()) {
+            if(fileStat.isDirectory() && this.initial) {
                 this.removeDirectory(file);
                 return;
             }
 
             this.removeFile(file);
         });
+
+        // Set this to avoid running specific processes on consecutive runs.
+        this.initial = false;
     }
 
     /**
