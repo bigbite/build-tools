@@ -6,8 +6,9 @@
 module.exports = ({ paths }) => {
   return [
     {
-      test: /\.(png|woff|woff2|eot|ttf|gif|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: 'file-loader',
+      issuer: /\.(css|scss)?$/,
       options: {
         name: '[path][name].[ext]',
         emitFile: false, // Don't emit, using copy function to copy files over.
@@ -17,7 +18,8 @@ module.exports = ({ paths }) => {
     },
     {
       test: /\.svg$/,
-      use: 'svg-sprite-loader',
+      issuer: /\.js?$/,
+      use: ['babel-loader', '@svgr/webpack', 'url-loader'],
     },
   ];
 };
