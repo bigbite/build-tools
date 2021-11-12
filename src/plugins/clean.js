@@ -1,8 +1,11 @@
-const CustomSimpleClean = require('./custom/simple-clean');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = ({ clean, paths }) => {
     return clean &&
-        new CustomSimpleClean({
-            initialCleanPaths: paths.clean,
+        new CleanWebpackPlugin({
+            verbose: true,
+            cleanOnceBeforeBuildPatterns: paths.clean,
+            dangerouslyAllowCleanPatternsOutsideProject: true,
+            dry: false,
         });
 }
