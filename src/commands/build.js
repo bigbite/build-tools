@@ -51,16 +51,20 @@ exports.handler = async ({
   once = false,
   quiet = false,
 }) => {
+  const currentLocation = path.basename(process.cwd());
+
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
-  const isAllProjects = site && !projectsList ? false : true;
+  const isAllProjects =
+    (site && projectsList.length > 0) ||
+    (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
   const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
-    if (projectsList.length === 0 && !site) {
+    if (projectsList.length === 0 && !isAllProjects) {
       terminal
         .bold('Compiling ')
         .underline('single')
