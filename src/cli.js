@@ -2,8 +2,8 @@
 
 const yargs = require('yargs');
 
-yargs.scriptName('bbbt');
-yargs.usage('Usage: bbbt <command>');
+yargs.scriptName('bbb');
+yargs.usage('Usage: bbb <command>');
 yargs.help();
 yargs.alias('h', 'help');
 yargs.alias('v', 'version');
