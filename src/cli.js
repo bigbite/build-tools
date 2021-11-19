@@ -1,25 +1,31 @@
 #!/usr/bin/env node
 
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs');
 const webpack = require('webpack');
 
-const build = require('./src/build');
+const build = require('./build');
 
-const { argv } = yargs(hideBin(process.argv));
+yargs.scriptName('bbbt');
+yargs.usage('Usage: bbbt <command>');
+yargs.help();
+yargs.alias('h', 'help');
+yargs.alias('v', 'version');
+yargs.commandDir('./commands');
+yargs.demandCommand(1, 'A command is required.');
+yargs.parse();
+return;
+console.log(argv);
 
-const env = {
-  project: argv._[0],
-  'all-projects': argv._[0] ? false : true,
-};
-
-const command = {
+const config = {
+  project: argv._[0] ? argv._[0] : '',
+  allProjects: argv.site && !argv._[0] ? false : true,
   mode: argv.prod || argv.p ? 'production' : 'development',
 };
 
-const webpackConfig = build(env, command);
+console.log(config);
 
-console.log(webpackConfig);
+const webpackConfig = build(config);
+
 const compiler = webpack(webpackConfig);
 
 if (!argv.S || !argv.single) {
