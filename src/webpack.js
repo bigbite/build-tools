@@ -1,5 +1,4 @@
 const path = require('path');
-
 const webpack = require('webpack');
 
 const Plugins = require('./plugins');
@@ -19,6 +18,7 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
   return {
+    mode,
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
     resolve: {
