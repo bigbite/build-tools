@@ -45,7 +45,7 @@ module.exports = (env, { mode, project = '', allProjects = false }) => {
   terminal('Processing the following projects:\n');
   packages.forEach((item) => {
     const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`);
+    const packagePath = item.packagePath.match(`((${regexDirs})\/(.+))?\/package\.json$`);
     terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
   });
   terminal('\n');
