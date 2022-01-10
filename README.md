@@ -77,7 +77,7 @@ As you can see we do not work from a single entrypoint directory in the root of 
 The commands used for the build tools are colon notated with different observables and environment targets. A combination of any can be used in this format;
 
 ```bash
-npm {observable}:{environment}
+npm run {observable}:{environment}
 ```
 
 | **Observables** | |
@@ -93,9 +93,9 @@ npm {observable}:{environment}
 **Example**
 
 ```bash
-npm watch:dev
+npm run watch:dev
 # OR
-npm build:prod
+npm run build:prod
 ```
 
 ## ..for Sites
