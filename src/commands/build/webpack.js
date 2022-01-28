@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
-const entrypoints = require('./utils/entrypoints');
+const entrypoints = require('./../../utils/entrypoints');
 
 // Define the bundled BrowserList config location/directory.
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
