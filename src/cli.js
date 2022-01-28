@@ -2,8 +2,8 @@
 
 const yargs = require('yargs');
 
-yargs.scriptName('bbb');
-yargs.usage('Usage: bbb <command>');
+yargs.scriptName('build-tools');
+yargs.usage('Usage: build-tools <command>');
 yargs.help();
 yargs.alias('h', 'help');
 yargs.alias('v', 'version');

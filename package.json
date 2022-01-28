@@ -8,7 +8,7 @@
     "build": "webpack --mode=development"
   },
   "bin": {
-    "bbb": "./src/cli.js"
+    "build-tools": "./src/cli.js"
   },
   "dependencies": {
     "@babel/core": "^7.14.8",
