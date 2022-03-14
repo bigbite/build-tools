@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackConfig = require('./build/webpack');
 const { terminal } = require('terminal-kit');
+const ci = require('ci-info');
 const ora = require('ora');
 const spinner = ora();
 
@@ -53,11 +54,13 @@ exports.handler = async ({
 }) => {
   const currentLocation = path.basename(process.cwd());
 
+  const isSite = site || ci.isCI;
+
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const isAllProjects =
-    (site && projectsList.length > 0) ||
+    (isSite && projectsList.length > 0) ||
     (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
