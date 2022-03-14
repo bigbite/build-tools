@@ -2,23 +2,10 @@
 The Build Tools aim to cater for vary needs of the Big Bite team when creating new sites, plugins and themes for projects. This means we need to have a tooling structure that allows us to develop in isolation when building a plugin or theme along side a whole site project without having to switch or configure tooling for when we change contexts. This package contains everything the tooling needs as well as the relevant webpack configuration to meet these needs.
 
 # Setup
-Once we have the package on a package manager, you should be able to simply use NPM to install it using the below command:
-
-```bash
-npm i -D @bigbite/build-tools
-```
-
-In the mean time, you may need to add the package using the git url and version:
+Add the package using the git url and version:
 
 ```bash
 npm i -D git+ssh://git@github.com:bigbite/build-tools.git#1.0.0
-```
-
-## Setup Webpack
-As the package contains a dependency of `webpack` and `webpack-cli` along with all the other features in the setup, you should not need to add those to your project. All you need to do is create your `webpack.config.js` file in the root of your project and add the following:
-
-```js
-module.exports = require('@bigbite/build-tools');
 ```
 
 ## Prettier
