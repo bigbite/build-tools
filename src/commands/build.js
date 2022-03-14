@@ -67,22 +67,20 @@ exports.handler = async ({
   try {
     if (projectsList.length === 0 && !isAllProjects) {
       // Is project root - a standalone build.
-      type = 'single';
+      terminal(`\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in ${mode} mode.\x1b[0m\n`);
       paths.push(path.resolve('./'));
     } else if (isAllProjects) {
       // Find all projects through-out the site.
-      type = 'all';
+      terminal(`\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in ${mode} mode.\x1b[0m\n`);
       paths = findAllProjectPaths(targetDirs);
     } else {
       // List of projects.
-      type = 'list';
+      terminal(`\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in ${mode} mode.\x1b[0m\n`);
       // Compile all project paths into array.
       paths = projectsList.map((projectItem) => {
         return findProjectPath(projectItem, targetDirs);
       });
     }
-
-    terminal.bold('Compiling ').underline(type).styleReset().bold(`of projects in ${mode} mode.\n`);
   } catch (e) {
     terminal.red(e);
     process.exit(1);
