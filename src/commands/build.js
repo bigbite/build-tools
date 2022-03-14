@@ -61,37 +61,28 @@ exports.handler = async ({
     (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
+  let type = 'list';
   const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
-      terminal
-        .bold('Compiling ')
-        .underline('single')
-        .styleReset()
-        .bold(` project in ${mode} mode.\n`);
       // Is project root - a standalone build.
+      type = 'single';
       paths.push(path.resolve('./'));
     } else if (isAllProjects) {
-      terminal
-        .bold('Compiling ')
-        .underline('all')
-        .styleReset()
-        .bold(` projects in ${mode} mode.\n`);
       // Find all projects through-out the site.
+      type = 'all';
       paths = findAllProjectPaths(targetDirs);
     } else {
-      terminal
-        .bold('Compiling ')
-        .underline('list')
-        .styleReset()
-        .bold(`of projects in ${mode} mode.\n`);
       // List of projects.
+      type = 'list';
       // Compile all project paths into array.
       paths = projectsList.map((projectItem) => {
         return findProjectPath(projectItem, targetDirs);
       });
     }
+
+    terminal.bold('Compiling ').underline(type).styleReset().bold(`of projects in ${mode} mode.\n`);
   } catch (e) {
     terminal.red(e);
     process.exit(1);
