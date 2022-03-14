@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const webpackConfig = require('./../webpack');
+const webpackConfig = require('./build/webpack');
 const { terminal } = require('terminal-kit');
 const ora = require('ora');
 const spinner = ora();
