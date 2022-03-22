@@ -64,32 +64,21 @@ exports.handler = async ({
     (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
+  let type = 'list';
   const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
-      terminal
-        .bold('Compiling ')
-        .underline('single')
-        .styleReset()
-        .bold(` project in ${mode} mode.\n`);
       // Is project root - a standalone build.
+      terminal(`\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in ${mode} mode.\x1b[0m\n`);
       paths.push(path.resolve('./'));
     } else if (isAllProjects) {
-      terminal
-        .bold('Compiling ')
-        .underline('all')
-        .styleReset()
-        .bold(` projects in ${mode} mode.\n`);
       // Find all projects through-out the site.
+      terminal(`\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in ${mode} mode.\x1b[0m\n`);
       paths = findAllProjectPaths(targetDirs);
     } else {
-      terminal
-        .bold('Compiling ')
-        .underline('list')
-        .styleReset()
-        .bold(`of projects in ${mode} mode.\n`);
       // List of projects.
+      terminal(`\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in ${mode} mode.\x1b[0m\n`);
       // Compile all project paths into array.
       paths = projectsList.map((projectItem) => {
         return findProjectPath(projectItem, targetDirs);
