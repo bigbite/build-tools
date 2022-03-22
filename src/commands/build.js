@@ -54,13 +54,11 @@ exports.handler = async ({
 }) => {
   const currentLocation = path.basename(process.cwd());
 
-  const isSite = site || ci.isCI;
-
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const isAllProjects =
-    (isSite && projectsList.length > 0) ||
+    (site && projectsList.length > 0) ||
     (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
@@ -72,7 +70,7 @@ exports.handler = async ({
       // Is project root - a standalone build.
       terminal(`\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in ${mode} mode.\x1b[0m\n`);
       paths.push(path.resolve('./'));
-    } else if (isAllProjects) {
+    } else if (isAllProjects || ci.isCI) {
       // Find all projects through-out the site.
       terminal(`\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in ${mode} mode.\x1b[0m\n`);
       paths = findAllProjectPaths(targetDirs);
