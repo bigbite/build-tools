@@ -1,23 +1,14 @@
-# Big Bite Build Tools
-The Big Bite Build Tools aim to cater for vary needs of the team when create new sites, plugins and themes. This means we need to have a build tooling structure that allows us to develop in isolation when building a plugin or theme along side a whole site project. This package contains everything the tooling needs as well as the relevant webpack configuration to meet these needs.
+# Build Tools
+The Build Tools aim to cater for vary needs of the Big Bite team when creating new sites, plugins and themes for projects. This means we need to have a tooling structure that allows us to develop in isolation when building a plugin or theme along side a whole site project without having to switch or configure tooling for when we change contexts. This package contains everything the tooling needs as well as the relevant webpack configuration to meet these needs.
 
 # Setup
-Once we have the package on a package manager, you should be able to simply use NPM to install it using the below command:
+Add the package using the git url and version:
 
 ```bash
-npm i -D @bigbite/build-tools
+npm i -D git+ssh://git@github.com:bigbite/build-tools.git#1.0.0
 ```
 
-In the mean time, you may need to clone the package.
-
-### Setup Webpack.
-As the package contains a dependency of `webpack` and `webpack-cli` along with all the other features in the setup, you should not need to add those to your project. All you need to do is create your `webpack.config.js` file in the root of your project and add the following:
-
-```js
-module.exports = require('@bigbite/build-tools');
-```
-
-### Prettier
+## Prettier
 You will need to set the prettier config as prettier does not support the ability to assign a config through code. Add the build tools under the `prettier` key to your `package.json`.
 
 ```json
@@ -29,12 +20,11 @@ You will need to set the prettier config as prettier does not support the abilit
 }
 ```
 
-### Additional Setup.
+## Additional Setup.
 Copy/merge the applicable contents of the below files to their respective files in your project.
 
 | From | To | Description |
 |:--|:--|:--|
-| `package.build-tools.json` | `package.json` | Holds any package information that may be applicable to running the build tools. Items such as `scripts` and dependencies. |
 | `.gitignore.build-tools` | `.gitignore` | Build Tools may generate some files that don't need to be committed to a repo. They're listed in here. |
 
 # Structuring your project
@@ -72,58 +62,44 @@ That would be very familiar for many. However, when taking entrypoints into acco
 
 As you can see we do not work from a single entrypoint directory in the root of the site, but each project (plugin/theme) has their own directory with one or more entrypoint files inside. This allows us target specific projects for any build and to work on a single project (or multiple if you need to) in isolation, not having to worry or wait for all other plugins as part of the build. As you will find below, we build can build many, a few or even all from a single command.
 
-# Build
-## Commands
-The commands used for the build tools are colon notated with different observables and environment targets. A combination of any can be used in this format;
-
+# Usage
 ```bash
-npm run {observable}:{environment}
+build-tools build
 ```
 
-| **Observables** | |
+| **Positionals** | | |
+|:--|:--|:--|
+| `projects` | _optional_ | Comma separated list of projects to build. _[[usage](#individual-projects)]_ |
+
+| **Options** | |
 |:--|:--|
-| `build` | A one-off build of the target projects.|
-| `watch` | Watch for file changes in the target projects. |
+| `--once` | Run the build process only once. |
+| `--production` | Compile the assets for production. |
+| `--quiet` | Runs the build process with reduced output. |
 
-| **Environments** | |
-|:--|:--|
-| `dev` | Development environments to allow for debugging. |
-| `prod` | Production environments to keep everything lean and remove all debugging. |
-
-**Example**
+## Individual Projects
+You can define a project by using the `project` positional when using the build command by placing the project name after the `build` command.
 
 ```bash
-npm run watch:dev
-# OR
-npm run build:prod
+build-tools build my-plugin
 ```
 
-## ..for Sites
-When building in the context of a full site with multiple plugins or themes that have their own entrypoints, you have a number of options at your disposal.
-
-### Individual site project(s) build
-You can define a project by using the `project` flag when using the build command.
+The `project` positional can also take comma separated values if you need to build more than one project at a given time.
 
 ```bash
-npm run build:dev --project=my-plugin
-```
-
-The `project` flag can also take comma separated values if you need to build more than one project at a given time.
-
-```bash
-npm run build:dev --project=my-plugin,my-theme
+build-tools build my-plugin,my-theme
 ```
 
 Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide above](#structuring-your-project), seeking through `client-mu-plugins`,`plugins` and `themes`.
 
-### Site-wide
-If you need to build an entire sites worth of projects, which will often be the case come deployment, you can build all applicable projects in an entire site with the `all-projects` flag.
+## Site-wide
+If you need to build an entire sites worth of projects, which will often be the case come deployment, you can build all applicable projects by running the command from within your `wp-content` directory.
 
 ```bash
-npm run build:dev:all
+build-tools build
 ```
 
-## Getting your Assets
+# Getting your Assets
 As we're building each project as if it were its own entity, we do not create monolithic assets that cover all projects or an entire site. Instead each project will have those compiled assets within a `dist` directory. This includes both styles and scripts. Each entrypoint for a project becomes its own asset also. If we take the structure example from earlier, if we were to create a production build, we end up with...
 
 ```

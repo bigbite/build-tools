@@ -7,6 +7,9 @@
   "scripts": {
     "build": "webpack --mode=development"
   },
+  "bin": {
+    "build-tools": "./src/cli.js"
+  },
   "dependencies": {
     "@babel/core": "^7.14.8",
     "@babel/eslint-parser": "^7.14.9",
@@ -33,6 +36,7 @@
     "fibers": "^5.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "inquirer": "^8.2.0",
     "mini-css-extract-plugin": "^2.1.0",
     "node-sass": "^6.0.1",
     "postcss": "^8.3.6",
@@ -55,7 +59,8 @@
     "terminal-kit": "^2.1.8",
     "url-loader": "^4.1.1",
     "webpack": "^5.48.0",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^4.7.2",
+    "yargs": "^17.2.1"
   },
   "peerDependencies": {
     "fibers": "^5.0.0",

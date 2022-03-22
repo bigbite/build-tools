@@ -8,7 +8,7 @@ const directoryExists = (directory) => {
   if (exists) {
     return true;
   } else {
-    terminal.yellow("Warning:\nDirectory %s does not exist.\n\n", directory);
+    terminal.yellow("Warning: Directory %s does not exist.\n", directory);
 
     return false;
   }

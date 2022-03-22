@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const assetSettingsTemplate = require('../templates/asset-settings');
+const assetSettingsTemplate = require('./../templates/asset-settings');
 
 module.exports = ({ mode, paths, name, version }) => {
   return new HtmlWebpackPlugin({
