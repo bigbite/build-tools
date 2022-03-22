@@ -1,10 +1,9 @@
 const path = require('path');
-
 const webpack = require('webpack');
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
-const entrypoints = require('./utils/entrypoints');
+const entrypoints = require('./../../utils/entrypoints');
 
 // Define the bundled BrowserList config location/directory.
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
@@ -19,6 +18,7 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
   return {
+    mode,
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
     resolve: {
