@@ -1,12 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
-const webpackConfig = require('./build/webpack');
 const { terminal } = require('terminal-kit');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const ora = require('ora');
+const webpackConfig = require('./build/webpack');
+
 const spinner = ora();
 
-const { findProjectPath, findAllProjectPaths } = require('./../utils/projectpaths');
-const { getPackage } = require('./../utils/get-package');
+const { findProjectPath, findAllProjectPaths } = require('../utils/projectpaths');
+const { getPackage } = require('../utils/get-package');
 
 global.buildCount = 0;
 
@@ -61,7 +63,6 @@ exports.handler = async ({
     (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
-  let type = 'list';
   const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
@@ -77,9 +78,7 @@ exports.handler = async ({
       // List of projects.
       terminal(`\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in ${mode} mode.\x1b[0m\n`);
       // Compile all project paths into array.
-      paths = projectsList.map((projectItem) => {
-        return findProjectPath(projectItem, targetDirs);
-      });
+      paths = projectsList.map((projectItem) => findProjectPath(projectItem, targetDirs));
     }
   } catch (e) {
     terminal.red(e);
@@ -89,7 +88,7 @@ exports.handler = async ({
   let packages = [];
 
   try {
-    packages = paths.map((path) => getPackage(path, false)).filter((item) => item);
+    packages = paths.map((item) => getPackage(item, false)).filter((item) => item);
   } catch (e) {
     terminal.red(e);
     process.exit(1);
@@ -98,40 +97,40 @@ exports.handler = async ({
   terminal('Processing the following projects:\n');
   packages.forEach((item) => {
     const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`);
+    const packagePath = item.packagePath.match(`(${regexDirs})/(.+)/package.json$`);
     terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
   });
   terminal('\n');
 
   spinner.start('Building webpack configs.\n');
 
-  const configMap = packages.map((package) => {
+  const configMap = packages.map((packageObject) => {
     /**
      * Project config holds all information about a particular project,
      * rather than directly pulling out paths from files or attempting
      * to build them, use what is here.
      */
-    const __PROJECT_CONFIG__ = {
-      name: package.packageName,
-      version: package.package.version,
+    const PROJECT_CONFIG = {
+      name: packageObject.packageName,
+      version: packageObject.package.version,
       paths: {
-        project: path.resolve(package.path),
+        project: path.resolve(packageObject.path),
         config: path.resolve(`${__dirname}/configs`),
-        src: path.resolve(`${package.path}/src`),
-        dist: path.resolve(`${package.path}/dist`),
+        src: path.resolve(`${packageObject.path}/src`),
+        dist: path.resolve(`${packageObject.path}/dist`),
         clean: [
-          `${package.path}/dist/scripts`,
-          `${package.path}/dist/styles`,
-          `${package.path}/dist/static`,
+          `${packageObject.path}/dist/scripts`,
+          `${packageObject.path}/dist/styles`,
+          `${packageObject.path}/dist/static`,
         ],
-        node_modules: path.resolve(package.path, 'node_modules'),
+        node_modules: path.resolve(packageObject.path, 'node_modules'),
       },
       clean: true,
       copy: true,
       mode,
     };
 
-    return webpackConfig(__PROJECT_CONFIG__, mode);
+    return webpackConfig(PROJECT_CONFIG, mode);
   });
 
   let previousHash = '';

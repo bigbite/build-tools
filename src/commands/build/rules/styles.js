@@ -6,8 +6,8 @@ const postcssConfig = require('../../../../configs/postcss');
  * @param {object} config The project configuration object.
  * @returns {object} Rules and presets for styles.
  */
-module.exports = ({ mode }) => {
-  return [{
+module.exports = ({ mode }) => [
+  {
     test: /\.(sa|sc|c)ss$/,
     use: [
       // Seperate CSS included in JS.
@@ -40,5 +40,5 @@ module.exports = ({ mode }) => {
         },
       },
     ],
-  }];
-};
+  },
+];

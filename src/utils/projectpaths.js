@@ -7,11 +7,11 @@ const directoryExists = (directory) => {
 
   if (exists) {
     return true;
-  } else {
-    terminal.yellow("Warning: Directory %s does not exist.\n", directory);
-
-    return false;
   }
+
+  terminal.yellow('Warning: Directory %s does not exist.\n', directory);
+
+  return false;
 };
 
 const projectExists = (directory, projectName) => {
@@ -30,9 +30,10 @@ const projectExists = (directory, projectName) => {
  * @return {String|Boolean}
  */
 const findProjectPath = (projectName, directories) => {
-  const directory = directories.find((directory) => projectExists(directory, projectName));
-  if (directory) {
-    return path.resolve(process.cwd(), `./${directory}/${projectName}`);
+  const foundDirectory = directories.find((directory) => projectExists(directory, projectName));
+
+  if (foundDirectory) {
+    return path.resolve(process.cwd(), `./${foundDirectory}/${projectName}`);
   }
 
   throw new Error(`Project ${projectName} does not exist.`);
