@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const webpackConfig = require('./build/webpack');
 const { terminal } = require('terminal-kit');
@@ -57,13 +58,15 @@ exports.handler = async ({
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
+  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
+  const hasTargetDirs = targetDirs.filter((dir) => fs.existsSync(path.resolve(`./${dir}`))).length > 0;
+
   const isAllProjects =
     (site && projectsList.length > 0) ||
-    (currentLocation === 'wp-content' && projectsList.length === 0);
+    (currentLocation === 'wp-content' && projectsList.length === 0) ||
+    hasTargetDirs;
 
   let paths = [];
-  let type = 'list';
-  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
