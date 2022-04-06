@@ -63,8 +63,8 @@ exports.handler = async ({
 
   const isAllProjects =
     (site && projectsList.length > 0) ||
-    (currentLocation === 'wp-content' && projectsList.length === 0) ||
-    hasTargetDirs;
+    (site && hasTargetDirs) ||
+    (currentLocation === 'wp-content' && projectsList.length === 0);
 
   let paths = [];
 
@@ -73,7 +73,7 @@ exports.handler = async ({
       // Is project root - a standalone build.
       terminal(`\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in ${mode} mode.\x1b[0m\n`);
       paths.push(path.resolve('./'));
-    } else if (isAllProjects || ci.isCI) {
+    } else if (isAllProjects) {
       // Find all projects through-out the site.
       terminal(`\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in ${mode} mode.\x1b[0m\n`);
       paths = findAllProjectPaths(targetDirs);
@@ -102,7 +102,7 @@ exports.handler = async ({
   terminal('Processing the following projects:\n');
   packages.forEach((item) => {
     const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`);
+    const packagePath = item.packagePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
     terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
   });
   terminal('\n');
