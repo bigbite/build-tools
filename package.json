@@ -1,6 +1,6 @@
 {
   "name": "@bigbite/build-tools",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-rc.1",
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "license": "UNLICENSED",
@@ -20,7 +20,6 @@
     "@svgr/webpack": "^6.2.1",
     "autoprefixer": "^10.3.1",
     "babel-loader": "^8.2.2",
-    "ci-info": "^3.3.0",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
