@@ -1,5 +1,12 @@
 const fs = require('fs');
+const path = require('path');
 
+/**
+ * Check for a list of directories from the current location.
+ * 
+ * @param {array} targetDirs list of directories to check for
+ * @returns 
+ */
 module.exports = (targetDirs = []) => {
     if(!Array.isArray(targetDirs)) {
         throw new Error('Expected an array.');
