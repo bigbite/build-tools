@@ -1,14 +1,13 @@
 const path = require('path');
-const fs = require('fs');
 const webpack = require('webpack');
 const webpackConfig = require('./build/webpack');
 const { terminal } = require('terminal-kit');
-const ci = require('ci-info');
 const ora = require('ora');
 const spinner = ora();
 
 const { findProjectPath, findAllProjectPaths } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
+const dirsExist = require('../utils/dirs-exist');
 
 global.buildCount = 0;
 
@@ -59,12 +58,8 @@ exports.handler = async ({
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
-  const hasTargetDirs = targetDirs.filter((dir) => fs.existsSync(path.resolve(`./${dir}`))).length > 0;
-
-  const isAllProjects =
-    (site && projectsList.length > 0) ||
-    (site && hasTargetDirs) ||
-    (currentLocation === 'wp-content' && projectsList.length === 0);
+  const hasTargetDirs = dirsExist(targetDirs);
+  const isAllProjects = (site && hasTargetDirs);
 
   let paths = [];
 
