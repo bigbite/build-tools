@@ -26,6 +26,7 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsdoc": "^39.2.9",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
@@ -67,6 +68,5 @@
     "sass": "^1.37.2"
   },
   "devDependencies": {
-    "eslint-plugin-jsdoc": "^39.2.9"
   }
 }
