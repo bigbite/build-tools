@@ -4,6 +4,7 @@
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "license": "MIT",
+  "prettier": "./configs/prettier.js",
   "bin": {
     "build-tools": "./src/cli.js"
   },
@@ -64,5 +65,8 @@
     "rework": "^1.0.1",
     "rework-visit": "^1.0.0",
     "sass": "^1.37.2"
+  },
+  "devDependencies": {
+    "eslint-plugin-jsdoc": "^39.2.9"
   }
 }

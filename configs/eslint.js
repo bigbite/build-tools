@@ -35,5 +35,18 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'react/forbid-prop-types': 0,
     'arrow-parens': 2,
+    'jsdoc/require-jsdoc': [
+      'error',
+      {
+        require: {
+          ArrowFunctionExpression: true,
+          ClassDeclaration: true,
+          ClassExpression: true,
+          FunctionDeclaration: true,
+          FunctionExpression: true,
+          MethodDefinition: true,
+        },
+      },
+    ],
   },
 };
