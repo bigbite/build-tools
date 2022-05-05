@@ -4,9 +4,6 @@
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "license": "MIT",
-  "scripts": {
-    "build": "webpack --mode=development"
-  },
   "bin": {
     "build-tools": "./src/cli.js"
   },
