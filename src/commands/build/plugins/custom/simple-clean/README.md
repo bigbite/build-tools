@@ -1,7 +1,9 @@
 # Simple Clean Webpack Plugin
+
 A simple webpack plugin for cleaning files and directories in your build process.
 
 ## Options
+
 ```js
 {
     // Show output to CLI during clean processes

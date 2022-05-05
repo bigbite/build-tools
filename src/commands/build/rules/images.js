@@ -3,23 +3,21 @@
  * @param {object} config The project configuration object.
  * @returns {object} Rules and presets for images.
  */
-module.exports = ({ paths }) => {
-  return [
-    {
-      test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'file-loader',
-      issuer: /\.(css|scss)?$/,
-      options: {
-        name: '[path][name].[ext]',
-        emitFile: false, // Don't emit, using copy function to copy files over.
-        outputPath: '../', // or // publicPath: '../'.
-        context: paths.src,
-      },
+module.exports = ({ paths }) => [
+  {
+    test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+    loader: 'file-loader',
+    issuer: /\.(css|scss)?$/,
+    options: {
+      name: '[path][name].[ext]',
+      emitFile: false, // Don't emit, using copy function to copy files over.
+      outputPath: '../', // or // publicPath: '../'.
+      context: paths.src,
     },
-    {
-      test: /\.svg$/,
-      issuer: /\.js?$/,
-      use: ['babel-loader', '@svgr/webpack', 'url-loader'],
-    },
-  ];
-};
+  },
+  {
+    test: /\.svg$/,
+    issuer: /\.js?$/,
+    use: ['babel-loader', '@svgr/webpack', 'url-loader'],
+  },
+];
