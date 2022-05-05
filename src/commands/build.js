@@ -7,6 +7,7 @@ const spinner = ora();
 
 const { findProjectPath, findAllProjectPaths } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
+const dirsExist = require('../utils/dirs-exist');
 
 global.buildCount = 0;
 
@@ -56,13 +57,11 @@ exports.handler = async ({
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
-  const isAllProjects =
-    (site && projectsList.length > 0) ||
-    (currentLocation === 'wp-content' && projectsList.length === 0);
+  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
+  const hasTargetDirs = dirsExist(targetDirs);
+  const isAllProjects = (site && hasTargetDirs);
 
   let paths = [];
-  let type = 'list';
-  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
@@ -98,7 +97,7 @@ exports.handler = async ({
   terminal('Processing the following projects:\n');
   packages.forEach((item) => {
     const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`(${regexDirs})\/(.+)\/package\.json$`);
+    const packagePath = item.packagePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
     terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
   });
   terminal('\n');
