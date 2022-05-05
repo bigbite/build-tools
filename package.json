@@ -3,7 +3,7 @@
   "version": "1.0.0-rc.1",
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bin": {
     "build-tools": "./src/cli.js"
   },
