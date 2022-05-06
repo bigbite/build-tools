@@ -4,10 +4,10 @@
  * @param {string} name Name of the option.
  */
 const validateBoolean = (value, name = '') => {
-    if(typeof value !== 'boolean') {
-        throw new TypeError(`${name} option should be type of Boolean, got ${typeof value}`);
-    }
-}
+  if (typeof value !== 'boolean') {
+    throw new TypeError(`${name} option should be type of Boolean, got ${typeof value}`);
+  }
+};
 
 /**
  * Check that the given option is an Array of Strings.
@@ -15,14 +15,14 @@ const validateBoolean = (value, name = '') => {
  * @param {string} name Name of the option.
  */
 const validateArrayOfStrings = (value, name = '') => {
-    if(!Array.isArray(value)) {
-        throw new TypeError(`${name} option should be type of Array, got ${typeof value}`);
-    }
+  if (!Array.isArray(value)) {
+    throw new TypeError(`${name} option should be type of Array, got ${typeof value}`);
+  }
 
-    if(!value.every(v => (typeof v === 'string'))) {
-        throw new TypeError(`${name} option should be an array of strings.`);
-    }
-}
+  if (!value.every((v) => typeof v === 'string')) {
+    throw new TypeError(`${name} option should be an array of strings.`);
+  }
+};
 
 /**
  * Validate an object of options to ensure correct types are being used.
@@ -30,19 +30,20 @@ const validateArrayOfStrings = (value, name = '') => {
  * @returns {object}
  */
 module.exports = (options) => {
-    for (const [key, value] of Object.entries(options)) {
-        switch(key) {
-            case 'verbose':
-            case 'removeEmptyDirectories':
-                validateBoolean(value, key);
-                break;
-            case 'initialCleanPaths':
-                validateArrayOfStrings(value, key);
-                break;
-            default:
-                break;
-        }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(options)) {
+    switch (key) {
+      case 'verbose':
+      case 'removeEmptyDirectories':
+        validateBoolean(value, key);
+        break;
+      case 'initialCleanPaths':
+        validateArrayOfStrings(value, key);
+        break;
+      default:
+        break;
     }
+  }
 
-    return options;
-}
+  return options;
+};

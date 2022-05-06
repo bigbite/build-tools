@@ -1,6 +1,6 @@
 {
   "name": "@bigbite/build-tools",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "license": "MIT",
@@ -44,7 +44,7 @@
     "postcss-pseudo-class-enter": "^5.0.0",
     "postcss-pxtorem": "^6.0.0",
     "postcss-reporter": "^7.0.2",
-    "prettier": "2.3.2",
+    "prettier": "^2.3.2",
     "react": "^17.0.2",
     "resolve-url-loader": "^4.0.0",
     "rework": "^1.0.1",
@@ -67,6 +67,5 @@
     "rework-visit": "^1.0.0",
     "sass": "^1.37.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
