@@ -18,6 +18,17 @@ module.exports = ({ paths }) => [
   {
     test: /\.svg$/,
     issuer: /\.js?$/,
-    use: ['babel-loader', '@svgr/webpack', 'url-loader'],
+    use: [
+      'babel-loader',
+      'url-loader',
+      {
+        loader: '@svgr/webpack',
+        options: {
+          svgoConfig: {
+            removeViewBox: false,
+          },
+        },
+      },
+    ],
   },
 ];
