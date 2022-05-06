@@ -20,15 +20,18 @@ module.exports = ({ paths }) => [
     issuer: /\.js?$/,
     use: [
       'babel-loader',
-      'url-loader',
       {
         loader: '@svgr/webpack',
         options: {
           svgoConfig: {
-            removeViewBox: false,
+            plugins: [{
+              name: 'removeViewBox',
+              active: false,
+            }],
           },
         },
       },
+      'url-loader',
     ],
   },
 ];
