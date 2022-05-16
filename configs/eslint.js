@@ -22,6 +22,7 @@ module.exports = {
   },
   plugins: ['@babel', 'react', 'prettier'],
   rules: {
+    complexity: ['error', 10],
     'prettier/prettier': 'error',
     'import/no-extraneous-dependencies': [
       'error',
