@@ -59,9 +59,8 @@ exports.handler = async ({
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
-  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
   const hasTargetDirs = dirsExist(targetDirs);
-  const isAllProjects = (site && hasTargetDirs);
+  const isAllProjects = site && hasTargetDirs;
 
   let paths = [];
 
