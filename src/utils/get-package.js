@@ -3,13 +3,13 @@ const fs = require('fs');
 global.packageList = {};
 
 const getPackage = (path, throwError = true) => {
-  const packagePath = `${path}/package.json`;
+  const absolutePath = `${path}/package.json`;
 
-  if (packageList[packagePath]) {
-    return packageList[packagePath];
+  if (packageList[absolutePath]) {
+    return packageList[absolutePath];
   }
 
-  if (!fs.existsSync(packagePath)) {
+  if (!fs.existsSync(absolutePath)) {
     if (throwError) {
       throw new Error(
         `package.json does not exist for this project.\n\nPlease create one in: ${path}`,
@@ -19,19 +19,23 @@ const getPackage = (path, throwError = true) => {
     return false;
   }
 
-  const packageJSON = JSON.parse(fs.readFileSync(packagePath));
-  const packageObject = packageJSON === Object(packageJSON) ? packageJSON : {};
+  const json = JSON.parse(fs.readFileSync(absolutePath));
+  const packageObject = json === Object(json) ? json : {};
   const packageNames = packageObject?.name?.split('/');
-  const packageName = packageNames?.[packageNames.length - 1] || '';
+  const name = packageNames?.[packageNames.length - 1] || '';
+
+  const regexDirs = targetDirs.join('|');
+  const packagePath = absolutePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
 
   const packageValues = {
     path,
-    packagePath,
-    packageName,
-    package: packageJSON,
+    absolutePath,
+    relativePath: packagePath[0],
+    name,
+    json,
   };
 
-  packageList[packagePath] = packageValues;
+  packageList[absolutePath] = packageValues;
 
   return packageValues;
 };
