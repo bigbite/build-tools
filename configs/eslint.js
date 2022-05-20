@@ -20,7 +20,7 @@ module.exports = {
       ...babelConfig,
     },
   },
-  plugins: ['@babel', 'react', 'prettier'],
+  plugins: ['@babel', 'react', 'prettier', 'jsdoc'],
   rules: {
     complexity: ['error', 10],
     'prettier/prettier': 'error',
