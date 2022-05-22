@@ -1,12 +1,24 @@
 {
   "name": "@bigbite/build-tools",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.4",
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
-  "license": "UNLICENSED",
-  "scripts": {
-    "build": "webpack --mode=development"
+  "keywords": [
+    "webpack",
+    "babel",
+    "prettier",
+    "linting",
+    "eslint",
+    "stylelint",
+    "wordpress",
+    "wp"
+  ],
+  "homepage": "https://github.com/bigbite",
+  "bugs": {
+    "url": "https://github.com/bigbite/built-tools/issues"
   },
+  "license": "MIT",
+  "prettier": "./configs/prettier.js",
   "bin": {
     "build-tools": "./src/cli.js"
   },
@@ -28,6 +40,7 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsdoc": "^39.2.9",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
@@ -45,7 +58,7 @@
     "postcss-pseudo-class-enter": "^5.0.0",
     "postcss-pxtorem": "^6.0.0",
     "postcss-reporter": "^7.0.2",
-    "prettier": "2.3.2",
+    "prettier": "^2.3.2",
     "react": "^17.0.2",
     "resolve-url-loader": "^4.0.0",
     "rework": "^1.0.1",
@@ -62,10 +75,6 @@
     "webpack-cli": "^4.7.2",
     "yargs": "^17.2.1"
   },
-  "peerDependencies": {
-    "fibers": "^5.0.0",
-    "rework": "^1.0.1",
-    "rework-visit": "^1.0.0",
-    "sass": "^1.37.2"
-  }
+  "peerDependencies": {},
+  "devDependencies": {}
 }

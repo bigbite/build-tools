@@ -1,5 +1,6 @@
 const path = require('path');
 
+// eslint-disable-next-line arrow-body-style
 const assetSettingsTemplate = ({ htmlWebpackPlugin }, project, mode, version = 'v0.0.0') => {
   return `<?php
 /**
@@ -11,7 +12,7 @@ const assetSettingsTemplate = ({ htmlWebpackPlugin }, project, mode, version = '
 
 ${htmlWebpackPlugin.files.js
   .concat(htmlWebpackPlugin.files.css)
-  .map(file => {
+  .map((file) => {
     const parsedFile = path.parse(file);
 
     let name = parsedFile.name.replace(/-/g, '_').toUpperCase();
@@ -22,9 +23,9 @@ ${htmlWebpackPlugin.files.js
       name = splitName.join('_');
     }
 
-    project = project === '.' ? path.basename(path.resolve('./')) : project;
+    const setProject = project === '.' ? path.basename(path.resolve('./')) : project;
 
-    return `define( '${project.replace(/-/g, '_').toUpperCase()}_${name}_${parsedFile.ext
+    return `define( '${setProject.replace(/-/g, '_').toUpperCase()}_${name}_${parsedFile.ext
       .split('.')[1]
       .toUpperCase()}', '${parsedFile.base}' );
 `;
@@ -32,6 +33,6 @@ ${htmlWebpackPlugin.files.js
   .join(``)}
 define( '${project.replace(/-/g, '_').toUpperCase()}_VERSION', '${version}' );
 `;
-}
+};
 
 module.exports = assetSettingsTemplate;

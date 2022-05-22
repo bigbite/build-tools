@@ -15,10 +15,11 @@ module.exports = (src) => {
     throw new Error(`Unable to find entrypoints folder in ${src}.`);
   }
 
-  return fs.readdirSync(pathToEntryPoints).reduce((accumulator, file) => {
-    return {
+  return fs.readdirSync(pathToEntryPoints).reduce(
+    (accumulator, file) => ({
       ...accumulator,
       [file.split('.')[0]]: path.resolve(pathToEntryPoints, file),
-    };
-  }, {});
+    }),
+    {},
+  );
 };
