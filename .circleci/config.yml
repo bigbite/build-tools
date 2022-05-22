@@ -26,6 +26,11 @@ jobs:
             cd ./example-site/plugins/test-plugin/
             node ./../../../src/cli.js build --once
           name: Run test - build single
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js build --once
+          name: Run test - build full project
       - persist_to_workspace:
           root: ~/project
           paths:
