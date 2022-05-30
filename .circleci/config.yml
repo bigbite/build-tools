@@ -75,43 +75,6 @@ jobs:
           root: ~/project
           paths:
             - .
-  node_tests:
-    docker:
-      - image: cimg/node:17.2.0
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - restore_cache:
-          name: Restoring Modules Cache
-          keys:
-            - v1-modules-cache-{{ checksum "package-lock.json" }}
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js ci
-          name: Run test - ci install projects
-      - node/install:
-          node-version: '12'
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once
-          name: Run test - build projects
-      - node/install:
-          node-version: '14'
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once
-          name: Run test - build projects
-      - node/install:
-          node-version: '16'
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once
-          name: Run test - build projects
 
 workflows:
   test_install:
@@ -120,6 +83,3 @@ workflows:
   test_build:
     jobs:
       - self_tests
-  test_node:
-    jobs:
-      - node_tests
