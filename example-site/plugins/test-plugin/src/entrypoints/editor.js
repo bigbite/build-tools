@@ -1,4 +1,4 @@
-import DisplayComponent from '../components/DisplayComponent';
+import DisplayComponent from '@Components/DisplayComponent';
 
 const { registerBlockType } = wp.block;
 const { __ } = wp.i18n;
