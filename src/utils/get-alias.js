@@ -10,6 +10,8 @@ const webpackAlias = (src) => {
   return {
     '@Components': path.resolve(src, 'components'),
     Components: path.resolve(src, 'components'),
+    '@Static': path.resolve(src, 'static'),
+    Static: path.resolve(src, 'static'),
   };
 };
 
