@@ -1,2 +1,4 @@
 .DS_Store
 node_modules
+example-site/**/dist
+example-site/**/inc/asset-settings.php

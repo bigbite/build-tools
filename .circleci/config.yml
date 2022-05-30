@@ -1,0 +1,37 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7.0
+
+jobs:
+  self_test: # this can be any name you choose
+    docker:
+      - image: cimg/node:17.2.0
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js build test-plugin,test-theme --once
+          name: Run test - build projects
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js build --site --once
+          name: Run test - build site
+      - run:
+          command: |
+            cd ./example-site/plugins/test-plugin/
+            node ./../../../src/cli.js build --once
+          name: Run test - build single
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+workflows:
+  test_build_tools:
+    jobs:
+      - self_test
