@@ -14,18 +14,29 @@ jobs:
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once
+            node ./../src/cli.js build test-plugin,test-theme --once | tee projects-output.txt
+            echo "Test ouput"
+            [[ $(grep "\* .*\[.*\/package.json\]" projects-output.txt -c) =~ "2" ]] || exit 1
           name: Run test - build projects
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build --site --once
+            node ./../src/cli.js build --site --once | tee site-output.txt
+            echo "Test ouput"
+            [[ $(grep "\* .*\[.*\/package.json\]" site-output.txt -c) =~ "3" ]] || exit 1
           name: Run test - build site
       - run:
           command: |
             cd ./example-site/plugins/test-plugin/
-            node ./../../../src/cli.js build --once
+            node ./../../../src/cli.js build --once | tee ../../single-output.txt
+            echo "Test output"
+            [[ $(grep "\* .*\[.*\/package.json\]" single-output.txt -c) =~ "1" ]] || exit 1
           name: Run test - build single
+      - run:
+          command: |
+            cd ./example-site/
+            rm *-output.txt
+          name: Clean up
       - persist_to_workspace:
           root: ~/project
           paths:
