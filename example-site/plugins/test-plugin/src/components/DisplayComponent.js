@@ -8,7 +8,7 @@ export default () => (
   <>
     <div className="logo">
       <SVGAsComponent />
-      <SVGAsURL />
+      <img src={SVGAsURL} alt="Reference and SVG as the url" />
     </div>
     <div>Example Block</div>
   </>
