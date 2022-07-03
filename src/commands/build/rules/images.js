@@ -7,7 +7,7 @@ module.exports = ({ paths }) => [
   {
     test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file-loader',
-    issuer: /\.(css|scss)?$/,
+    issuer: /\.(css|scss|js)?$/,
     options: {
       name: '[path][name].[ext]',
       emitFile: false, // Don't emit, using copy function to copy files over.
