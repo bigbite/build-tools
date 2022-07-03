@@ -1,4 +1,5 @@
-import LogoSVG from '../static/logo.svg';
+import SVGAsComponent from '../static/logo.svg';
+import SVGAsURL from '../static/svg-file.svg?url';
 
 /**
  * Display Component for an example block.
@@ -6,7 +7,8 @@ import LogoSVG from '../static/logo.svg';
 export default () => (
   <>
     <div className="logo">
-      <LogoSVG />
+      <SVGAsComponent />
+      <SVGAsURL />
     </div>
     <div>Example Block</div>
   </>
