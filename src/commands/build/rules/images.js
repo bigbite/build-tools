@@ -16,10 +16,12 @@ module.exports = ({ paths }) => [
     },
   },
   {
+    // Handle SVG files imported as react components
+    // e.g. import MySvg from './assets/svg/my-svg.svg';
     test: /\.svg$/,
     issuer: /\.js?$/,
+    resourceQuery: { not: [/url/] },
     use: [
-      'babel-loader',
       {
         loader: '@svgr/webpack',
         options: {
@@ -31,7 +33,13 @@ module.exports = ({ paths }) => [
           },
         },
       },
-      'url-loader',
     ],
+  },
+  {
+    // Handle SVG files imported as URLs by using a resourceQuery
+    // e.g. import mySvg from './assets/svg/my-svg.svg?url';
+    test: /\.svg$/,
+    type: 'asset',
+    resourceQuery: /url/,
   },
 ];

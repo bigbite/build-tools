@@ -1,4 +1,5 @@
-import LogoSVG from '../static/logo.svg';
+import SVGAsComponent from '../static/logo.svg';
+import SVGAsURL from '../static/svg-file.svg?url';
 import MailIconPNG from '../static/mail-icon.png';
 
 /**
@@ -7,7 +8,8 @@ import MailIconPNG from '../static/mail-icon.png';
 export default () => (
   <>
     <div className="logo">
-      <LogoSVG />
+      <SVGAsComponent />
+      <img src={SVGAsURL} alt="Reference and SVG as the url" />
     </div>
     <div>Example Block</div>
     <div>
