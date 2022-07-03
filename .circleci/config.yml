@@ -30,7 +30,7 @@ jobs:
             cd ./example-site/plugins/test-plugin/
             node ./../../../src/cli.js build --once | tee ../../single-output.txt
             echo "Test output"
-            [[ $(grep "\* .*\[.*\/package.json\]" single-output.txt -c) =~ "1" ]] || exit 1
+            [[ $(grep "\* .*\[.*\/package.json\]" ../../single-output.txt -c) =~ "1" ]] || exit 1
           name: Run test - build single
       - run:
           command: |
