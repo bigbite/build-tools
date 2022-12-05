@@ -5,6 +5,8 @@ orbs:
 
 jobs:
   notify_slack:
+    docker:
+      - image: cimg/node:17.2.0
     steps:
       - run:
           command: |
