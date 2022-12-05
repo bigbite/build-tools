@@ -4,7 +4,15 @@ orbs:
   node: circleci/node@4.7.0
 
 jobs:
-  self_test: # this can be any name you choose
+  notify_slack:
+    docker:
+      - image: cimg/node:17.2.0
+    steps:
+      - run:
+          command: |
+            curl -X POST -H 'Content-type: application/json' --data '{"text":"New Build Tools Release","blocks":[{"type":"header","text":{"type":"plain_text","text":"New Build Tools Release"}},{"type":"section","fields":[{"type":"mrkdwn","text":"*Version:* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/releases/tag/'${CIRCLE_TAG}'|'${CIRCLE_TAG}'>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/issues|Issues> *|* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/pulls|Pull Requests>"}]}]}' ${SLACK_WEBHOOK}
+          name: Send Slack update to channel
+  self_test:
     docker:
       - image: cimg/node:17.2.0
     steps:
@@ -46,3 +54,11 @@ workflows:
   test_build_tools:
     jobs:
       - self_test
+  run_notify_slack:
+    jobs:
+      - notify_slack:
+          filters:
+            tags:
+              only: /v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?/
+            branches:
+              ignore: /.*/
