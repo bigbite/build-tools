@@ -7,6 +7,9 @@ jobs:
   notify_slack:
     docker:
       - image: cimg/node:17.2.0
+    filters:
+      tags:
+        only: /^v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?$/i
     steps:
       - run:
           command: |
@@ -55,7 +58,4 @@ workflows:
       - self_test
   run_notify_slack:
     jobs:
-      - notify_slack:
-          filters:
-            tags:
-              only: /^v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?$/i
+      - notify_slack
