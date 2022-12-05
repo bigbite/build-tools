@@ -58,6 +58,6 @@ workflows:
       - notify_slack:
           filters:
             tags:
-              only: /^v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?$/i
+              only: /v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?/
             branches:
               ignore: /.*/
