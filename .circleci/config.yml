@@ -10,7 +10,7 @@ jobs:
     steps:
       - run:
           command: |
-            curl -X POST -H 'Content-type: application/json' --data '{"text":"New Build Tools Release","blocks":[{"type":"header","text":{"type":"plain_text","text":"New Build Tools Release"}},{"type":"section","fields":[{"type":"mrkdwn","text":"*Version:* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/releases/tag/'${CIRCLE_TAG}'|'${CIRCLE_TAG}'>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/issues|Issues>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/pulls|Pull Requests>"}]}]}' ${SLACK_WEBHOOK}
+            curl -X POST -H 'Content-type: application/json' --data '{"text":"New Build Tools Release","blocks":[{"type":"header","text":{"type":"plain_text","text":"New Build Tools Release"}},{"type":"section","fields":[{"type":"mrkdwn","text":"*Version:* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/releases/tag/'${CIRCLE_TAG}'|'${CIRCLE_TAG}'>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/issues|Issues> |<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/pulls|Pull Requests>"}]}]}' ${SLACK_WEBHOOK}
   self_test:
     docker:
       - image: cimg/node:17.2.0
