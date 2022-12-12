@@ -48,7 +48,7 @@ jobs:
           root: ~/project
           paths:
             - .
-  self_tests:
+  self_test:
     docker:
       - image: cimg/node:17.2.0
     steps:
