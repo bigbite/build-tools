@@ -12,47 +12,81 @@ jobs:
           command: |
             curl -X POST -H 'Content-type: application/json' --data '{"text":"New Build Tools Release","blocks":[{"type":"header","text":{"type":"plain_text","text":"New Build Tools Release"}},{"type":"section","fields":[{"type":"mrkdwn","text":"*Version:* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/releases/tag/'${CIRCLE_TAG}'|'${CIRCLE_TAG}'>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/issues|Issues> *|* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/pulls|Pull Requests>"}]}]}' ${SLACK_WEBHOOK}
           name: Send Slack update to channel
-  self_test:
+  install_tests:
+    docker:
+      - image: cimg/node:17.2.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restoring Modules Cache
+          keys:
+            - v1-modules-cache-{{ checksum "package-lock.json" }}
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js install
+          name: Run test - install projects
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js install -- --package-lock-only
+          name: Run test - install projects with npm args
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js ci
+          name: Run test - ci install projects
+      - save_cache:
+          name: Saving Modules Cache
+          key: v1-modules-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+            - /home/circleci/.cache
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  self_tests:
     docker:
       - image: cimg/node:17.2.0
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
+      - restore_cache:
+          name: Restoring Modules Cache
+          keys:
+            - v1-modules-cache-{{ checksum "package-lock.json" }}
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once | tee projects-output.txt
-            echo "Test ouput"
-            [[ $(grep "\* .*\[.*\/package.json\]" projects-output.txt -c) =~ "2" ]] || exit 1
+            node ./../src/cli.js ci
+          name: Run test - ci install projects
+      - run:
+          command: |
+            cd ./example-site/
+            node ./../src/cli.js build test-plugin,test-theme --once
           name: Run test - build projects
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build --site --once | tee site-output.txt
-            echo "Test ouput"
-            [[ $(grep "\* .*\[.*\/package.json\]" site-output.txt -c) =~ "3" ]] || exit 1
+            node ./../src/cli.js build --site --once
           name: Run test - build site
       - run:
           command: |
             cd ./example-site/plugins/test-plugin/
-            node ./../../../src/cli.js build --once | tee ../../single-output.txt
-            echo "Test output"
-            [[ $(grep "\* .*\[.*\/package.json\]" ../../single-output.txt -c) =~ "1" ]] || exit 1
+            node ./../../../src/cli.js build --once
           name: Run test - build single
-      - run:
-          command: |
-            cd ./example-site/
-            rm *-output.txt
-          name: Clean up
       - persist_to_workspace:
           root: ~/project
           paths:
             - .
-
 workflows:
   test_build_tools:
     jobs:
+      - install_tests
       - self_test
   run_notify_slack:
     jobs:
