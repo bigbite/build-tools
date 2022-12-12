@@ -4,42 +4,6 @@ orbs:
   node: circleci/node@4.7.0
 
 jobs:
-  install_tests:
-    docker:
-      - image: cimg/node:17.2.0
-    steps:
-      - checkout
-      - restore_cache:
-          name: Restoring Modules Cache
-          keys:
-            - v1-modules-cache-{{ checksum "package-lock.json" }}
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js install
-          name: Run test - install projects
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js install -- --package-lock-only
-          name: Run test - install projects with npm args
-      - run:
-          command: |
-            cd ./example-site/
-            node ./../src/cli.js ci
-          name: Run test - ci install projects
-      - save_cache:
-          name: Saving Modules Cache
-          key: v1-modules-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-            - /home/circleci/.cache
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
   notify_slack:
     docker:
       - image: cimg/node:17.2.0
@@ -130,7 +94,6 @@ workflows:
       - install_tests
   test_build:
     jobs:
-      - install_tests
       - self_test
   run_notify_slack:
     jobs:
