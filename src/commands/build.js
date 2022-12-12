@@ -59,7 +59,6 @@ exports.handler = async ({
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
-  const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = (site || hasTargetDirs) && !projects;
 
@@ -95,10 +94,8 @@ exports.handler = async ({
   }
 
   terminal('Processing the following projects:\n');
-  packages.forEach((item) => {
-    const regexDirs = targetDirs.join('|');
-    const packagePath = item.packagePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
-    terminal.defaultColor(` * %s `, item.packageName).dim(`[%s]\n`, packagePath[0]);
+  packages.forEach((package) => {
+    terminal.defaultColor(` * %s `, package.name).dim(`[%s]\n`, package.relativePath);
   });
   terminal('\n');
 
@@ -111,8 +108,8 @@ exports.handler = async ({
      * to build them, use what is here.
      */
     const PROJECT_CONFIG = {
-      name: packageObject.packageName,
-      version: packageObject.package.version,
+      name: packageObject.name,
+      version: packageObject.json.version,
       paths: {
         project: path.resolve(packageObject.path),
         config: path.resolve(`${__dirname}/configs`),
@@ -131,18 +128,18 @@ exports.handler = async ({
     };
 
     let customWebpackConfig = {
-      extends: true
+      extends: true,
     };
     let config = webpackConfig(PROJECT_CONFIG, mode);
 
     try {
       customWebpackConfig = {
         ...customWebpackConfig,
-        ...require(PROJECT_CONFIG.paths.project + '/webpack.config.js')
-      }
-    } catch(e) {}
+        ...require(PROJECT_CONFIG.paths.project + '/webpack.config.js'),
+      };
+    } catch (e) {}
 
-    if(!customWebpackConfig?.extends) {
+    if (!customWebpackConfig?.extends) {
       config = customWebpackConfig;
     } else if (customWebpackConfig) {
       config = {
