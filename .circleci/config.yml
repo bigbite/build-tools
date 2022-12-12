@@ -40,7 +40,15 @@ jobs:
           root: ~/project
           paths:
             - .
-  self_tests:
+  notify_slack:
+    docker:
+      - image: cimg/node:17.2.0
+    steps:
+      - run:
+          command: |
+            curl -X POST -H 'Content-type: application/json' --data '{"text":"New Build Tools Release","blocks":[{"type":"header","text":{"type":"plain_text","text":"New Build Tools Release"}},{"type":"section","fields":[{"type":"mrkdwn","text":"*Version:* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/releases/tag/'${CIRCLE_TAG}'|'${CIRCLE_TAG}'>"},{"type":"mrkdwn","text":"<https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/issues|Issues> *|* <https://github.com/'${CIRCLE_PROJECT_USERNAME}'/'${CIRCLE_PROJECT_REPONAME}'/pulls|Pull Requests>"}]}]}' ${SLACK_WEBHOOK}
+          name: Send Slack update to channel
+  self_test:
     docker:
       - image: cimg/node:17.2.0
     steps:
@@ -59,18 +67,29 @@ jobs:
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build test-plugin,test-theme --once
+            node ./../src/cli.js build test-plugin,test-theme --once | tee projects-output.txt
+            echo "Test ouput"
+            [[ $(grep "\* .*\[.*\/package.json\]" projects-output.txt -c) =~ "2" ]] || exit 1
           name: Run test - build projects
       - run:
           command: |
             cd ./example-site/
-            node ./../src/cli.js build --site --once
+            node ./../src/cli.js build --site --once | tee site-output.txt
+            echo "Test ouput"
+            [[ $(grep "\* .*\[.*\/package.json\]" site-output.txt -c) =~ "3" ]] || exit 1
           name: Run test - build site
       - run:
           command: |
             cd ./example-site/plugins/test-plugin/
-            node ./../../../src/cli.js build --once
+            node ./../../../src/cli.js build --once | tee ../../single-output.txt
+            echo "Test output"
+            [[ $(grep "\* .*\[.*\/package.json\]" ../../single-output.txt -c) =~ "1" ]] || exit 1
           name: Run test - build single
+      - run:
+          command: |
+            cd ./example-site/
+            rm *-output.txt
+          name: Clean up
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -82,4 +101,12 @@ workflows:
       - install_tests
   test_build:
     jobs:
-      - self_tests
+      - self_test
+  run_notify_slack:
+    jobs:
+      - notify_slack:
+          filters:
+            tags:
+              only: /v?[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha).[0-9]+)?/
+            branches:
+              ignore: /.*/

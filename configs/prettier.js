@@ -3,6 +3,7 @@ const config = {
   trailingComma: 'all',
   arrowParens: 'always',
   singleQuote: true,
+  endOfLine: 'auto',
 };
 
 module.exports = config;

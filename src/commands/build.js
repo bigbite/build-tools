@@ -60,7 +60,7 @@ exports.handler = async ({
   // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const hasTargetDirs = dirsExist(targetDirs);
-  const isAllProjects = site && hasTargetDirs;
+  const isAllProjects = (site || hasTargetDirs) && !projects;
 
   let paths = [];
 
@@ -127,7 +127,30 @@ exports.handler = async ({
       mode,
     };
 
-    return webpackConfig(PROJECT_CONFIG, mode);
+    let customWebpackConfig = {
+      extends: true,
+    };
+    let config = webpackConfig(PROJECT_CONFIG, mode);
+
+    try {
+      customWebpackConfig = {
+        ...customWebpackConfig,
+        ...require(PROJECT_CONFIG.paths.project + '/webpack.config.js'),
+      };
+    } catch (e) {}
+
+    if (!customWebpackConfig?.extends) {
+      config = customWebpackConfig;
+    } else if (customWebpackConfig) {
+      config = {
+        ...config,
+        ...customWebpackConfig,
+      };
+    }
+
+    delete config.extends;
+
+    return config;
   });
 
   let previousHash = '';
