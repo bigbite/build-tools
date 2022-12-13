@@ -7,7 +7,7 @@ module.exports = ({ paths }) => [
   {
     test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file-loader',
-    issuer: /\.(css|scss)?$/,
+    issuer: /\.(css|scss|js)?$/,
     options: {
       name: '[path][name].[ext]',
       emitFile: false, // Don't emit, using copy function to copy files over.
@@ -16,10 +16,12 @@ module.exports = ({ paths }) => [
     },
   },
   {
+    // Handle SVG files imported as react components
+    // e.g. import MySvg from './assets/svg/my-svg.svg';
     test: /\.svg$/,
     issuer: /\.js?$/,
+    resourceQuery: { not: [/url/] },
     use: [
-      'babel-loader',
       {
         loader: '@svgr/webpack',
         options: {
@@ -31,7 +33,13 @@ module.exports = ({ paths }) => [
           },
         },
       },
-      'url-loader',
     ],
+  },
+  {
+    // Handle SVG files imported as URLs by using a resourceQuery
+    // e.g. import mySvg from './assets/svg/my-svg.svg?url';
+    test: /\.svg$/,
+    type: 'asset',
+    resourceQuery: /url/,
   },
 ];
