@@ -29,7 +29,7 @@ const eslintResolver = (src) => {
   return {
     alias: {
       map: aliasMap,
-      extensions: ['.mjs', '.js'],
+      extensions: ['.mjs', '.js', '.jsx'],
     },
     node: {
       paths: pathsList,
