@@ -1,6 +1,6 @@
-import SVGAsComponent from '../static/logo.svg';
-import SVGAsURL from '../static/svg-file.svg?url';
-import MailIconPNG from '../static/mail-icon.png';
+import SVGAsComponent from '@Static/logo.svg';
+import SVGAsURL from '@Static/svg-file.svg?url';
+import MailIconPNG from '@Static/mail-icon.png';
 
 /**
  * Display Component for an example block.

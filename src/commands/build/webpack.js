@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const Plugins = require('./plugins');
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
+const { webpackAlias } = require('./../../utils/get-alias');
 
 // Define the bundled BrowserList config location/directory.
 // eslint-disable-next-line no-undef
@@ -23,6 +24,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
 
   resolve: {
     modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
+    alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
   },
 
   output: {
