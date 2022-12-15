@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
@@ -60,8 +59,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
       __TEST__: JSON.stringify(process.env.NODE_ENV === 'test'),
     }),
 
-    new DependencyExtractionWebpackPlugin(),
-
+    Plugins.DependencyExtraction(__PROJECT_CONFIG__),
     Plugins.ESLint(__PROJECT_CONFIG__),
     Plugins.HTMLWebpack(__PROJECT_CONFIG__),
     Plugins.MiniCssExtract(__PROJECT_CONFIG__),
