@@ -4,6 +4,7 @@ const MiniCssExtract = require('./minicssextract');
 const StyleLint = require('./stylelint');
 const Clean = require('./clean');
 const Copy = require('./copy');
+const DependencyExtraction = require('./dependency-extraction');
 
 module.exports = {
   ESLint,
@@ -12,4 +13,5 @@ module.exports = {
   StyleLint,
   Clean,
   Copy,
+  DependencyExtraction,
 };
