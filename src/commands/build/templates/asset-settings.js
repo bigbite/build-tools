@@ -21,8 +21,6 @@ const getExtension = (file) => {
 
 // eslint-disable-next-line arrow-body-style
 const assetSettingsTemplate = (files, project, mode, version = 'v0.0.0') => {
-  console.log(files, global.DependencyExtraction[project], project);
-
   const setProject = project === '.' ? path.basename(path.resolve('./')) : project;
   const projectName = setProject.replace(/-/g, '_').toUpperCase();
 
