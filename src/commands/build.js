@@ -167,7 +167,7 @@ exports.handler = async ({
     }
 
     if (stats.hasErrors() && mode === 'production') {
-      process.stdout.write(stats.toString() + '\n');
+      process.stdout.write(stats.toString() + '\n\n\n');
       spinner.fail('Build cancelled.');
       process.exit(1);
     }
