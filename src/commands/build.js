@@ -166,6 +166,12 @@ exports.handler = async ({
       process.stdout.write(err);
     }
 
+    if (stats.hasErrors() && mode === 'production') {
+      process.stdout.write(stats.toString() + '\n');
+      spinner.fail('Build cancelled.');
+      process.exit(1);
+    }
+
     /**
      * Avoids output which is a symptom in a longstanding
      * webpack issue where the watcher can loop due to FS_ACCURENCY
