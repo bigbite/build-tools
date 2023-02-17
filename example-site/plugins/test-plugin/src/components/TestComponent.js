@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
  * @param {string} props.additionalValue The value to output when text is not hidden.
  * @returns
  */
-const TestComponent = ({ hiddenText = false, additionalValue = 'string' }) => {
+const TestComponent = ({ hiddenText = false, additionalValue }) => {
   if (hiddenText) {
     return <div>{__('Hidden', 'bigbite-build-tools')}</div>;
   }

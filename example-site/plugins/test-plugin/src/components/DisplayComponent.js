@@ -14,7 +14,7 @@ export default () => (
       <img src={SVGAsURL} alt="Reference and SVG as the url" />
     </div>
     <div>Example Block</div>
-    <TestComponent testValue />
+    <TestComponent additionalValue="This is not hidden" />
     <div>
       <img src={MailIconPNG} alt="PNG Mail Icon for testing usage." />
     </div>
