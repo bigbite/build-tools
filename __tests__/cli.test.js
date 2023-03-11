@@ -14,17 +14,20 @@ const requiredRealDirs = {
 
 describe('CLI Build Command', () => {
   let originalArgv;
-
-  let consoleSpy;
+  let originalWrite;
+  let originalExit;
 
   let mockWebpack;
 
   beforeEach(() => {
-    originalArgv = process.argv;
-
     jest.resetModules();
 
-    consoleSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
+    originalArgv = process.argv;
+    originalWrite = process.stdout.write;
+    originalExit = process.exit;
+
+    process.stdout.write = jest.fn();
+    process.exit = jest.fn();
 
     mockWebpack = jest.fn().mockImplementation((config) => {
       return {
@@ -41,6 +44,8 @@ describe('CLI Build Command', () => {
 
   afterEach(() => {
     process.argv = originalArgv;
+    process.stdout.write = originalWrite;
+    process.exit = originalExit;
 
     mockFs.restore();
     jest.resetAllMocks();
@@ -63,7 +68,7 @@ describe('CLI Build Command', () => {
     runCommand('build', '--once');
 
     expect(mockWebpack).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith(
+    expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in development mode.\x1b[0m\n`,
     );
   });
@@ -88,7 +93,7 @@ describe('CLI Build Command', () => {
     runCommand('build', '--once');
 
     expect(mockWebpack).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith(
+    expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in development mode.\x1b[0m\n`,
     );
   });
@@ -125,41 +130,41 @@ describe('CLI Build Command', () => {
     runCommand('build', '--once', 'my-plugin,my-theme');
 
     expect(mockWebpack).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith(
+    expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
-    expect(consoleSpy).toHaveBeenCalledWith('Processing the following projects:\n');
-    expect(consoleSpy).toHaveBeenCalledWith(` * my-plugin `);
-    expect(consoleSpy).toHaveBeenCalledWith(` * my-theme `);
+    expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
+    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
+    expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
   });
 
-  // it('fails to run specific projects mode when requested if not found', () => {
-  //   mockFs({
-  //     ...requiredRealDirs,
-  //     plugins: {
-  //       'my-plugin': {
-  //         'package.json': JSON.stringify({
-  //           name: 'my-plugin',
-  //         }),
-  //         src: {
-  //           entrypoints: {
-  //             'some-file.js': 'console.log("file content here");',
-  //           },
-  //         },
-  //       },
-  //     },
-  //   });
+  it('fails to run specific projects mode when requested if not found', () => {
+    mockFs({
+      ...requiredRealDirs,
+      plugins: {
+        'my-plugin': {
+          'package.json': JSON.stringify({
+            name: 'my-plugin',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+    });
 
-  //   runCommand('build', '--once', 'my-plugin,my-theme');
+    runCommand('build', '--once', 'my-plugin,my-theme');
 
-  //   expect(mockWebpack).toHaveBeenCalled();
-  //   expect(consoleSpy).toHaveBeenCalledWith(
-  //     `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
-  //   );
-  //   expect(consoleSpy).toHaveBeenCalledWith('Processing the following projects:\n');
-  //   expect(consoleSpy).toHaveBeenCalledWith(` * my-plugin `);
-  //   expect(consoleSpy).not.toHaveBeenCalledWith(` * my-theme `);
-  // });
+    expect(mockWebpack).toHaveBeenCalled();
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
+    expect(process.stdout.write).toHaveBeenCalledWith(`Error: Project my-theme does not exist.`);
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
 });
 
 async function runCommand(...args) {
