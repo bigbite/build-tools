@@ -30,19 +30,19 @@ module.exports = (commandType) => {
   }
 
   terminal('Installing packages for the following projects:\n');
-  packages.forEach((package) => {
-    terminal.defaultColor(` * %s `, package.name).dim(`[%s]\n`, package.relativePath);
+  packages.forEach((pkg) => {
+    terminal.defaultColor(` * %s `, pkg.name).dim(`[%s]\n`, pkg.relativePath);
   });
   terminal('\n');
 
   const gluedArgs = args.join(' ');
 
-  packages.forEach((package) => {
+  packages.forEach((pkg) => {
     terminal
       .defaultColor(`Installing packages for `)
-      .bold(`%s`, package.name)
-      .dim(` [%s]\n`, package.relativePath);
-    execSync(`npm ${gluedArgs}`, { cwd: package.path, stdio: 'inherit' });
+      .bold(`%s`, pkg.name)
+      .dim(` [%s]\n`, pkg.relativePath);
+    execSync(`npm ${gluedArgs}`, { cwd: pkg.path, stdio: 'inherit' });
     terminal.defaultColor('\n\n----------------------\n\n');
   });
 };
