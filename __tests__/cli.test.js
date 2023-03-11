@@ -168,7 +168,7 @@ describe('CLI Build Command', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
   });
 
-  it('fails to run specific projects mode when requested if not found', () => {
+  it('fails to run specific projects mode if a project is not found', () => {
     mockFs({
       ...requiredRealDirs,
       plugins: {

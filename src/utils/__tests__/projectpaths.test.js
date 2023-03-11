@@ -18,9 +18,18 @@ const packageJson = {
 describe('projectpaths', () => {
   beforeEach(() => {
     jest.resetModules();
+
+    originalWrite = process.stdout.write;
+    originalExit = process.exit;
+
+    process.stdout.write = jest.fn();
+    process.exit = jest.fn();
   });
 
   afterEach(() => {
+    process.stdout.write = originalWrite;
+    process.exit = originalExit;
+
     jest.resetAllMocks();
   });
 
