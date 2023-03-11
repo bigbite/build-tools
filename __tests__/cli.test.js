@@ -1,45 +1,54 @@
 'use strict';
 const path = require('path');
-const mock = require('mock-fs');
+const mockFs = require('mock-fs');
 
 jest.mock('ora', () => () => ({
   start: jest.fn(),
 }));
 
-const mockWebpack = jest.fn().mockImplementation((config) => {
-  return {
-    run: jest.fn(),
-    watch: jest.fn(),
-  };
-});
+const requiredRealDirs = {
+  node_modules: mockFs.load(path.resolve(__dirname, '../node_modules')),
+  src: mockFs.load(path.resolve(__dirname, '../src')),
+  configs: mockFs.load(path.resolve(__dirname, '../configs')),
+};
 
-jest.mock('webpack', () => {
-  const webpack = mockWebpack;
-  webpack.DefinePlugin = jest.fn().mockImplementation((params) => params);
-  return webpack;
-});
-
-describe('CLI', () => {
+describe('CLI Build Command', () => {
   let originalArgv;
+
   let consoleSpy;
 
+  let mockWebpack;
+
   beforeEach(() => {
-    consoleSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
-    jest.resetModules();
     originalArgv = process.argv;
+
+    jest.resetModules();
+
+    consoleSpy = jest.spyOn(process.stdout, 'write').mockImplementation();
+
+    mockWebpack = jest.fn().mockImplementation((config) => {
+      return {
+        run: jest.fn(),
+        watch: jest.fn(),
+      };
+    });
+    jest.mock('webpack', () => {
+      const webpack = mockWebpack;
+      webpack.DefinePlugin = jest.fn().mockImplementation((params) => params);
+      return webpack;
+    });
   });
 
   afterEach(() => {
-    consoleSpy.mockRestore();
-    jest.resetAllMocks();
     process.argv = originalArgv;
+
+    mockFs.restore();
+    jest.resetAllMocks();
   });
 
-  beforeAll(() => {
-    mock({
-      node_modules: mock.load(path.resolve(__dirname, '../node_modules')),
-      src: mock.load(path.resolve(__dirname, '../src')),
-      configs: mock.load(path.resolve(__dirname, '../configs')),
+  it('detects single project mode based on filesystem', () => {
+    mockFs({
+      ...requiredRealDirs,
       'src/entrypoints': {
         'some-file.js': 'console.log("file content here");',
         'empty-dir': {
@@ -50,19 +59,107 @@ describe('CLI', () => {
         name: 'test-project',
       }),
     });
-  });
 
-  afterAll(() => {
-    mock.restore();
-  });
-
-  it('runs the build command', () => {
     runCommand('build', '--once');
+
     expect(mockWebpack).toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in development mode.\x1b[0m\n`,
     );
   });
+
+  it('detects all projects mode based on filesystem', () => {
+    mockFs({
+      ...requiredRealDirs,
+      plugins: {
+        'my-plugin': {
+          'package.json': JSON.stringify({
+            name: 'my-plugin',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+    });
+
+    runCommand('build', '--once');
+
+    expect(mockWebpack).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      `\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in development mode.\x1b[0m\n`,
+    );
+  });
+
+  it('runs specific projects mode when requested', () => {
+    mockFs({
+      ...requiredRealDirs,
+      plugins: {
+        'my-plugin': {
+          'package.json': JSON.stringify({
+            name: 'my-plugin',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+      themes: {
+        'my-theme': {
+          'package.json': JSON.stringify({
+            name: 'my-theme',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+    });
+
+    runCommand('build', '--once', 'my-plugin,my-theme');
+
+    expect(mockWebpack).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
+    );
+    expect(consoleSpy).toHaveBeenCalledWith('Processing the following projects:\n');
+    expect(consoleSpy).toHaveBeenCalledWith(` * my-plugin `);
+    expect(consoleSpy).toHaveBeenCalledWith(` * my-theme `);
+  });
+
+  // it('fails to run specific projects mode when requested if not found', () => {
+  //   mockFs({
+  //     ...requiredRealDirs,
+  //     plugins: {
+  //       'my-plugin': {
+  //         'package.json': JSON.stringify({
+  //           name: 'my-plugin',
+  //         }),
+  //         src: {
+  //           entrypoints: {
+  //             'some-file.js': 'console.log("file content here");',
+  //           },
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   runCommand('build', '--once', 'my-plugin,my-theme');
+
+  //   expect(mockWebpack).toHaveBeenCalled();
+  //   expect(consoleSpy).toHaveBeenCalledWith(
+  //     `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
+  //   );
+  //   expect(consoleSpy).toHaveBeenCalledWith('Processing the following projects:\n');
+  //   expect(consoleSpy).toHaveBeenCalledWith(` * my-plugin `);
+  //   expect(consoleSpy).not.toHaveBeenCalledWith(` * my-theme `);
+  // });
 });
 
 async function runCommand(...args) {

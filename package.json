@@ -23,7 +23,7 @@
     "build-tools": "./src/cli.js"
   },
   "scripts": {
-    "test:watch": "jest --watch --detectOpenHandles --verbose"
+    "test:watch": "jest --watch --verbose"
   },
   "dependencies": {
     "@babel/core": "^7.14.8",
