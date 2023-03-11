@@ -11,7 +11,7 @@ afterEach(() => {
   mockFs.restore();
 });
 
-describe('Get Package', () => {
+describe('Get package', () => {
   it('Throws an error if package.json is not found and throwError set to true', () => {
     const src = '';
     expect(() => getPackage(src, true)).toThrowError(
