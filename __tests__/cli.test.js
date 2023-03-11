@@ -51,6 +51,36 @@ describe('CLI Build Command', () => {
     jest.resetAllMocks();
   });
 
+  it('can read global vars', () => {
+    mockFs({
+      ...requiredRealDirs,
+      'src/entrypoints': {
+        'some-file.js': 'console.log("file content here");',
+        'empty-dir': {
+          /** empty directory */
+        },
+      },
+      'package.json': JSON.stringify({
+        name: 'test-project',
+      }),
+    });
+
+    runCommand('build', '--once');
+
+    const packagePath = process.cwd() + '/package.json';
+
+    expect(global.targetDirs).toEqual(['client-mu-plugins', 'plugins', 'themes']);
+    expect(global.packageList).toEqual({
+      [packagePath]: {
+        absolutePath: packagePath,
+        json: { name: 'test-project' },
+        name: 'test-project',
+        path: process.cwd(),
+        relativePath: 'build-tools/package.json',
+      },
+    });
+  });
+
   it('detects single project mode based on filesystem', () => {
     mockFs({
       ...requiredRealDirs,
