@@ -7,7 +7,7 @@ const webpackConfig = require('./build/webpack');
 
 const spinner = ora();
 
-const { findProjectPath, findAllProjectPaths } = require('./../utils/projectpaths');
+const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
 const dirsExist = require('../utils/dirs-exist');
 
@@ -62,46 +62,60 @@ exports.handler = async ({
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = (site || hasTargetDirs) && !projects;
 
-  let paths = [];
+  let packages = [];
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
       // Is project root - a standalone build.
       terminal(`\x1b[1mCompiling \x1b[4msingle\x1b[0m\x1b[1m project in ${mode} mode.\x1b[0m\n`);
-      paths.push(path.resolve('./'));
+      packages.push(getPackage(path.resolve('./')));
     } else if (isAllProjects) {
       // Find all projects through-out the site.
       terminal(`\x1b[1mCompiling \x1b[4mall\x1b[0m\x1b[1m projects in ${mode} mode.\x1b[0m\n`);
-      paths = findAllProjectPaths(targetDirs);
+      packages = findAllProjectPaths(targetDirs).map((path) => getPackage(path));
     } else {
       // List of projects.
       terminal(`\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in ${mode} mode.\x1b[0m\n`);
-      // Compile all project paths into array.
-      paths = projectsList.map((projectItem) => findProjectPath(projectItem, targetDirs));
+      packages = findAllProjectPaths(targetDirs)
+        .map((path) => getPackage(path))
+        .filter((pkg) => projectsList.includes(pkg.name));
+
+      projectsList.forEach((project) =>
+        packages.forEach((pkg) => {
+          if (pkg.name !== project) {
+            terminal.red(`Error: Project ${project} does not exist.\n`);
+          }
+        }),
+      );
     }
   } catch (e) {
     terminal.red(e);
     process.exit(1);
   }
 
-  let packages = [];
+  const validProjects = packages.filter((pkg) => validateProject(pkg));
 
-  try {
-    packages = paths.map((item) => getPackage(item, false)).filter((item) => item);
-  } catch (e) {
-    terminal.red(e);
+  if (!quiet) {
+    const invalidProjects = packages.filter((pkg) => !validateProject(pkg));
+    invalidProjects.map((invalidProject) =>
+      terminal.red(`[${invalidProject.relativePath}] no entrypoints\n`),
+    );
+  }
+
+  if (validProjects.length === 0) {
+    terminal.red(`Error: No projects found\n`);
     process.exit(1);
   }
 
   terminal('Processing the following projects:\n');
-  packages.forEach((pkg) => {
+  validProjects.forEach((pkg) => {
     terminal.defaultColor(` * %s `, pkg.name).dim(`[%s]\n`, pkg.relativePath);
   });
   terminal('\n');
 
   spinner.start('Building webpack configs.\n');
 
-  const configMap = packages.map((packageObject) => {
+  const configMap = validProjects.map((packageObject) => {
     /**
      * Project config holds all information about a particular project,
      * rather than directly pulling out paths from files or attempting
