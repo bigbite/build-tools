@@ -51,7 +51,6 @@
     "fibers": "^5.0.0",
     "file-loader": "^6.2.0",
     "inquirer": "^8.2.0",
-    "isbinaryfile": "^5.0.0",
     "mini-css-extract-plugin": "^2.1.0",
     "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",
