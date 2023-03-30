@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const { isBinaryFile } = require('isbinaryfile');
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
@@ -73,15 +72,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
     Plugins.Clean(__PROJECT_CONFIG__),
     Plugins.Copy(__PROJECT_CONFIG__),
     Plugins.TemplateGenerator(__PROJECT_CONFIG__),
-    Plugins.FileChunks(__PROJECT_CONFIG__, [
-      (file) => {
-        if (/\/static\/(.+)\.(js|jsx|ts|tsx|php)/.test(file.module.resource)) {
-          file.messages.push(`non-static files should not be included in the static directory.`);
-        }
-
-        return file;
-      },
-    ]),
+    Plugins.AssetMessage(__PROJECT_CONFIG__),
   ],
 
   module: {
