@@ -22,12 +22,6 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
   mode,
   entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
-  infrastructureLogging: {
-    appendOnly: true,
-    colors: true,
-    level: 'log',
-  },
-
   resolve: {
     modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
     alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
