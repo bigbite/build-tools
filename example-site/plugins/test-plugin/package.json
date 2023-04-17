@@ -1,3 +1,7 @@
 {
-    "name": "test-plugin"
+    "name": "test-plugin",
+    "dependencies": {
+        "@wordpress/blocks": "^11.21.0",
+        "@wordpress/i18n": "^4.22.0"
+    }
 }
