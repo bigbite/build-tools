@@ -14,23 +14,34 @@ const directoryExists = (directory) => {
   return false;
 };
 
-const findAllProjectPaths = (directories) => {
+/**
+ * Searches a set of directories for sub-directories that contain a package.json
+ *
+ * @param {string[]} directories the directories to search
+ * @param {string[]} projectsList an optional list of sub-directories to limit the search to
+ * @returns {string[]} the complete paths to all project directories
+ * @throws if no projects have been discovered
+ */
+const findAllProjectPaths = (directories, projectsList) => {
   let projects = [];
 
   directories.filter(directoryExists).forEach((directory) => {
     projects = projects.concat(
       fs
         .readdirSync(directory, { withFileTypes: true })
-        .filter(
-          (dirent) =>
-            fs.existsSync(`${directory}/${dirent.name}/package.json`) && dirent.isDirectory(),
-        )
+        .filter((dirent) => {
+          if (!projectsList || projectsList.includes(dirent.name)) {
+            return (
+              fs.existsSync(`${directory}/${dirent.name}/package.json`) && dirent.isDirectory()
+            );
+          }
+        })
         .map((dirent) => path.resolve(process.cwd(), `./${directory}/${dirent.name}`)),
     );
   });
 
   if (projects.length <= 0) {
-    throw new Error('Cannot find any projects.');
+    throw new Error('Cannot find any projects.\n');
   }
 
   return projects;

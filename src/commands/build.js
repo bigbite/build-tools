@@ -76,17 +76,15 @@ exports.handler = async ({
     } else {
       // List of projects.
       terminal(`\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in ${mode} mode.\x1b[0m\n`);
-      packages = findAllProjectPaths(targetDirs)
-        .map((path) => getPackage(path))
-        .filter((pkg) => projectsList.includes(pkg.name));
+      packages = findAllProjectPaths(targetDirs, projectsList).map((path) => getPackage(path));
 
-      projectsList.forEach((project) =>
-        packages.forEach((pkg) => {
-          if (pkg.name !== project) {
-            terminal.red(`Error: Project ${project} does not exist.\n`);
-          }
-        }),
-      );
+      const packageNames = packages.map((pkg) => pkg.name);
+      projectsList.map((projectName) => {
+        if (!packageNames.includes(projectName)) {
+          terminal.red(`Error: Project ${projectName} does not exist.\n`);
+        }
+        packageNames.includes(projectName);
+      });
     }
   } catch (e) {
     terminal.red(e);
