@@ -6,7 +6,7 @@ orbs:
 jobs:
   notify_slack:
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:18.12.0
     steps:
       - run:
           command: |
@@ -14,7 +14,7 @@ jobs:
           name: Send Slack update to channel
   install_tests:
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:18.12.0
     steps:
       - checkout
       - restore_cache:
@@ -50,7 +50,7 @@ jobs:
             - .
   self_test:
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:18.12.0
     steps:
       - checkout
       - node/install-packages:

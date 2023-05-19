@@ -94,8 +94,8 @@ exports.handler = async ({
   }
 
   terminal('Processing the following projects:\n');
-  packages.forEach((package) => {
-    terminal.defaultColor(` * %s `, package.name).dim(`[%s]\n`, package.relativePath);
+  packages.forEach((pkg) => {
+    terminal.defaultColor(` * %s `, pkg.name).dim(`[%s]\n`, pkg.relativePath);
   });
   terminal('\n');
 
