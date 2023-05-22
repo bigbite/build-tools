@@ -27,6 +27,7 @@
     "build-tools": "./src/cli.js"
   },
   "scripts": {
+    "test": "jest --verbose",
     "test:watch": "jest --watch --verbose"
   },
   "dependencies": {

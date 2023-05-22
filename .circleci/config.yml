@@ -4,6 +4,22 @@ orbs:
   node: circleci/node@4.7.0
 
 jobs:
+  run_unit_tests:
+    working_directory: '~/project/build-tools'
+    docker:
+      - image: cimg/node:18.12.0
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restoring Modules Cache
+          keys:
+            - v1-modules-cache-{{ checksum "package-lock.json" }}
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: |
+            npm run test
+          name: Unit Tests
   notify_slack:
     docker:
       - image: cimg/node:18.12.0
@@ -95,6 +111,9 @@ workflows:
   test_build:
     jobs:
       - self_test
+  unit_tests:
+    jobs:
+      - run_unit_tests
   run_notify_slack:
     jobs:
       - notify_slack:
