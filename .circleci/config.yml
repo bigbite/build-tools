@@ -8,7 +8,8 @@ jobs:
     docker:
       - image: cimg/node:18.12.0
     steps:
-      - checkout
+      - checkout:
+          path: build-tools
       - restore_cache:
           name: Restoring Modules Cache
           keys:
