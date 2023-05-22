@@ -175,7 +175,7 @@ describe('CLI Build Command', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
   });
 
-  it('fails to run specific projects mode if a project is not found', () => {
+  it('runs specific projects mode if some requested projects are not found', () => {
     mockFs({
       ...requiredRealDirs,
       plugins: {
@@ -194,12 +194,38 @@ describe('CLI Build Command', () => {
 
     runCommand('build', '--once', 'my-plugin,my-theme');
 
+    expect(process.stdout.write).toHaveBeenCalledWith(`Error: Project my-theme does not exist.\n`);
     expect(mockWebpack).toHaveBeenCalled();
     expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
     expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
-    expect(process.stdout.write).toHaveBeenCalledWith(`Error: Project my-theme does not exist.`);
+    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
+  });
+
+  it('fails to run specific projects mode if no requested projects can be found', () => {
+    mockFs({
+      ...requiredRealDirs,
+      plugins: {
+        'my-plugin': {
+          'package.json': JSON.stringify({
+            name: 'my-plugin',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+    });
+
+    runCommand('build', '--once', 'my-client-plugin,my-theme');
+
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith(`Error: No projects found\n`);
     expect(process.exit).toHaveBeenCalledWith(1);
   });
 });
