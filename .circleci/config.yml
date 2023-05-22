@@ -5,7 +5,7 @@ orbs:
 
 jobs:
   run_unit_tests:
-    working_directory: build-tools
+    working_directory: '~/project/build-tools'
     docker:
       - image: cimg/node:18.12.0
     steps:
