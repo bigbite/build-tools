@@ -38,6 +38,12 @@ describe('CLI Build Command', () => {
     jest.mock('webpack', () => {
       const webpack = mockWebpack;
       webpack.DefinePlugin = jest.fn().mockImplementation((params) => params);
+      webpack.ExternalsPlugin = jest.fn().mockImplementation((params) => params);
+      webpack.version = '4.0.0';
+      webpack.util = {
+        createHash: jest.fn(),
+      };
+
       return webpack;
     });
   });
@@ -155,6 +161,7 @@ describe('CLI Build Command', () => {
           },
         },
       },
+      'client-mu-plugins': {},
     });
 
     runCommand('build', '--once', 'my-plugin,my-theme');
