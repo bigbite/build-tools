@@ -24,16 +24,6 @@ class DependencyExtraction extends WordPressDependencyExtraction {
     };
   }
 
-  apply(compiler) {
-    this.externalsPlugin.apply(compiler);
-
-    compiler.hooks.emit.tap(this.constructor.name, (compilation) => this.addAssets(compilation));
-  }
-
-  externalizeWpDeps(_context, request, callback) {
-    return callback();
-  }
-
   addAssets(compilation) {
     const {
       combineAssets,
