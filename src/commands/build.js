@@ -112,7 +112,7 @@ exports.handler = async ({
       version: packageObject.json.version,
       paths: {
         project: path.resolve(packageObject.path),
-        config: path.resolve(`${__dirname}/configs`),
+        config: path.resolve(`${__dirname}/../../configs`),
         src: path.resolve(`${packageObject.path}/src`),
         dist: path.resolve(`${packageObject.path}/dist`),
         clean: [
@@ -126,6 +126,8 @@ exports.handler = async ({
       copy: true,
       mode,
     };
+
+    console.log(PROJECT_CONFIG.paths);
 
     let customWebpackConfig = {
       extends: true,

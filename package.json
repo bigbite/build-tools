@@ -4,8 +4,8 @@
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "engines": {
-      "node": ">=16.16.0",
-      "npm": ">=9.5.1"
+    "node": ">=16.16.0",
+    "npm": ">=9.5.1"
   },
   "keywords": [
     "webpack",
@@ -84,6 +84,8 @@
   },
   "devDependencies": {
     "jest": "^29.4.3",
-    "mock-fs": "^5.2.0"
+    "mock-fs": "^5.2.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4"
   }
 }

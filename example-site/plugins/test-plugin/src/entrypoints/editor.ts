@@ -9,4 +9,5 @@ registerBlockType('bigbite/build-tools-block', {
   category: 'common',
   icon: 'carrot',
   edit: DisplayComponent,
+  attributes: {},
 });
