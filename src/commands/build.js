@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const { terminal } = require('terminal-kit');
@@ -103,22 +102,6 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = packages.map((packageObject) => {
-    const projectPath = path.resolve(packageObject.path);
-    const customWebpackConfigFile = projectPath + '/webpack.config.js';
-    const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : {};
-
-    let customWebpackConfig = {
-      extends: true,
-      externals: {
-        moment: 'moment',
-        lodash: ['lodash', 'lodash-es'],
-        react: 'React',
-        'react-dom': 'ReactDOM',
-        jquery: 'jQuery',
-      },
-      ...customConfig,
-    };
-
     /**
      * Project config holds all information about a particular project,
      * rather than directly pulling out paths from files or attempting
@@ -128,7 +111,7 @@ exports.handler = async ({
       name: packageObject.name,
       version: packageObject.json.version,
       paths: {
-        project: projectPath,
+        project: path.resolve(packageObject.path),
         config: path.resolve(`${__dirname}/configs`),
         src: path.resolve(`${packageObject.path}/src`),
         dist: path.resolve(`${packageObject.path}/dist`),
@@ -142,23 +125,9 @@ exports.handler = async ({
       clean: true,
       copy: true,
       mode,
-      customConfig: customWebpackConfig,
     };
 
-    let config = webpackConfig(PROJECT_CONFIG, mode);
-
-    if (!customWebpackConfig?.extends) {
-      config = customWebpackConfig;
-    } else if (customWebpackConfig) {
-      config = {
-        ...config,
-        ...customWebpackConfig,
-      };
-    }
-
-    delete config.extends;
-
-    return config;
+    return webpackConfig(PROJECT_CONFIG, mode);
   });
 
   let previousHash = '';

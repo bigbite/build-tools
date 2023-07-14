@@ -17,7 +17,7 @@ class DependencyExtraction extends WordPressDependencyExtraction {
     super(options);
 
     this.name = options?.name ?? 'project';
-    this.customConfig = options?.customConfig ?? {};
+    this.externals = options?.externals ?? {};
 
     global.DependencyExtraction = {
       ...global.DependencyExtraction,
@@ -26,7 +26,7 @@ class DependencyExtraction extends WordPressDependencyExtraction {
   }
 
   externalizeWpDeps(_context, request, callback) {
-    const externalKeys = Object.keys(this.customConfig?.externals);
+    const externalKeys = Object.keys(this?.externals);
 
     const hardDefaults = [
       '@wordpress/',
