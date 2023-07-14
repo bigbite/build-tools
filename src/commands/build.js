@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const { terminal } = require('terminal-kit');
@@ -103,10 +104,10 @@ exports.handler = async ({
 
   const configMap = packages.map((packageObject) => {
     const projectPath = path.resolve(packageObject.path);
-    const customConfig = require(projectPath + '/webpack.config.js');
+    const customWebpackConfigFile = projectPath + '/webpack.config.js';
+    const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : {};
 
-    let customWebpackConfig = {}
-    let defaultWebpackConfig = {
+    let customWebpackConfig = {
       extends: true,
       externals: {
         moment: 'moment',
@@ -114,15 +115,9 @@ exports.handler = async ({
         react: 'React',
         'react-dom': 'ReactDOM',
         jquery: 'jQuery',
-      }
+      },
+      ...customConfig,
     };
-
-    try {
-      customWebpackConfig = {
-        ...defaultWebpackConfig,
-        ...customConfig,
-      };
-    } catch (e) {}
 
     /**
      * Project config holds all information about a particular project,
