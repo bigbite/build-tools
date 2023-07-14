@@ -1,7 +1,8 @@
 const DependencyExtraction = require('./custom/dependency-extraction');
 
-module.exports = ({ name }) => {
+module.exports = ({ name, customConfig }) => {
   return new DependencyExtraction({
     name,
+    customConfig,
   });
 };

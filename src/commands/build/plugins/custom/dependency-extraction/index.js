@@ -17,11 +17,30 @@ class DependencyExtraction extends WordPressDependencyExtraction {
     super(options);
 
     this.name = options?.name ?? 'project';
+    this.customConfig = options?.customConfig ?? {};
 
     global.DependencyExtraction = {
       ...global.DependencyExtraction,
       [this.name]: {},
     };
+  }
+
+  externalizeWpDeps(_context, request, callback) {
+    const externalKeys = Object.keys(this.customConfig?.externals);
+
+    const hardDefaults = [
+      '@wordpress/',
+      '@babel/runtime/regenerator',
+    ];
+
+    if (
+      !externalKeys.includes(request) &&
+      !hardDefaults.some(item => request.startsWith(item))
+    ) {
+      return callback();
+    }
+  
+    return super.externalizeWpDeps(_context, request, callback);
   }
 
   addAssets(compilation) {

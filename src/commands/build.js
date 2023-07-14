@@ -102,6 +102,28 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = packages.map((packageObject) => {
+    const projectPath = path.resolve(packageObject.path);
+    const customConfig = require(projectPath + '/webpack.config.js');
+
+    let customWebpackConfig = {}
+    let defaultWebpackConfig = {
+      extends: true,
+      externals: {
+        moment: 'moment',
+        lodash: ['lodash', 'lodash-es'],
+        react: 'React',
+        'react-dom': 'ReactDOM',
+        jquery: 'jQuery',
+      }
+    };
+
+    try {
+      customWebpackConfig = {
+        ...defaultWebpackConfig,
+        ...customConfig,
+      };
+    } catch (e) {}
+
     /**
      * Project config holds all information about a particular project,
      * rather than directly pulling out paths from files or attempting
@@ -111,7 +133,7 @@ exports.handler = async ({
       name: packageObject.name,
       version: packageObject.json.version,
       paths: {
-        project: path.resolve(packageObject.path),
+        project: projectPath,
         config: path.resolve(`${__dirname}/configs`),
         src: path.resolve(`${packageObject.path}/src`),
         dist: path.resolve(`${packageObject.path}/dist`),
@@ -125,19 +147,10 @@ exports.handler = async ({
       clean: true,
       copy: true,
       mode,
+      customConfig: customWebpackConfig,
     };
 
-    let customWebpackConfig = {
-      extends: true,
-    };
     let config = webpackConfig(PROJECT_CONFIG, mode);
-
-    try {
-      customWebpackConfig = {
-        ...customWebpackConfig,
-        ...require(PROJECT_CONFIG.paths.project + '/webpack.config.js'),
-      };
-    } catch (e) {}
 
     if (!customWebpackConfig?.extends) {
       config = customWebpackConfig;
