@@ -23,6 +23,7 @@
   },
   "license": "MIT",
   "prettier": "./configs/prettier.js",
+  "tsconfig": "./configs/tsconfig.json",
   "bin": {
     "build-tools": "./src/cli.js"
   },
