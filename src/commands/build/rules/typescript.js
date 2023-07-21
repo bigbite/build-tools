@@ -6,10 +6,6 @@ module.exports = ({ paths }) => {
   const config = fs.existsSync(projectConfig)
     ? projectConfig
     : `${paths.config}/tsconfig/tsconfig.json`;
-  console.log(process.cwd());
-  console.log(config);
-  console.log(webpackAlias(paths.src));
-  console.log(config);
 
   const setAliases = webpackAlias(paths.src);
   const aliasPaths = [];
@@ -18,13 +14,6 @@ module.exports = ({ paths }) => {
     const value = setAliases[item];
     aliasPaths[`${item}/*`] = [value.slice(value.indexOf('/src') + 1) + '/*'];
   });
-
-  console.log(aliasPaths);
-  console.log({
-    '~/*': ['src/*'],
-    ...aliasPaths,
-  });
-  console.log(config);
 
   return [
     {

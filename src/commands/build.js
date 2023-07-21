@@ -127,8 +127,6 @@ exports.handler = async ({
       mode,
     };
 
-    console.log(PROJECT_CONFIG.paths);
-
     let customWebpackConfig = {
       extends: true,
     };
