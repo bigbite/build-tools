@@ -14,54 +14,51 @@ const directoryExists = (directory) => {
   return false;
 };
 
-const projectExists = (directory, projectName) => {
-  if (!directoryExists(directory)) {
-    return false;
-  }
-
-  return fs.existsSync(path.resolve(process.cwd(), `./${directory}/${projectName}`));
-};
-
 /**
- * Find the full project path
- * @param {String} projectName
- * @param {Array} directorys
+ * Searches a set of directories for sub-directories that contain a package.json
  *
- * @return {String|Boolean}
+ * @param {string[]} directories the directories to search
+ * @param {string[]} projectsList an optional list of sub-directories to limit the search to
+ * @returns {string[]} the complete paths to all project directories
+ * @throws if no projects have been discovered
  */
-const findProjectPath = (projectName, directories) => {
-  const foundDirectory = directories.find((directory) => projectExists(directory, projectName));
-
-  if (foundDirectory) {
-    return path.resolve(process.cwd(), `./${foundDirectory}/${projectName}`);
-  }
-
-  throw new Error(`Project ${projectName} does not exist.`);
-};
-
-const findAllProjectPaths = (directories) => {
+const findAllProjectPaths = (directories, projectsList) => {
   let projects = [];
 
   directories.filter(directoryExists).forEach((directory) => {
     projects = projects.concat(
       fs
         .readdirSync(directory, { withFileTypes: true })
-        .filter(
-          (dirent) =>
-            fs.existsSync(`${directory}/${dirent.name}/src/entrypoints`) && dirent.isDirectory(),
-        )
+        .filter((dirent) => {
+          if (!projectsList || projectsList.includes(dirent.name)) {
+            return (
+              fs.existsSync(`${directory}/${dirent.name}/package.json`) && dirent.isDirectory()
+            );
+          }
+        })
         .map((dirent) => path.resolve(process.cwd(), `./${directory}/${dirent.name}`)),
     );
   });
 
   if (projects.length <= 0) {
-    throw new Error('Cannot find any projects.');
+    throw new Error('Cannot find any projects.\n');
   }
 
   return projects;
 };
 
+/**
+ * Confirms the given package.json is a valid build-tools project
+ * by looking for src/entrypoints
+ */
+const validateProject = (pkg) => {
+  if (fs.existsSync(`${pkg.path}/src/entrypoints`)) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
-  findProjectPath,
   findAllProjectPaths,
+  validateProject,
 };

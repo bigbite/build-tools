@@ -8,7 +8,7 @@ const fs = require('fs');
  * @param {boolean} throwError Whether to throw errors when package.json does not exist.
  * @returns
  */
-const getPackage = (path, throwError = true) => {
+const getPackage = (path) => {
   const absolutePath = `${path}/package.json`;
 
   if (packageList[absolutePath]) {
@@ -16,12 +16,6 @@ const getPackage = (path, throwError = true) => {
   }
 
   if (!fs.existsSync(absolutePath)) {
-    if (throwError) {
-      throw new Error(
-        `package.json does not exist for this project.\n\nPlease create one in: ${path}`,
-      );
-    }
-
     return false;
   }
 
