@@ -15,12 +15,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
   },
   "include": [
     "images.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }
