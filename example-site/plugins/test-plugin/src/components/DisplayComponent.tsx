@@ -7,7 +7,7 @@ import TestComponent from './TestComponent';
 /**
  * Display Component for an example block.
  */
-export default () => (
+export default (): JSX.Element => (
   <>
     <div className="logo">
       <SVGAsComponent />
