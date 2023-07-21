@@ -12,13 +12,19 @@ module.exports = ({ paths }) => {
 
   Object.keys(setAliases).forEach((item) => {
     const value = setAliases[item];
-    aliasPaths[`${item}/*`] = [value.slice(value.indexOf('/src') + 1) + '/*'];
+    aliasPaths[`${item}/*`] = [value.slice(value.indexOf('src')) + '/*'];
   });
 
   return [
     {
-      test: /\.(ts|tsx)$/,
+      test: /\.tsx?$/,
       use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'defaults' }], '@babel/preset-react', '@babel/typescript'],
+          },
+        },
         {
           loader: 'ts-loader',
           options: {
@@ -35,7 +41,14 @@ module.exports = ({ paths }) => {
           },
         },
       ],
+      include: paths.project + '/src',
       exclude: /node_modules/,
     },
+    {
+      test: /\.d\.ts$/,
+      use: {
+        loader: 'dts-loader'
+      },
+    }
   ];
 };
