@@ -7,7 +7,7 @@ module.exports = ({ paths }) => [
   {
     test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file-loader',
-    issuer: /\.(css|scss|js)?$/,
+    issuer: /\.(css|scss|js|jsx|ts|tsx)?$/,
     options: {
       name: '[path][name].[ext]',
       emitFile: false, // Don't emit, using copy function to copy files over.
@@ -19,7 +19,7 @@ module.exports = ({ paths }) => [
     // Handle SVG files imported as react components
     // e.g. import MySvg from './assets/svg/my-svg.svg';
     test: /\.svg$/,
-    issuer: /\.js?$/,
+    issuer: /\.(js|ts|jsx|tsx)?$/,
     resourceQuery: { not: [/url/] },
     use: [
       {

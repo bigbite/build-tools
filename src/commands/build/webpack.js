@@ -25,6 +25,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
   resolve: {
     modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
     alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
 
   output: {
@@ -72,8 +73,8 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
   module: {
     rules: [
       ...Rules.typescript(__PROJECT_CONFIG__),
-      ...Rules.javascript(__PROJECT_CONFIG__),
       ...Rules.images(__PROJECT_CONFIG__),
+      ...Rules.javascript(__PROJECT_CONFIG__),
       ...Rules.styles(__PROJECT_CONFIG__),
     ],
   },
