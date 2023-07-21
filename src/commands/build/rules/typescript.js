@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { webpackAlias } = require('../../../utils/get-alias');
 
-module.exports = ({ paths }) => {
+module.exports = ({ name, paths }) => {
   let config = `${paths.project}/tsconfig.json`;
 
   /**
@@ -28,7 +28,7 @@ module.exports = ({ paths }) => {
 
     const updatedConfig = JSON.stringify(configStructure, null, "\t");
 
-    config = `${paths.config}/tsconfig/tsconfig.json`;
+    config = `${paths.config}/tsconfig/tsconfig-${name}.json`;
 
     fs.writeFileSync(config, updatedConfig);
   }
