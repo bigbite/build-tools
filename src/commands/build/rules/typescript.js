@@ -2,10 +2,36 @@ const fs = require('fs');
 const { webpackAlias } = require('../../../utils/get-alias');
 
 module.exports = ({ paths }) => {
-  const projectConfig = `${paths.project}/tsconfig.json`;
-  const config = fs.existsSync(projectConfig)
-    ? projectConfig
-    : `${paths.config}/tsconfig/tsconfig.json`;
+  let config = `${paths.project}/tsconfig.json`;
+
+  /**
+   * TypeScript config always treats files and paths as relative to
+   * the tsconfig.json file. `ts-loader` will also not support anything
+   * configuration outside of that `compilerOptions`. To get around this
+   * we need to map across any common structures that aren't part of
+   * `compilerOptions`, such as items that require paths relative to the
+   * project. After mapping we then write the updated config to a new
+   * file which then becomes our main tsconfig.json
+   */
+  if (!fs.existsSync(config)) {
+    const sourceConfig = `${paths.config}/tsconfig/tsconfig-source.json`;
+
+    const rawData = fs.readFileSync(sourceConfig);
+    const configStructure = JSON.parse(rawData);
+
+    configStructure.include = [
+      ...configStructure.include,
+      ...[
+        `${paths.src}/types`
+      ]
+    ];
+
+    const updatedConfig = JSON.stringify(configStructure, null, "\t");
+
+    config = `${paths.config}/tsconfig/tsconfig.json`;
+
+    fs.writeFileSync(config, updatedConfig);
+  }
 
   const setAliases = webpackAlias(paths.src);
   const aliasPaths = [];

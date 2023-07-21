@@ -1,4 +1,5 @@
 .DS_Store
 node_modules
+configs/tsconfig/tsconfig.json
 example-site/**/dist
 example-site/**/inc/asset-settings.php

@@ -17,10 +17,13 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true,
     "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "jsxFragmentFactory": "Fragment",
+    "typeRoots": [
+      "./types"
+    ]
   },
   "include": [
-    "images.d.ts",
+    "images.d.ts"
   ],
   "exclude": ["node_modules"]
 }
