@@ -71,7 +71,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
     const shouldExtend = customConfig?.extends ?? true;
     if (!shouldExtend) {
       webpackConfig = customConfig;
-    } else if (webpackConfig) {
+    } else {
       webpackConfig = {
         ...webpackConfig,
         ...customConfig,
