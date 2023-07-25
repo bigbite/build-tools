@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -18,40 +19,69 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @param {string} projectName The name of the project - this will be the director target.
  * @returns {object} The full webpack configuration for the current project.
  */
-module.exports = (__PROJECT_CONFIG__, mode) => ({
-  mode,
-  entry: entrypoints(__PROJECT_CONFIG__.paths.src),
+module.exports = (__PROJECT_CONFIG__, mode) => {
+  const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
+  const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
 
-  resolve: {
-    modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
-    alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
-  },
+  let webpackConfig = {
+    mode,
+    entry: entrypoints(__PROJECT_CONFIG__.paths.src),
 
-  output: {
-    // @TODO: This should be overridable at some point to allow for custom naming convention.
-    filename: () => (mode === 'production' ? '[name]-[contenthash:8].js' : '[name].js'),
-    path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}/scripts`),
-  },
+    resolve: {
+      modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
+      alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
+    },
 
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-    jquery: 'jQuery',
-  },
+    output: {
+      // @TODO: This should be overridable at some point to allow for custom naming convention.
+      filename: () => (mode === 'production' ? '[name]-[contenthash:8].js' : '[name].js'),
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}/scripts`),
+    },
 
-  watchOptions: {
-    ignored: ['node_modules'],
-  },
+    watchOptions: {
+      ignored: ['node_modules'],
+    },
 
-  performance: {
-    assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
-    maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
-    maxAssetSize: 500000, // Set max size to 500kb.
-  },
+    performance: {
+      assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
+      maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
+      maxAssetSize: 500000, // Set max size to 500kb.
+    },
 
-  devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
+    devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
 
-  plugins: [
+    externals: {
+      moment: 'moment',
+      lodash: ['lodash', 'lodash-es'],
+      react: 'React',
+      'react-dom': 'ReactDOM',
+      jquery: 'jQuery',
+    },
+
+    module: {
+      rules: [
+        ...Rules.javascript(__PROJECT_CONFIG__),
+        ...Rules.images(__PROJECT_CONFIG__),
+        ...Rules.styles(__PROJECT_CONFIG__),
+      ],
+    },
+  };
+
+  if (customConfig) {
+    const shouldExtend = customConfig?.extends ?? true;
+    if (!shouldExtend) {
+      webpackConfig = customConfig;
+    } else {
+      webpackConfig = {
+        ...webpackConfig,
+        ...customConfig,
+      };
+    }
+
+    delete webpackConfig.extends;
+  }
+
+  const plugins = [
     // Global vars for checking dev environment.
     new webpack.DefinePlugin({
       __DEV__: JSON.stringify(mode === 'development'),
@@ -59,7 +89,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
       __TEST__: JSON.stringify(process.env.NODE_ENV === 'test'),
     }),
 
-    Plugins.DependencyExtraction(__PROJECT_CONFIG__),
+    Plugins.DependencyExtraction(__PROJECT_CONFIG__, webpackConfig.externals),
     Plugins.ESLint(__PROJECT_CONFIG__),
     Plugins.MiniCssExtract(__PROJECT_CONFIG__),
     Plugins.StyleLint(__PROJECT_CONFIG__),
@@ -67,13 +97,9 @@ module.exports = (__PROJECT_CONFIG__, mode) => ({
     Plugins.Copy(__PROJECT_CONFIG__),
     Plugins.TemplateGenerator(__PROJECT_CONFIG__),
     Plugins.AssetMessage(__PROJECT_CONFIG__),
-  ],
+  ];
 
-  module: {
-    rules: [
-      ...Rules.javascript(__PROJECT_CONFIG__),
-      ...Rules.images(__PROJECT_CONFIG__),
-      ...Rules.styles(__PROJECT_CONFIG__),
-    ],
-  },
-});
+  webpackConfig.plugins = plugins;
+
+  return webpackConfig;
+};
