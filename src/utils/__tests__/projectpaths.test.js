@@ -54,21 +54,6 @@ describe('Project paths', () => {
     mockFs.restore();
   });
 
-  describe('findProjectPath', () => {
-    it('should throw error when project does not exist', () => {
-      expect(() => findProjectPath('my-fake-project', ['plugins'])).toThrowError(
-        `Project my-fake-project does not exist.`,
-      );
-    });
-
-    it('should return a project path when it exists', () => {
-      const result = findProjectPath('plugin-with-package-json', ['plugins']);
-      const expected = path.resolve(`./plugins/plugin-with-package-json`);
-
-      expect(result).toEqual(expected);
-    });
-  });
-
   describe('findAllProjectPaths', () => {
     it('should throw error when no projects exist', () => {
       expect(() => findAllProjectPaths(['client-mu-plugins'])).toThrowError(
@@ -76,25 +61,26 @@ describe('Project paths', () => {
       );
     });
 
-    it('should return all project paths that have src/entrypoints', () => {
+    it('should return all project paths that have package.json', () => {
       const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
       const result = findAllProjectPaths(targetDirs);
       const expected = [
         path.resolve(`./plugins/plugin-with-both`),
-        path.resolve(`./plugins/plugin-with-src-entrypoints`),
+        path.resolve(`./plugins/plugin-with-package-json`),
       ];
 
       expect(result).toEqual(expected);
     });
 
-    it('should not return projects that do not contain a src/entrypoints folder', () => {
+    it('should not return projects that do not contain a package.json', () => {
       const targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 
       const result = findAllProjectPaths(targetDirs);
 
-      expect(result).toContain(path.resolve(`./plugins/plugin-with-src-entrypoints`));
+      expect(result).toContain(path.resolve(`./plugins/plugin-with-package-json`));
       expect(result).not.toContain(path.resolve(`./plugins/plugin-with-none`));
+      expect(result).not.toContain(path.resolve(`./plugins/plugin-with-src-entrypoints`));
     });
   });
 });

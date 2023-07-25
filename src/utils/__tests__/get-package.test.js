@@ -12,13 +12,6 @@ afterEach(() => {
 });
 
 describe('Get package', () => {
-  it('Throws an error if package.json is not found and throwError set to true', () => {
-    const src = '';
-    expect(() => getPackage(src, true)).toThrowError(
-      'package.json does not exist for this project.\n\nPlease create one in: ',
-    );
-  });
-
   it('Returns false if package.json is not found and throwError set to false', () => {
     const src = '';
     const result = getPackage(src, false);
