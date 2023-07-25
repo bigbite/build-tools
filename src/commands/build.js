@@ -127,30 +127,7 @@ exports.handler = async ({
       mode,
     };
 
-    let customWebpackConfig = {
-      extends: true,
-    };
-    let config = webpackConfig(PROJECT_CONFIG, mode);
-
-    try {
-      customWebpackConfig = {
-        ...customWebpackConfig,
-        ...require(PROJECT_CONFIG.paths.project + '/webpack.config.js'),
-      };
-    } catch (e) {}
-
-    if (!customWebpackConfig?.extends) {
-      config = customWebpackConfig;
-    } else if (customWebpackConfig) {
-      config = {
-        ...config,
-        ...customWebpackConfig,
-      };
-    }
-
-    delete config.extends;
-
-    return config;
+    return webpackConfig(PROJECT_CONFIG, mode);
   });
 
   let previousHash = '';
