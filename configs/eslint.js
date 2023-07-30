@@ -14,7 +14,7 @@ module.exports = (projectConfig) => {
       es2021: true,
       node: true,
     },
-    extends: ['airbnb', 'prettier'],
+    extends: ['airbnb', 'prettier', 'plugin:@typescript-eslint/recommended'],
     parser: '@babel/eslint-parser',
     parserOptions: {
       requireConfigFile: false,
@@ -22,9 +22,12 @@ module.exports = (projectConfig) => {
         ...babelConfig,
       },
     },
-    plugins: ['@babel', 'react', 'prettier', 'jsdoc'],
+    plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
     settings: {
-      'import/resolver': eslintResolver(projectConfig.paths.src),
+      'import/resolver': eslintResolver(projectConfig.paths),
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
     },
     rules: {
       complexity: ['error', 10],
@@ -37,7 +40,7 @@ module.exports = (projectConfig) => {
       ],
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+      'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
       'react/react-in-jsx-scope': 0,
       'react/prop-types': 0,
       'react/forbid-prop-types': 0,

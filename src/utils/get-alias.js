@@ -23,20 +23,24 @@ const webpackAlias = (src) => {
  * @param {string} src Path to the current target src directory
  * @returns
  */
-const eslintResolver = (src) => {
+const eslintResolver = ({ src, project }) => {
   const aliases = webpackAlias(src);
   const aliasMap = Object.entries(aliases);
-  const pathsList = Array.from(new Set(Object.values(aliases)));
+  const pathsList = Array.from(new Set(Object.values(aliases) + '/*'));
 
   return {
+    typescript: {
+      alwaysTryTypes: true,
+      project,
+    },
     alias: {
       map: aliasMap,
-      extensions: ['.mjs', '.js', '.jsx'],
+      extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx'],
     },
     node: {
       paths: pathsList,
     },
-  };
+  }
 };
 
 module.exports = {
