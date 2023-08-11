@@ -1,56 +1,41 @@
-# Custom Webpack Config
-_⚠️ Make sure you know what you're doing here. You may break the entire build process._
+# CLI Command Usage
+## Command
 
-Sometimes the build-tools cannot provide all the tooling required for your project. To enable you to not require complex work arounds it is possible to extend or even replace the entire config. While the latter is not recommend and should be given even more caution than the former, it is possible.
-
-This is done by creating a `webpack.config.js` in the root of your project and including any of the necessary changes within that.
-
-## Extending the Config
-The default behaviour of the custom config will be an extension of the default config within build-tools. This means the build-tools will provide the base and anything you add here will either be in addition or replacement of. For example, if we wanted to change the `externals` that your plugin/theme were excluding and opt for only `jQuery`, removing both `React` and `ReactDOM`, we could add the `externals` with a sole value of `jQuery`. This is a replacement when extending.
-
-```js
-// filename: /webpack.config.js
-module.exports = {
-  externals: 'jQuery',
-};
+```bash
+build-tools build
 ```
 
-## Replacing the Config
-However, if you want a completely custom config without using the build-tools as the base to build on top of, you can add the `extends` flag with a value of `false` to the config as below. This will ensure you're starting from a blank config.
+Runs the build process.
 
-```js
-// filename: /webpack.config.js
-module.exports = {
-  extends: false,
-  // ...
-};
+| **Positionals** | | |
+|:--|:--|:--|
+| `projects` | _optional_ | Comma separated list of projects to build. _[[usage](#individual-projects)]_ |
+
+| **Options** | |
+|:--|:--|
+| `--once` | Run the build process only once. |
+| `--production` | Compile the assets for production. |
+| `--quiet` | Runs the build process with reduced output. |
+
+
+## Individual Projects
+You can define a project by using the `project` positional when using the build command by placing the project name after the `build` command.
+
+```bash
+build-tools build my-plugin
 ```
 
-## Entrypoint Specific Externals
-In some cases you might want to have specific externals for certain entrypoints if you have multiple within your project. You can do this by providing a callback function within your `externals` and utilising that to check against what external should be allowed to load in.
+The `project` positional can also take comma separated values if you need to build more than one project at a given time.
 
-```js
-// filename: /webpack.config.js
-module.exports = {
-    externals: [
-        ({ context, request, contextInfo, getResolve }, callback) => {
-            if(!/editor\/.*\.js/.test(request.issuer)) {
-                return callback();
-            }
-​
-            let external = null;
-​
-            switch(contextInfo) {
-                case 'react':
-                    external = 'React';
-                    break;
-                case 'react-dom':
-                    external = 'ReactDOM';
-                    break;
-            }
-​
-            return callback(null, external)
-        }
-    ]
-}
+```bash
+build-tools build my-plugin,my-theme
+```
+
+Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide](https://github.com/bigbite/build-tools/wiki/Project-Structuring), seeking through `client-mu-plugins`,`plugins` and `themes`.
+
+## Site-wide
+If you need to build an entire sites worth of projects, which will often be the case come deployment, you can build all applicable projects by running the command from within your `wp-content` directory.
+
+```bash
+build-tools build
 ```
