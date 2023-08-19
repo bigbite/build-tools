@@ -1,1 +1,1 @@
-console.log('test frontend');
+import '../styles/index.scss';
