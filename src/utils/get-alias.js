@@ -26,7 +26,7 @@ const webpackAlias = (src) => {
 const eslintResolver = ({ src, project }) => {
   const aliases = webpackAlias(src);
   const aliasMap = Object.entries(aliases);
-  const pathsList = Array.from(new Set(Object.values(aliases) + '/*'));
+  const pathsList = Array.from(new Set(Object.values(aliases))).map((item) => item + '/*');
 
   return {
     typescript: {
