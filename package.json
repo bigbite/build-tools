@@ -1,6 +1,6 @@
 {
   "name": "@bigbite/build-tools",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "engines": {
