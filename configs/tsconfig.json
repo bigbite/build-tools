@@ -23,6 +23,7 @@
     ]
   },
   "include": [
+    "./src/**/*.ts",
     "typescript/images.d.ts"
   ],
   "exclude": ["node_modules"]
