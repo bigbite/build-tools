@@ -23,7 +23,7 @@ module.exports = {
   },
   plugins: ['@babel', 'react', 'prettier', 'jsdoc'],
   settings: {
-    'import/resolver': eslintResolver(''),
+    'import/resolver': eslintResolver('src'),
   },
   rules: {
     complexity: ['error', 10],
