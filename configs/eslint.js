@@ -1,13 +1,24 @@
 const babelConfig = require('./babel.js');
 const { eslintResolver } = require('./../src/utils/get-alias');
 
-module.exports = (projectConfig) => {
-  return {
-    globals: {
-      __DEV__: true,
-      __PROD__: true,
-      __TEST__: true,
-      wp: true,
+module.exports = {
+  globals: {
+    __DEV__: true,
+    __PROD__: true,
+    __TEST__: true,
+    wp: true,
+  },
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+  extends: ['airbnb', 'prettier'],
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      ...babelConfig,
     },
     env: {
       browser: true,
@@ -24,7 +35,7 @@ module.exports = (projectConfig) => {
     },
     plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
     settings: {
-      'import/resolver': eslintResolver(projectConfig.paths),
+      'import/resolver': eslintResolver('src'),
       'import/parsers': {
         '@typescript-eslint/parser': ['.ts', '.tsx'],
       },
