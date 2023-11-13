@@ -12,6 +12,7 @@ const spinner = ora();
 
 
 exports.command = 'cmd [projects] [options]';
+exports.aliases = 'run [projects] [options]';
 exports.desc = 'Run a command within each project';
 exports.builder = (yargs) => {
   yargs.option('projects', {
