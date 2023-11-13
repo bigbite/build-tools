@@ -93,11 +93,7 @@ exports.handler = ({
       spinner.succeed();
     } catch (err) {
       spinner.fail();
-
-      if (!quiet) {
-        terminal.red(err.stderr);
-      }
-
+      terminal.red(err.stderr);
       terminal('\n\n');
 
       if (!continueOnFail) {
