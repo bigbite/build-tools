@@ -10,11 +10,16 @@ const dirsExist = require('../utils/dirs-exist');
 const spinner = ora();
 
 
-exports.command = 'cmd [command]';
+exports.command = 'cmd [projects] [command]';
 exports.desc = 'Run a command within each project';
 exports.builder = (yargs) => {
+  yargs.positional('projects', {
+    describe: 'Comma separated list of projects to compile.',
+    type: 'string',
+    default: '',
+  });
 
-  yargs.option('command', {
+  yargs.positional('command', {
     string: true,
     demand: true,
   });
