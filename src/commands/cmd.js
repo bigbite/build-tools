@@ -76,10 +76,10 @@ exports.handler = ({
   let fails = 0;
   spinner.clear();
   spinner.start(`Running command '${command}'\n`);
-  packages.forEach((package) => {
+  packages.forEach((pkg) => {
     
     try {
-      execSync(command, { cwd: package.path, stdio: quiet ? 'pipe' : 'inherit' });
+      execSync(command, { cwd: pkg.path, stdio: quiet ? 'pipe' : 'inherit' });
       spinner.succeed();
     } catch (err) {
       spinner.fail();
