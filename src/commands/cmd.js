@@ -11,43 +11,51 @@ const dirsExist = require('../utils/dirs-exist');
 const spinner = ora();
 
 
-exports.command = 'cmd [projects] [command]';
+exports.command = 'cmd [projects] [options]';
 exports.desc = 'Run a command within each project';
 exports.builder = (yargs) => {
-  yargs.positional('projects', {
-    describe: 'Comma separated list of projects to compile.',
+  yargs.option('projects', {
+    describe: 'Comma separated list of projects to run the command on.',
     type: 'string',
     default: '',
-  });
-
-  yargs.positional('command', {
-    string: true,
-    demand: true,
   });
 
   yargs.option('continueOnFail', {
     alias: 'F',
     describe: 'Continue running the commands even on failure',
+    type: 'boolean',
   });
 
   yargs.option('quiet', {
     alias: 'q',
     describe: 'Hide the output of stdout',
     boolean: true,
+    type: 'boolean',
   })
-
-  yargs.demandOption('command', 'A command must be set');
 };
 
 exports.handler = ({
   projects = '',
-  command,
   continueOnFail,
   quiet,
+  _: parts,
+  $0,
 }) => {
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = hasTargetDirs && !projects;
+
+  parts.shift();
+
+  if (parts.length === 0) {
+    terminal.red().bold('Error: ')
+      .defaultColor('command cannot be empty\n');
+    terminal.yellow('Usage: ')
+      .defaultColor(`${$0} cmd [projects] [opts] -- <command>\n`);
+    process.exit(1);
+  }
+
+  const command = parts.join(' ');
 
   let paths = [];
 
