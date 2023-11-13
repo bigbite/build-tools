@@ -1,5 +1,6 @@
 const path = require('path');
-const ora = require('ora');const { terminal } = require('terminal-kit');
+const ora = require('ora');
+const { terminal } = require('terminal-kit');
 const { execSync } = require('child_process');
 
 const { findProjectPath, findAllProjectPaths } = require('./../utils/projectpaths');
