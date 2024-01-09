@@ -23,9 +23,9 @@ const presets = [
 ];
 
 const plugins = [
-  ['@babel/plugin-proposal-optional-chaining'],
   ['@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' }],
-  ['@babel/plugin-proposal-class-properties'],
+  ['@babel/plugin-transform-optional-chaining'],
+  ['@babel/plugin-transform-class-properties'],
 ];
 
 const overrides = [
