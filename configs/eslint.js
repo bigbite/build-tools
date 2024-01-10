@@ -35,7 +35,7 @@ module.exports = {
     },
     plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
     settings: {
-      'import/resolver': eslintResolver('src'),
+      'import/resolver': eslintResolver(),
       'import/parsers': {
         '@typescript-eslint/parser': ['.ts', '.tsx'],
       },
