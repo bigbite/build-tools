@@ -16,6 +16,9 @@ const packageJson = {
 };
 
 describe('Project paths', () => {
+  let originalWrite;
+  let originalExit;
+
   beforeEach(() => {
     jest.resetModules();
 
