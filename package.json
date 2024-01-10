@@ -27,6 +27,12 @@
   "bin": {
     "build-tools": "./src/cli.js"
   },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "node_modules",
+      ".yalc"
+    ]
+  },
   "scripts": {
     "test": "jest --verbose",
     "test:watch": "jest --watch --verbose"
