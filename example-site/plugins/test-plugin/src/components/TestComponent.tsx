@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 
+interface TestComponentProps {
+  hiddenText?: boolean;
+  additionalValue: string;
+}
+
 /**
  *
  * @param {object} props Props for the component.
@@ -8,7 +13,7 @@ import { __ } from '@wordpress/i18n';
  * @param {string} props.additionalValue The value to output when text is not hidden.
  * @returns
  */
-const TestComponent = ({ hiddenText = false, additionalValue }) => {
+const TestComponent = ({ hiddenText = false, additionalValue }: TestComponentProps) => {
   if (hiddenText) {
     return <div>{__('Hidden', 'bigbite-build-tools')}</div>;
   }

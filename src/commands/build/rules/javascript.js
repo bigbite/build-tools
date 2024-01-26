@@ -2,9 +2,9 @@
  * Creates the Babel rules and presets for Javascript.
  * @returns {object} Babel rules and presets for Javascript.
  */
-module.exports = () => [
+module.exports = ({ paths }) => [
   {
-    test: /\.(js|jsx)$/,
+    test: /\.jsx?$/,
     use: [
       {
         loader: 'babel-loader',
@@ -13,5 +13,7 @@ module.exports = () => [
         },
       },
     ],
+    include: paths.project + '/src',
+    exclude: /node_modules/,
   },
 ];
