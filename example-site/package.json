@@ -1,5 +1,8 @@
 {
     "name": "test-project",
+    "eslintConfig": {
+        "extends": "./../configs/eslint"
+      },
     "dependencies": {
         "prop-types": "^15.8.1"
     }

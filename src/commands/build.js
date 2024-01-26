@@ -10,6 +10,7 @@ const spinner = ora();
 const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
 const dirsExist = require('../utils/dirs-exist');
+const getProjectConfig = require('../utils/get-project-config');
 
 global.buildCount = 0;
 
@@ -114,32 +115,9 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = validProjects.map((packageObject) => {
-    /**
-     * Project config holds all information about a particular project,
-     * rather than directly pulling out paths from files or attempting
-     * to build them, use what is here.
-     */
-    const PROJECT_CONFIG = {
-      name: packageObject.name,
-      version: packageObject.json.version,
-      paths: {
-        project: path.resolve(packageObject.path),
-        config: path.resolve(`${__dirname}/../../configs`),
-        src: path.resolve(`${packageObject.path}/src`),
-        dist: path.resolve(`${packageObject.path}/dist`),
-        clean: [
-          `${packageObject.path}/dist/scripts`,
-          `${packageObject.path}/dist/styles`,
-          `${packageObject.path}/dist/static`,
-        ],
-        node_modules: path.resolve(packageObject.path, 'node_modules'),
-      },
-      clean: true,
-      copy: true,
-      mode,
-    };
+    const projectConfig = getProjectConfig(packageObject, mode);
 
-    return webpackConfig(PROJECT_CONFIG, mode);
+    return webpackConfig(projectConfig, mode);
   });
 
   let previousHash = '';
