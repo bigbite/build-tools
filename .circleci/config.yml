@@ -89,7 +89,7 @@ jobs:
           command: |
             cd ./example-site/
             node ./../src/cli.js build standards --once
-          name: Run test - build projects
+          name: Run test - Compile Standards Plugin
       - run:
           command: |
             cd ./example-site/
