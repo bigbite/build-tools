@@ -1,5 +1,9 @@
 {
     "name": "standards",
+    "prettier": "./../../../configs/prettier",
+    "eslintConfig": {
+      "extends": "./../../../configs/eslint"
+    },
     "dependencies": {},
     "devDependencies": {}
 }
