@@ -1,5 +1,6 @@
 {
     "name": "test-project",
+    "prettier": "./../configs/prettier",
     "eslintConfig": {
         "extends": "./../configs/eslint"
       },

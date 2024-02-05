@@ -1,4 +1,3 @@
-const react = require('eslint-plugin-react');
 const babelConfig = require('./babel.js');
 const { eslintResolver } = require('./../src/utils/get-alias');
 
