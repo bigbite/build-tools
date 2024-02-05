@@ -88,6 +88,11 @@ jobs:
       - run:
           command: |
             cd ./example-site/
+            node ./../src/cli.js build standards --once
+          name: Run test - build projects
+      - run:
+          command: |
+            cd ./example-site/
             node ./../src/cli.js build test-plugin,test-theme --once
           name: Run test - build projects
       - run:
