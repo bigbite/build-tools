@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { dirname } = require('path');
 
 /**
  * External dependencies
@@ -25,7 +26,13 @@ class TemplateGenerator {
       const templateString = templateContent(files);
 
       try {
-        fs.writeFileSync(filename, templateString);
+        fs.mkdir(dirname(filename), { recursive: true }, (err) => {
+          if (err) {
+            throw new Error(err);
+          }
+
+          fs.writeFileSync(filename, templateString);
+        });
       } catch (err) {
         console.log(err);
       }
