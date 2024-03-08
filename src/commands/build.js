@@ -9,6 +9,7 @@ const spinner = ora();
 
 const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
+const { getEntryPoints } = require('./../utils/get-entrypoints');
 const dirsExist = require('../utils/dirs-exist');
 const getProjectConfig = require('../utils/get-project-config');
 
@@ -59,7 +60,7 @@ exports.handler = async ({
 
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
-  const projectsList = projects.split(',').filter((item) => item.length > 0);
+  const projectsList = projects.split(',').filter((item) => item.length > 0).map((item) => item.split('@')[0]);
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = (site || hasTargetDirs) && !projects;
 
@@ -115,9 +116,10 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = validProjects.map((packageObject) => {
+    const targetedEntrypoints = getEntryPoints(projects.split(',').filter((item) => item.length > 0), packageObject.path);
     const projectConfig = getProjectConfig(packageObject, mode);
 
-    return webpackConfig(projectConfig, mode);
+    return webpackConfig(projectConfig, mode, targetedEntrypoints);
   });
 
   let previousHash = '';

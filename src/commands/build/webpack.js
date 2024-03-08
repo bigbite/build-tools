@@ -17,15 +17,16 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @param {string} package.path The current directory path of the project.
  * @param {string} mode The build mode in which webpack is currently running (e.g. development or production).
  * @param {string} projectName The name of the project - this will be the director target.
+ * @param {array} targetedEntrypoints The entrypoints to build for the project, if empty array builds all.
  * @returns {object} The full webpack configuration for the current project.
  */
-module.exports = (__PROJECT_CONFIG__, mode) => {
+module.exports = (__PROJECT_CONFIG__, mode, targetedEntrypoints) => {
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
   const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
 
   let webpackConfig = {
     mode,
-    entry: entrypoints(__PROJECT_CONFIG__.paths.src),
+    entry: entrypoints(__PROJECT_CONFIG__.paths.src, targetedEntrypoints),
 
     resolve: {
       modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],

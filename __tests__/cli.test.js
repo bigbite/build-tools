@@ -175,6 +175,48 @@ describe('CLI Build Command', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
   });
 
+  it('runs specific projects and entrypoints mode when requested', () => {
+    mockFs({
+      ...requiredRealDirs,
+      plugins: {
+        'my-plugin': {
+          'package.json': JSON.stringify({
+            name: 'my-plugin',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+              'frontend.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+      themes: {
+        'my-theme': {
+          'package.json': JSON.stringify({
+            name: 'my-theme',
+          }),
+          src: {
+            entrypoints: {
+              'some-file.js': 'console.log("file content here");',
+            },
+          },
+        },
+      },
+      'client-mu-plugins': {},
+    });
+
+    runCommand('build', '--once', 'my-plugin@frontend,my-theme');
+
+    expect(mockWebpack).toHaveBeenCalled();
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
+    );
+    expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
+    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
+    expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
+  });
+
   it('runs specific projects mode if some requested projects are not found', () => {
     mockFs({
       ...requiredRealDirs,
