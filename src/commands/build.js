@@ -12,6 +12,7 @@ const { getPackage } = require('./../utils/get-package');
 const { getEntryPoints } = require('./../utils/get-entrypoints');
 const dirsExist = require('../utils/dirs-exist');
 const getProjectConfig = require('../utils/get-project-config');
+const { stringify } = require('querystring');
 
 global.buildCount = 0;
 
@@ -56,6 +57,8 @@ exports.handler = async ({
   once = false,
   quiet = false,
 }) => {
+  terminal('projects 123:' + projects);
+
   const currentLocation = path.basename(process.cwd());
 
   const mode = production ? 'production' : 'development';
@@ -116,7 +119,17 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = validProjects.map((packageObject) => {
-    const targetedEntrypoints = getEntryPoints(projects.split(',').filter((item) => item.length > 0), packageObject.path);
+    let targetedEntrypoints = getEntryPoints(projects.split(',').filter((item) => item.length > 0), packageObject.path);
+
+    // Handle entrypoints when for standalon build and all project builds.
+    if (projects.startsWith('@')) {
+      targetedEntrypoints = getEntryPoints([projects], packageObject.path);
+    }
+
+    terminal('\n');
+    terminal(targetedEntrypoints.stringify());
+    terminal('\n');
+
     const projectConfig = getProjectConfig(packageObject, mode);
 
     return webpackConfig(projectConfig, mode, targetedEntrypoints);
