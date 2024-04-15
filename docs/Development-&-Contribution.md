@@ -17,3 +17,19 @@ yalc publish
 ```
 yalc add @bigbite/build-tools
 ```
+
+4. Once you have made a change to build tools locally you should run 
+```
+yalc publish
+```
+Then 
+```
+yalc push
+```
+
+
+Then in your test project you should run
+```
+yalc update
+```
+This will then update your test project to use the latest version from build-tools
