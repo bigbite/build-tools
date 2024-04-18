@@ -20,13 +20,9 @@ yalc add @bigbite/build-tools
 
 4. Once you have made a change to build tools locally you should run 
 ```
-yalc publish
-```
-Then 
-```
 yalc push
 ```
-
+This is a shortcut of `yalc publish --push` so will publish your changes and then push the changes to the local store
 
 Then in your test project you should run
 ```
