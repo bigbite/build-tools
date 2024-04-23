@@ -18,14 +18,14 @@ yalc publish
 yalc add @bigbite/build-tools
 ```
 
-4. Once you have made a change to build tools locally you should run 
+4. Once you have made a change to build tools locally you will need to publish them. You can do this with:
 ```
 yalc push
 ```
-This is a shortcut of `yalc publish --push` so will publish your changes and then push the changes to the local store
+`push` is a shorthand of `yalc publish --push`, which allows you to publish and push your changes to the local store in a single command.
 
-Then in your test project you should run
+5. Switch to your test project and run an `update`
 ```
 yalc update
 ```
-This will then update your test project to use the latest version from build-tools
+This will update your test project to use the latest version from build-tools.
