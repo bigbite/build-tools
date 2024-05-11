@@ -1,15 +1,16 @@
 const fs = require('fs');
+const path = require('path');
 
 /**
  * Retrieves the package.json file from a given directory and compiles it
  * along with additional data into a parse-able format by the rest of the script.
  *
- * @param {string} path The project directory path where package.json is expected.
+ * @param {string} projectDir The project directory path where package.json is expected.
  * @param {boolean} throwError Whether to throw errors when package.json does not exist.
  * @returns
  */
-const getPackage = (path) => {
-  const absolutePath = `${path}/package.json`;
+const getPackage = (projectDir) => {
+  const absolutePath = `${projectDir}/package.json`;
 
   if (packageList[absolutePath]) {
     return packageList[absolutePath];
@@ -24,13 +25,15 @@ const getPackage = (path) => {
   const packageNames = packageObject?.name?.split('/');
   const name = packageNames?.[packageNames.length - 1] || '';
 
-  const regexDirs = targetDirs.join('|');
-  const packagePath = absolutePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
+  // const regexDirs = targetDirs.join('|');
+  // const packagePath = absolutePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
+  const relativePath = path.relative(process.cwd(), absolutePath);
 
   const packageValues = {
-    path,
+    path: projectDir,
     absolutePath,
-    relativePath: packagePath[0],
+    // relativePath: packagePath[0],
+    relativePath,
     name,
     json,
   };
