@@ -1,16 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
 const { terminal } = require('terminal-kit');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const ora = require('ora');
 const concurrently = require('concurrently');
-
-// const webpackConfig = require('./build/webpack');
 
 const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
 const dirsExist = require('../utils/dirs-exist');
-// const getProjectConfig = require('../utils/get-project-config');
 
 global.buildCount = 0;
 
@@ -55,10 +49,7 @@ exports.handler = async ({
   once = false,
   quiet = false,
 }) => {
-  const currentLocation = path.basename(process.cwd());
-
   const mode = production ? 'production' : 'development';
-  // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = (site || hasTargetDirs) && !projects;
@@ -112,13 +103,16 @@ exports.handler = async ({
   });
   terminal('\n');
 
+  const cmd = once ? 'wp-scripts build' : 'wp-scripts start';
+  const webpackConfigPath = path.resolve(__dirname, '../../configs/webpack.config.js');
+
   // Build all projects concurrently
   concurrently(
-    validProjects.map(
-      (pkg) =>
-        `echo "Running build for ${path.dirname(pkg.relativePath)}" && cd ${path.dirname(
-          pkg.relativePath,
-        )} && wp-scripts start ./src/entrypoints/*.js --output-path=build`,
-    ),
+    validProjects.map((pkg) => ({
+      name: pkg.name,
+      command: `echo "Running build..." && cd ${path.dirname(
+        pkg.relativePath,
+      )} && ${cmd} ./src/entrypoints/*.js --config ${webpackConfigPath}`,
+    })),
   );
 };

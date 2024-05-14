@@ -1,6 +1,15 @@
+
 module.exports = {
-  plugins: ['stylelint-scss'],
+  extends: ["@wordpress/stylelint-config/scss"],
   rules: {
+    // wp overrides
+    indentation: 2,
+    'selector-class-pattern': null,
+    'selector-id-pattern': null,
+    'max-line-length': 100,
+    'string-quotes': 'single',
+    'no-descending-specificity': null,
+    // our rules
     'color-hex-length': 'short',
     'color-no-invalid-hex': true,
     'function-calc-no-unspaced-operator': true,

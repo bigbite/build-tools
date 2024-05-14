@@ -24,15 +24,11 @@ const getPackage = (projectDir) => {
   const packageObject = json === Object(json) ? json : {};
   const packageNames = packageObject?.name?.split('/');
   const name = packageNames?.[packageNames.length - 1] || '';
-
-  // const regexDirs = targetDirs.join('|');
-  // const packagePath = absolutePath.match(`((${regexDirs})\/)?([^\/]+)\/package.json$`);
-  const relativePath = path.relative(process.cwd(), absolutePath);
+  const relativePath = `./${path.relative(process.cwd(), absolutePath)}`;
 
   const packageValues = {
     path: projectDir,
     absolutePath,
-    // relativePath: packagePath[0],
     relativePath,
     name,
     json,
