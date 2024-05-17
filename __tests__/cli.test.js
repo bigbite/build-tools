@@ -2,10 +2,6 @@
 const path = require('path');
 const mockFs = require('mock-fs');
 
-jest.mock('ora', () => () => ({
-  start: jest.fn(),
-}));
-
 const requiredRealDirs = {
   node_modules: mockFs.load(path.resolve(__dirname, '../node_modules')),
   src: mockFs.load(path.resolve(__dirname, '../src')),

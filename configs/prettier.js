@@ -1,4 +1,9 @@
-const config = {
+const defaultConfig = require('@wordpress/prettier-config');
+
+const prettierConfig = {
+  ...defaultConfig,
+  tabWidth: 2,
+  useTabs: false,
   printWidth: 100,
   trailingComma: 'all',
   arrowParens: 'always',
@@ -6,4 +11,4 @@ const config = {
   endOfLine: 'auto',
 };
 
-module.exports = config;
+module.exports = prettierConfig;

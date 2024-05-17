@@ -1,16 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
 const { terminal } = require('terminal-kit');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const ora = require('ora');
-const webpackConfig = require('./build/webpack');
-
-const spinner = ora();
+const concurrently = require('concurrently');
 
 const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
 const dirsExist = require('../utils/dirs-exist');
-const getProjectConfig = require('../utils/get-project-config');
 
 global.buildCount = 0;
 
@@ -55,10 +49,7 @@ exports.handler = async ({
   once = false,
   quiet = false,
 }) => {
-  const currentLocation = path.basename(process.cwd());
-
   const mode = production ? 'production' : 'development';
-  // Use env variables if working on Webpack >=5.
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const hasTargetDirs = dirsExist(targetDirs);
   const isAllProjects = (site || hasTargetDirs) && !projects;
@@ -112,80 +103,16 @@ exports.handler = async ({
   });
   terminal('\n');
 
-  spinner.start('Building webpack configs.\n');
+  const cmd = once ? 'wp-scripts build' : 'wp-scripts start';
+  const webpackConfigPath = path.resolve(__dirname, '../../configs/webpack.config.js');
 
-  const configMap = validProjects.map((packageObject) => {
-    const projectConfig = getProjectConfig(packageObject, mode);
-
-    return webpackConfig(projectConfig, mode);
-  });
-
-  let previousHash = '';
-  const compileSpinner = spinner.start('Compiling...');
-
-  const compilerCallback = (err, stats) => {
-    const { hash } = stats.stats[0];
-
-    spinner.clear();
-
-    if (err) {
-      spinner.fail();
-      process.stdout.write(err);
-    }
-
-    if (stats.hasErrors() && mode === 'production') {
-      process.stdout.write(stats.toString() + '\n\n\n\n');
-      spinner.fail('Build cancelled.');
-      process.exit(1);
-    }
-
-    /**
-     * Avoids output which is a symptom in a longstanding
-     * webpack issue where the watcher can loop due to FS_ACCURENCY
-     * constant in the webpack core. There are a number of suggested
-     * fixes here: https://github.com/webpack/watchpack/issues/25
-     *
-     * None of those suggested fixes seem to work, however, in the
-     * multiple builds, the hash remains the same, so we can avoid
-     * the output by checking against a previous hash and returning
-     * early if hashes match, avoiding multiple of the same output.
-     */
-    if (previousHash === hash) {
-      return;
-    }
-
-    if (!quiet) {
-      process.stdout.write(
-        stats.toString({
-          chunks: true,
-          colors: true,
-          preset: 'minimal',
-        }),
-      );
-
-      previousHash = hash;
-
-      terminal('\n\n');
-    } else {
-      spinner.succeed('Build complete.');
-    }
-
-    if (once) {
-      terminal('\n\n');
-      spinner.succeed('Build complete.');
-    } else {
-      compileSpinner.text = 'Watching...';
-    }
-  };
-
-  const compiler = webpack(configMap);
-
-  if (!once) {
-    const watchConfig = {
-      aggregateTimeout: 300,
-    };
-    compiler.watch(watchConfig, compilerCallback);
-  } else {
-    compiler.run(compilerCallback);
-  }
+  // Build all projects concurrently
+  concurrently(
+    validProjects.map((pkg) => ({
+      name: pkg.name,
+      command: `echo "Running build..." && cd ${path.dirname(
+        pkg.relativePath,
+      )} && ${cmd} ./src/entrypoints/*.js --config ${webpackConfigPath}`,
+    })),
+  );
 };

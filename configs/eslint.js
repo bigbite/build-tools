@@ -1,41 +1,13 @@
-const babelConfig = require('./babel.js');
-const { eslintResolver } = require('./../src/utils/get-alias');
+const path = require('path');
 
-module.exports = {
-  globals: {
-    __DEV__: true,
-    __PROD__: true,
-    __TEST__: true,
-    wp: true,
-  },
+const eslintConfig = {
+  extends: ['plugin:@wordpress/eslint-plugin/recommended', 'airbnb', 'prettier'],
   env: {
     browser: true,
-    es2021: true,
-    node: true,
   },
-  extends: ['airbnb', 'prettier', 'plugin:@typescript-eslint/recommended'],
-  parser: '@babel/eslint-parser',
-  parserOptions: {
-    requireConfigFile: false,
-    babelOptions: {
-      ...babelConfig,
-    },
-    env: {
-      browser: true,
-      es2021: true,
-      node: true,
-    },
-    settings: {
-      'import/resolver': eslintResolver(),
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx'],
-      },
-    },
-  },
-  plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
   rules: {
     complexity: ['error', 10],
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', require(path.resolve(__dirname, './prettier'))],
     'import/no-extraneous-dependencies': [
       'error',
       {
@@ -68,5 +40,23 @@ module.exports = {
         },
       },
     ],
+    '@wordpress/no-unsafe-wp-apis': 'warn',
+  },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@Components', path.resolve(process.cwd(), 'src/components')],
+          ['Components', path.resolve(process.cwd(), 'src/components')],
+          ['@Static', path.resolve(process.cwd(), 'src/static')],
+          ['Static', path.resolve(process.cwd(), 'src/static')],
+          ['@Utils', path.resolve(process.cwd(), 'src/utils')],
+          ['Utils', path.resolve(process.cwd(), 'src/utils')],
+        ],
+        extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx'],
+      },
+    }
   },
 };
+
+module.exports = eslintConfig;
