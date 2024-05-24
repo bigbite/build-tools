@@ -203,7 +203,6 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
    * @returns {string} version - updated version
    */
   function incrementVersionString(version, type) {
-    console.log(typeof version);
     if (!semver.valid(version)) {
       throw new Error(`Invalid version: ${version}`);
     }
