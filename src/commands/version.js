@@ -28,7 +28,7 @@ exports.builder = (yargs) => {
 exports.handler = async ({ type = '', projects = '', site = false }) => {
   // with no projects listed it returns a empty array
   const projectsList = projects.split(',').filter((item) => item.length > 0);
-  const excludeDirs = ['node_modules', 'dist', 'build', 'vendor', 'vendor_prefixed'];
+  const excludeDirs = ['node_modules', 'dist', 'build', 'vendor', 'vendor_prefixed', '.yalc'];
   const targetFiles = ['package.json', 'style.css', 'plugin.php'];
 
   const hasTargetDirs = dirsExist(targetDirs);
@@ -115,7 +115,7 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
       try {
         stats = fs.statSync(itemPath);
       } catch (err) {
-        console.error(`Error getting stats of item ${itemPath}: ${err.message}`);
+        console.error(`Error getting item ${itemPath}: ${err.message}`);
         return;
       }
 
@@ -131,20 +131,20 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
 
   /**
    * Function to increment the version in a package.json file.
-   * @param {string} dir - File path
+   * @param {string} file - File to increment
    * @param {string} type - increment type
    */
-  function incrementPackageJsonVersion(dir, type) {
-    if (fs.existsSync(dir)) {
+  function incrementPackageJsonVersion(file, type) {
+    if (fs.existsSync(file)) {
       try {
-        const packageJson = JSON.parse(fs.readFileSync(dir, 'utf-8'));
+        const packageJson = JSON.parse(fs.readFileSync(file, 'utf-8'));
         const oldVersion = packageJson.version;
         const newVersion = incrementVersionString(oldVersion, type);
         packageJson.version = newVersion;
-        fs.writeFileSync(dir, JSON.stringify(packageJson, null, 2), 'utf-8');
-        terminal(`#${dir}: ${oldVersion} -> ${newVersion}\n`);
+        fs.writeFileSync(file, JSON.stringify(packageJson, null, 2), 'utf-8');
+        terminal(`#${file}: ${oldVersion} -> ${newVersion}\n`);
       } catch (err) {
-        console.error(`Error incrementing version in ${dir}: ${err.message}`);
+        console.error(`Error incrementing version in ${file}: ${err.message}`);
       }
     }
   }
@@ -213,25 +213,21 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
     if (prerelease === 'beta') {
       // Handle pre-release increment
       if (semver.prerelease(version)) {
-        switch (baseType) {
-          case 'major':
-            return semver.inc(version, 'premajor', 'beta');
-          case 'minor':
-            return semver.inc(version, 'preminor', 'beta');
-          case 'patch':
-            return semver.inc(version, 'prepatch', 'beta');
-          default:
-            throw new Error(`Could not change prerelease version`);
-        }
+        const releaseEnum = Object.freeze({
+          major: 'premajor',
+          minor: 'preminor',
+          patch: 'prepatch',
+        });
+        const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
+        semver.inc(version, releaseType, prerelease);
+        // Convert stable version to pre-release
+        return semver.inc(`${semver.inc(version, baseType)}-beta.0`, 'prerelease', 'beta');
+      } else {
+        // Handle stable version increment
+        return semver.inc(version, baseType);
       }
-      // Convert stable version to pre-release
-      return semver.inc(`${semver.inc(version, baseType)}-beta.0`, 'prerelease', 'beta');
-    } else {
-      // Handle stable version increment
-      return semver.inc(version, baseType);
     }
   }
-
   /**
    * Function to increase the version number depending on which file is found.
    * @param {string} file - file name
