@@ -45,9 +45,9 @@ function incrementVersion(version, type) {
         patch: 'prepatch',
       });
       const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
-      semver.inc(version, releaseType, prerelease);
+      semver.inc(currentVersion, releaseType, prerelease);
     }
-    return semver.inc(`${semver.inc(currentVersion, baseType)}-beta.0`, 'prerelease', 'beta');
+    return semver.inc(currentVersion, 'prerelease', prerelease, 0);
   } else {
     return semver.inc(currentVersion, baseType);
   }
