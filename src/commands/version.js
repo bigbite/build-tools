@@ -1,15 +1,18 @@
 const dirsExist = require('../utils/dirs-exist');
 const { terminal } = require('terminal-kit');
 const fs = require('fs');
-const path = require('path'); // Path module
-const semver = require('semver');
+const path = require('path');
+const {
+  incrementPackageJsonVersion,
+  incrementVersionNumber,
+} = require('./../utils/increment-version');
 
 exports.command = 'version [type] [projects]';
 exports.desc = 'Run an npm version bump process.';
 exports.builder = (yargs) => {
   yargs.option('type', {
     describe: 'type of version to bump.',
-    default: 'string',
+    default: '',
     type: 'string',
   });
 
@@ -18,23 +21,14 @@ exports.builder = (yargs) => {
     type: 'string',
     default: '',
   });
-
-  yargs.option('site', {
-    describe: `Run the process from the root of a site, such as from wp-content.`,
-    default: false,
-    type: 'boolean',
-  });
 };
-exports.handler = async ({ type = '', projects = '', site = false }) => {
-  // with no projects listed it returns a empty array
+exports.handler = async ({ type = '', projects = '' }) => {
   const projectsList = projects.split(',').filter((item) => item.length > 0);
   const excludeDirs = ['node_modules', 'dist', 'build', 'vendor', 'vendor_prefixed', '.yalc'];
-  const targetFiles = ['package.json', 'style.css', 'plugin.php'];
-
+  const docCommentPattern = /\bVersion:\s*([^\r\n]*)/;
   const hasTargetDirs = dirsExist(targetDirs);
-
-  const isAllProjects = (site || hasTargetDirs) && !projects;
-
+  const isAllProjects = hasTargetDirs && !projects;
+  const incrementType = type.toLowerCase();
   /**
    * Function to search for all files which are not in the excluded directories
    *
@@ -42,10 +36,8 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
    * @param {Array} directoryNames - An array of directory names to match.
    * @returns {Array} - An array of matching directory paths.
    */
-  const getAllFiles = (dirPath, arrayOfFiles) => {
+  const getAllFiles = (dirPath, arrayOfFiles = []) => {
     const files = fs.readdirSync(dirPath);
-
-    arrayOfFiles = arrayOfFiles || [];
 
     files.forEach((file) => {
       const filePath = path.join(dirPath, file);
@@ -62,50 +54,96 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
   };
 
   /**
-   * Function to find the files we want to use.
-   * @param {string} baseDirs - Base directory to search from.
-   * @param {Array} targets - Files we want to find
+   * Function to find target files to increment
+   *
+   * @param {array} baseDirs - Directories to search
+   * @param {string} releaseType - version type to increment.
    */
-  const findTargetFiles = (baseDirs, targets) => {
+  const findTargetFiles = (baseDirs, releaseType) => {
+    if (projectsList.length === 0) {
+      const currentDir = process.cwd();
+      searchDirectoryForVersionComment(currentDir, releaseType);
+    }
+
     baseDirs.forEach((baseDir) => {
       if (fs.existsSync(baseDir) && fs.statSync(baseDir).isDirectory()) {
         const allFiles = getAllFiles(baseDir);
         allFiles.forEach((filePath) => {
           const fileName = path.basename(filePath);
-          if (targets.includes(fileName)) {
-            incrementVersionNumber(fileName, filePath, type);
+
+          if (containsVersion(filePath)) {
+            incrementVersionNumber(filePath, releaseType);
+          }
+
+          if (fileName === 'package.json') {
+            incrementPackageJsonVersion(filePath, releaseType);
           }
         });
       } else {
-        console.error(`Directory not found: ${baseDir}`);
+        console.error(`\x1b[31mDirectory not found: ${baseDir}\x1b[0m`);
       }
     });
   };
 
   /**
-   * Recursively searches for directories matching given names.
-   * @param {string} basePath - The base directory to start searching from.
-   * @param {Array} directoryNames - An array of directory names to match.
-   * @returns {Array} - An array of matching directory paths.
+   * Function to search file for version in doc comment
+   *
+   * @param {string} currentDir - Current directory
+   * @param {string} releaseType - version type to increment.
    */
-  function findMatchingDirectories(basePath, directoryNames) {
-    let matchingDirectories = [];
-    searchDirectory(basePath, directoryNames, matchingDirectories);
-    return matchingDirectories;
-  }
+  const searchDirectoryForVersionComment = (currentDir, releaseType) => {
+    const files = fs.readdirSync(currentDir);
+
+    files.forEach((file) => {
+      const filePath = path.join(currentDir, file);
+
+      if (fs.statSync(filePath).isFile() && containsVersion(filePath)) {
+        incrementVersionNumber(filePath, releaseType);
+      }
+      if (file === 'package.json') {
+        incrementPackageJsonVersion(filePath, releaseType);
+      }
+    });
+  };
 
   /**
-   * Helper function to search directories recursively.
-   * @param {string} currentPath - The current directory path.
-   * @param {Array} directoryNames - An array of directory names to match.
-   * @param {Array} matchingDirectories - The array where matching directories are stored.
+   * Function to check if a file contains the version
+   * @param {string} filePath - file path to file being checked.
+   * @returns {boolean} - true or false if version exists.
    */
-  function searchDirectory(currentPath, directoryNames, matchingDirectories) {
+  const containsVersion = (filePath) => {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      return docCommentPattern.test(content);
+    } catch (err) {
+      console.error(`\x1b[31mError reading file ${filePath}: ${err.message}\x1b[0m`);
+      return false;
+    }
+  };
+
+  /**
+   * Function to find matching directories
+   * @param {string} basePath - Current location
+   * @returns {array} - array of directories to search
+   */
+  const findMatchingDirectories = (basePath, projectName) => {
+    let matchingDirectories = [];
+    searchDirectory(basePath, projectName, matchingDirectories);
+    return matchingDirectories;
+  };
+
+  /**
+   * Function to search specific directory
+   * @param {string} currentPath - Current location
+   * @param {string} projectName - Project to search
+   * @param {array} matchingDirectories - Directories to search
+   */
+  const searchDirectory = (currentPath, projectName, matchingDirectories) => {
     let items;
     try {
       items = fs.readdirSync(currentPath);
     } catch (err) {
-      console.error(`Error reading directory ${currentPath}: ${err.message}`);
+      console.error(`\x1b[31mError reading directory ${currentPath}: ${err.message}\x1b[0m`);
       return;
     }
 
@@ -115,154 +153,36 @@ exports.handler = async ({ type = '', projects = '', site = false }) => {
       try {
         stats = fs.statSync(itemPath);
       } catch (err) {
-        console.error(`Error getting item ${itemPath}: ${err.message}`);
+        console.error(`\x1b[31mError getting item ${itemPath}: ${err.message}\x1b[0m`);
         return;
       }
 
       if (stats.isDirectory()) {
-        if (directoryNames.includes(item)) {
+        if (item.includes(projectName)) {
           matchingDirectories.push(itemPath);
         }
         // Recursively search inside this directory
-        searchDirectory(itemPath, directoryNames, matchingDirectories);
+        searchDirectory(itemPath, projectName, matchingDirectories);
       }
     });
-  }
-
-  /**
-   * Function to increment the version in a package.json file.
-   * @param {string} file - File to increment
-   * @param {string} type - increment type
-   */
-  function incrementPackageJsonVersion(file, type) {
-    if (fs.existsSync(file)) {
-      try {
-        const packageJson = JSON.parse(fs.readFileSync(file, 'utf-8'));
-        const oldVersion = packageJson.version;
-        const newVersion = incrementVersionString(oldVersion, type);
-        packageJson.version = newVersion;
-        fs.writeFileSync(file, JSON.stringify(packageJson, null, 2), 'utf-8');
-        terminal(`#${file}: ${oldVersion} -> ${newVersion}\n`);
-      } catch (err) {
-        console.error(`Error incrementing version in ${file}: ${err.message}`);
-      }
-    }
-  }
-  /**
-   * Function to increment the version in a css file
-   * @param {string} dir - File path
-   * @param {string} type - Increment type.
-   */
-  function incrementStylesCssVersion(dir, type) {
-    if (fs.existsSync(dir)) {
-      try {
-        let content = fs.readFileSync(dir, 'utf-8');
-        const versionRegex = /Version:\s*([\d]+\.[\d]+\.[\d]+(?:-[a-z]+\.[\d]+)?)/i;
-        const match = content.match(versionRegex);
-        if (match) {
-          const oldVersion = match[1];
-          const newVersion = incrementVersionString(oldVersion, type);
-          content = content.replace(versionRegex, `Version: ${newVersion}`);
-          fs.writeFileSync(dir, content, 'utf-8');
-          terminal(`#${dir}: ${oldVersion} -> ${newVersion}\n`);
-        }
-      } catch (err) {
-        console.error(`Error incrementing version in ${dir}: ${err.message}`);
-      }
-    }
-  }
-
-  /**
-   * Function to increment the version in a php file
-   * @param {string} dir - File path
-   * @param {string} type - Increment type.
-   */
-  function incrementPluginPhpVersion(dir, type) {
-    if (fs.existsSync(dir)) {
-      try {
-        let content = fs.readFileSync(dir, 'utf-8');
-        const versionRegex = /Version:\s*([\d]+\.[\d]+\.[\d]+(?:-[a-z]+\.[\d]+)?)/i;
-        const match = content.match(versionRegex);
-        if (match) {
-          const oldVersion = match[1];
-          const newVersion = incrementVersionString(oldVersion, type);
-          content = content.replace(versionRegex, `Version: ${newVersion}`);
-          fs.writeFileSync(dir, content, 'utf-8');
-          terminal(`#${dir}: ${oldVersion} -> ${newVersion}\n`);
-        }
-      } catch (err) {
-        console.error(`Error incrementing version in ${dir}: ${err.message}`);
-      }
-    }
-  }
-
-  /**
-   * Function to increment the current version.
-   * @param {string} version - current version
-   * @param {string} type - type of version to increase.
-   * @returns {string} version - updated version
-   */
-  function incrementVersionString(version, type) {
-    if (!semver.valid(version)) {
-      throw new Error(`Invalid version: ${version}`);
-    }
-    const [baseType, prerelease] = type.split(':');
-    if (type === 'beta' && semver.prerelease(version)) {
-      return semver.inc(version, 'prerelease', 'beta');
-    }
-    if (prerelease === 'beta') {
-      // Handle pre-release increment
-      if (semver.prerelease(version)) {
-        const releaseEnum = Object.freeze({
-          major: 'premajor',
-          minor: 'preminor',
-          patch: 'prepatch',
-        });
-        const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
-        semver.inc(version, releaseType, prerelease);
-        // Convert stable version to pre-release
-        return semver.inc(`${semver.inc(version, baseType)}-beta.0`, 'prerelease', 'beta');
-      } else {
-        // Handle stable version increment
-        return semver.inc(version, baseType);
-      }
-    }
-  }
-  /**
-   * Function to increase the version number depending on which file is found.
-   * @param {string} file - file name
-   * @param {string} path - file path
-   * @param {string} type - type of version to increment.
-   */
-  function incrementVersionNumber(file, path, type) {
-    switch (file) {
-      case 'package.json':
-        incrementPackageJsonVersion(path, type);
-        break;
-      case 'plugin.php':
-        incrementPluginPhpVersion(path, type);
-        break;
-      case 'style.css':
-        incrementStylesCssVersion(path, type);
-        break;
-      default:
-        throw new Error(`Invalid file: ${file}`);
-    }
-  }
+  };
 
   try {
     if (projectsList.length === 0 && !isAllProjects) {
-      terminal('No Projects Found\n');
+      // Increment projects in current directory
+      terminal('\x1b[1mIncrementing Projects In \x1b[4mDirectory\x1b[0m...\n');
+      searchDirectoryForVersionComment(path.resolve(process.cwd()), incrementType);
     } else if (isAllProjects) {
-      terminal('searching all projects.....\n');
-      findTargetFiles(targetDirs, targetFiles);
+      // Increment all projects i.e from wp-content folder
+      terminal('\x1b[1mIncrementing \x1b[4mAll Projects\x1b[0m...\n');
+      findTargetFiles(targetDirs, incrementType);
     } else {
-      terminal('finding all projects to increment....\n');
-      const directoriesToSearch = findMatchingDirectories(
-        path.resolve(process.cwd()),
-        projectsList,
+      // Increment specified projects
+      terminal('\x1b[1mIncrementing \x1b[4mList of Projects\x1b[0m...\n');
+      const directoriesToSearch = projectsList.flatMap((projectName) =>
+        findMatchingDirectories(path.resolve(process.cwd()), projectName),
       );
-      findTargetFiles(directoriesToSearch, targetFiles);
+      findTargetFiles(directoriesToSearch, incrementType);
     }
   } catch (e) {
     terminal.red(e);
