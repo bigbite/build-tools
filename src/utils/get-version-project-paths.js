@@ -52,7 +52,7 @@ const findAllProjectPaths = (directories, projectsList) => {
   });
 
   // Only get current directory if no projects are specified.
-  if (projectsList.length === 0) {
+  if (!projectsList) {
     // Include current directory in the search
     const currentDirectory = '.';
     if (

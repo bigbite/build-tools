@@ -47,6 +47,8 @@ function incrementVersion(version, type) {
       const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
       semver.inc(currentVersion, releaseType, prerelease);
     }
+    console.log(currentVersion, 'current version');
+    console.log(prerelease, 'pre release');
     return semver.inc(currentVersion, 'prerelease', prerelease, 1);
   } else {
     return semver.inc(currentVersion, baseType);
