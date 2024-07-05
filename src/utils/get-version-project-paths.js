@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const path = require('path');
 /**
  * Check if a directory exists.
  * @param {string} directory - The directory path to check.

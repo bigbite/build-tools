@@ -1,6 +1,5 @@
 const dirsExist = require('../utils/dirs-exist');
 const { terminal } = require('terminal-kit');
-const fs = require('fs');
 const path = require('path');
 const {
   incrementPackageJsonVersion,
