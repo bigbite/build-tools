@@ -47,7 +47,7 @@ function incrementVersion(version, type) {
       const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
       semver.inc(currentVersion, releaseType, prerelease);
     }
-    return semver.inc(currentVersion, 'prerelease', prerelease, 0);
+    return semver.inc(currentVersion, 'prerelease', prerelease, 1);
   } else {
     return semver.inc(currentVersion, baseType);
   }
@@ -99,48 +99,37 @@ const determineNextVersion = (version) => {
 };
 
 /**
- * Function to update the package lock to match package.json file
- * @param {string} packageJsonPath - file path to package lock file.
- */
-const updatePackageLockVersion = (packageJsonPath) => {
-  const packageLockPath = path.join(path.dirname(packageJsonPath), 'package-lock.json');
-  if (fs.existsSync(packageLockPath)) {
-    try {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-      const packageLock = JSON.parse(fs.readFileSync(packageLockPath, 'utf8'));
-      const oldVersion = packageLock.version;
-      packageLock.version = packageJson.version;
-      fs.writeFileSync(packageLockPath, JSON.stringify(packageLock, null, 2), 'utf8');
-      terminal(
-        `#${packageLockPath}: \x1b[31m${oldVersion} -> \x1b[32m${packageLock.version}\x1b[0m\n`,
-      );
-    } catch (err) {
-      console.error(`\x1b[31mError updating version in ${packageLockPath}: ${err.message}\x1b[0m`);
-    }
-  }
-};
-
-/**
  * Function to update the version in the package.json files.
  * @param {string} filePath - file path.
  * @param {string} releaseType - type of version to increment.
  */
-const incrementPackageJsonVersion = (filePath, releaseType) => {
+const incrementPackageJsonVersion = (packageJsonPath, packageLockPath, releaseType) => {
   try {
-    const packageJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    const oldVersion = packageJson.version;
-    let newVersion;
-    if (releaseType === '') {
-      newVersion = determineNextVersion(oldVersion);
-    } else {
-      newVersion = incrementVersion(oldVersion, releaseType);
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      let path = packageJsonPath;
+      const oldVersion = packageJson.version;
+      let newVersion;
+      if (releaseType === '') {
+        newVersion = determineNextVersion(oldVersion);
+      } else {
+        newVersion = incrementVersion(oldVersion, releaseType);
+      }
+      packageJson.version = newVersion;
+      fs.writeFileSync(path, JSON.stringify(packageJson, null, 2), 'utf8');
+      terminal(`#${path}: \x1b[31m${oldVersion} -> \x1b[32m${newVersion}\x1b[0m\n`);
+      if (!fs.existsSync(packageLockPath)) {
+        return;
+      }
+      path = packageLockPath;
+      const packageJsonLock = JSON.parse(fs.readFileSync(path, 'utf8'));
+      const lockoldVersion = packageJsonLock.version;
+      packageJsonLock.version = packageJson.version;
+      fs.writeFileSync(path, JSON.stringify(packageJsonLock, null, 2), 'utf8');
+      terminal(`#${path}: \x1b[31m${lockoldVersion} -> \x1b[32m${newVersion}\x1b[0m\n`);
     }
-    packageJson.version = newVersion;
-    fs.writeFileSync(filePath, JSON.stringify(packageJson, null, 2), 'utf8');
-    terminal(`#${filePath}: \x1b[31m${oldVersion} -> \x1b[32m${newVersion}\x1b[0m\n`);
-    updatePackageLockVersion(filePath);
   } catch (err) {
-    console.error(`\x1b[31mError updating version in file ${filePath}: ${err.message}\x1b[0m`);
+    console.error(`\x1b[31mError updating version in file ${path}: ${err.message}\x1b[0m`);
   }
 };
 
