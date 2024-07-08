@@ -38,18 +38,14 @@ function incrementVersion(version, type) {
   const [baseType, prerelease] = type.split(':');
 
   if (prerelease === 'beta' || prerelease === 'rc') {
-    if (semver.prerelease(currentVersion)) {
-      const releaseEnum = Object.freeze({
-        major: 'premajor',
-        minor: 'preminor',
-        patch: 'prepatch',
-      });
-      const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
-      semver.inc(currentVersion, releaseType, prerelease);
-    }
-    console.log(currentVersion, 'current version');
-    console.log(prerelease, 'pre release');
-    return semver.inc(currentVersion, 'prerelease', prerelease, 1);
+    const releaseEnum = Object.freeze({
+      major: 'premajor',
+      minor: 'preminor',
+      patch: 'prepatch',
+      prerelease: 'prerelease',
+    });
+    const releaseType = releaseEnum[baseType] ? releaseEnum[baseType] : false;
+    return semver.inc(currentVersion, releaseType, prerelease, 1);
   } else {
     return semver.inc(currentVersion, baseType);
   }
@@ -63,6 +59,7 @@ function incrementVersion(version, type) {
 const incrementVersionNumber = (filePath, releaseType) => {
   if (fs.existsSync(filePath)) {
     try {
+      console.log('hereee');
       let content = fs.readFileSync(filePath, 'utf-8');
       const versionRegex = /Version:\s*([\d]+\.[\d]+\.[\d]+(?:-[a-z]+\.[\d]+)?)/i;
       const match = content.match(versionRegex);
@@ -79,6 +76,8 @@ const incrementVersionNumber = (filePath, releaseType) => {
         content = content.replace(versionRegex, `Version: ${newVersion}`);
         fs.writeFileSync(filePath, content, 'utf-8');
         terminal(`#${filePath}: \x1b[31m${oldVersion} -> \x1b[32m${newVersion}\x1b[0m\n`);
+      } else {
+        console.log('no version found');
       }
     } catch (err) {
       console.error(`\x1b[31mError incrementing version in ${filePath}: ${err.message}\x1b[0m`);
@@ -108,9 +107,13 @@ const determineNextVersion = (version) => {
 const incrementPackageJsonVersion = (packageJsonPath, packageLockPath, releaseType) => {
   try {
     if (fs.existsSync(packageJsonPath)) {
+      console.log(releaseType, 'release type');
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
       let path = packageJsonPath;
       const oldVersion = packageJson.version;
+      if (!packageJson.version) {
+        return console.error(`\x1b[31mNo version set in ${path} unable to increment\x1b[0m`);
+      }
       let newVersion;
       if (releaseType === '') {
         newVersion = determineNextVersion(oldVersion);
