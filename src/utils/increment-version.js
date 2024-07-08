@@ -59,7 +59,6 @@ function incrementVersion(version, type) {
 const incrementVersionNumber = (filePath, releaseType) => {
   if (fs.existsSync(filePath)) {
     try {
-      console.log('hereee');
       let content = fs.readFileSync(filePath, 'utf-8');
       const versionRegex = /Version:\s*([\d]+\.[\d]+\.[\d]+(?:-[a-z]+\.[\d]+)?)/i;
       const match = content.match(versionRegex);
@@ -76,8 +75,6 @@ const incrementVersionNumber = (filePath, releaseType) => {
         content = content.replace(versionRegex, `Version: ${newVersion}`);
         fs.writeFileSync(filePath, content, 'utf-8');
         terminal(`#${filePath}: \x1b[31m${oldVersion} -> \x1b[32m${newVersion}\x1b[0m\n`);
-      } else {
-        console.log('no version found');
       }
     } catch (err) {
       console.error(`\x1b[31mError incrementing version in ${filePath}: ${err.message}\x1b[0m`);
@@ -107,7 +104,6 @@ const determineNextVersion = (version) => {
 const incrementPackageJsonVersion = (packageJsonPath, packageLockPath, releaseType) => {
   try {
     if (fs.existsSync(packageJsonPath)) {
-      console.log(releaseType, 'release type');
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
       let path = packageJsonPath;
       const oldVersion = packageJson.version;
