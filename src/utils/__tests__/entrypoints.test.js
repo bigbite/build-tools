@@ -21,7 +21,7 @@ describe('Entrypoints', () => {
       },
     });
     const src = './';
-    const result = entrypoints(src);
+    const result = entrypoints(src, []);
     const cwd = process.cwd();
     expect(result).toEqual({
       'empty-dir': `${cwd}/entrypoints/empty-dir`,
