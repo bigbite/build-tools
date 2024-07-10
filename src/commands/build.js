@@ -12,7 +12,6 @@ const { getPackage } = require('./../utils/get-package');
 const { getFilteredEntryPoints } = require('./../utils/get-filtered-entrypoints');
 const dirsExist = require('../utils/dirs-exist');
 const getProjectConfig = require('../utils/get-project-config');
-const { stringify } = require('querystring');
 
 global.buildCount = 0;
 
