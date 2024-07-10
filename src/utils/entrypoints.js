@@ -5,10 +5,10 @@ const path = require('path');
  * Create entry points object from src folder.
  *
  * @param {string} src Project src path
- * @param {array} targetedEntrypoints entry points to build (partial or full filename(s)).
+ * @param {array} filteredEntrypoints entry point to build (ie frontend, editor, etc).
  * @returns {object} webpack entrypoints
  */
-module.exports = (src, targetedEntrypoints) => {
+module.exports = (src, filteredEntrypoints) => {
   const entrypoints = `${src}/entrypoints`;
   const pathToEntryPoints = path.resolve(process.cwd(), entrypoints);
 
@@ -18,17 +18,13 @@ module.exports = (src, targetedEntrypoints) => {
 
   return fs.readdirSync(pathToEntryPoints).reduce(
     (accumulator, file) => {
-      // If no targeted entrypoints, build all.
-      if (!targetedEntrypoints || targetedEntrypoints.length <= 0) {
-        return {
-          ...accumulator,
-          [file.split('.')[0]]: path.resolve(pathToEntryPoints, file),
-        };
-      }
-      
-      // If currently file is not in targeted entrypoints, skip.
-      if (!targetedEntrypoints.includes(file.split('.')[0])) {
-        return accumulator;
+      // If types are provided, only watch/build those.
+      if (filteredEntrypoints.length > 0) {
+        const type = file.split('.')[0];
+
+        if (!filteredEntrypoints.includes(type)) {
+          return accumulator;
+        }
       }
 
       return {

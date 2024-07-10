@@ -9,7 +9,7 @@ const spinner = ora();
 
 const { findAllProjectPaths, validateProject } = require('./../utils/projectpaths');
 const { getPackage } = require('./../utils/get-package');
-const { getEntryPoints } = require('./../utils/get-entrypoints');
+const { getFilteredEntryPoints } = require('./../utils/get-filtered-entrypoints');
 const dirsExist = require('../utils/dirs-exist');
 const getProjectConfig = require('../utils/get-project-config');
 const { stringify } = require('querystring');
@@ -57,8 +57,6 @@ exports.handler = async ({
   once = false,
   quiet = false,
 }) => {
-  terminal('projects 123:' + projects);
-
   const currentLocation = path.basename(process.cwd());
 
   const mode = production ? 'production' : 'development';
@@ -119,20 +117,20 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   const configMap = validProjects.map((packageObject) => {
-    let targetedEntrypoints = getEntryPoints(projects.split(',').filter((item) => item.length > 0), packageObject.path);
+    // Empty array means all entrypoints.
+    let filteredEntrypoints = [];
 
-    // Handle entrypoints when for standalon build and all project builds.
     if (projects.startsWith('@')) {
-      targetedEntrypoints = getEntryPoints([projects], packageObject.path);
+      // Handle entrypoints when for standalone builds and all project builds.
+      filteredEntrypoints = projects.split('@')[1].split('+');
+    } else {
+      // Handle entrypoints for each specified project build.
+      filteredEntrypoints = getFilteredEntryPoints(projects)[packageObject.name];
     }
 
-    terminal('\n');
-    terminal(targetedEntrypoints.stringify());
-    terminal('\n');
+    const projectConfig = getProjectConfig(packageObject, mode, filteredEntrypoints);
 
-    const projectConfig = getProjectConfig(packageObject, mode);
-
-    return webpackConfig(projectConfig, mode, targetedEntrypoints);
+    return webpackConfig(projectConfig, mode);
   });
 
   let previousHash = '';

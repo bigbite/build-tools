@@ -13,7 +13,8 @@ module.exports = (
         },
         path: './'
     },
-    mode = 'development'
+    mode = 'development',
+    filteredEntrypoints = []
 ) => {
     return {
         name: packageObject?.name ?? '',
@@ -33,5 +34,6 @@ module.exports = (
         clean: true,
         copy: true,
         mode,
+        filteredEntrypoints,
     };
 }
