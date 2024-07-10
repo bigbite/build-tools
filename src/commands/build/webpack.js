@@ -17,7 +17,6 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @param {string} package.path The current directory path of the project.
  * @param {string} mode The build mode in which webpack is currently running (e.g. development or production).
  * @param {string} projectName The name of the project - this will be the director target.
- * @param {array} targetedEntrypoints The entrypoints to build for the project, if empty array builds all.
  * @returns {object} The full webpack configuration for the current project.
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
