@@ -9,7 +9,7 @@ const directoryExists = (directory) => {
     return true;
   }
 
-  terminal.yellow('Warning: Directory %s does not exist123.\n', directory);
+  terminal.yellow('Warning: Directory %s does not exist.\n', directory);
 
   return false;
 };
