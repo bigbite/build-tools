@@ -22,7 +22,7 @@ const directoryExists = (directory) => {
  * @returns {string[]} the complete paths to all project directories
  * @throws if no projects have been discovered
  */
-const findAllProjectPaths = (directories, projectsList) => {
+const findAllProjectPaths = (directories, projectsList, version = false) => {
   let projects = [];
 
   directories.filter(directoryExists).forEach((directory) => {
@@ -40,6 +40,11 @@ const findAllProjectPaths = (directories, projectsList) => {
     );
   });
 
+  // Check the current directory separately
+  if (fs.existsSync('./package.json') && !projectsList && version) {
+    projects.push(path.resolve(process.cwd(), '.'));
+  }
+
   if (projects.length <= 0) {
     throw new Error('Cannot find any projects.\n');
   }
@@ -49,13 +54,26 @@ const findAllProjectPaths = (directories, projectsList) => {
 
 /**
  * Confirms the given package.json is a valid build-tools project
- * by looking for src/entrypoints
+ * by looking for src/entrypoints and checking the root directory contains a package.json.
  */
-const validateProject = (pkg) => {
-  if (fs.existsSync(`${pkg.path}/src/entrypoints`)) {
-    return true;
+const validateProject = (pkg, version = false) => {
+  if (version) {
+    const files = Object.values(pkg);
+    return files.some((file) => {
+      if (
+        fs.existsSync(`${file.path}/src/entrypoints`) ||
+        fs.existsSync(`${file.path}/package.json`)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  } else {
+    if (fs.existsSync(`${pkg.path}/src/entrypoints`)) {
+      return true;
+    }
+    return false;
   }
-  return false;
 };
 
 module.exports = {
