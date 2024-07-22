@@ -141,6 +141,12 @@ const getPackage = (path, version = false) => {
 
     packageList[absolutePath] = fileData;
   });
+
+  // if packageValues is empty return false instead of empty object.
+  if (Object.keys(packageValues).length === 0) {
+    return false;
+  }
+
   return packageValues;
 };
 
