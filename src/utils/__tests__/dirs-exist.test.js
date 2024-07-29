@@ -1,10 +1,11 @@
-const mockFs = require('mock-fs');
-const process = require('process');
+const { vol } = require('memfs');
 
 const dirsExist = require('../dirs-exist');
 
+jest.mock('fs');
+
 afterEach(() => {
-  mockFs.restore();
+  vol.reset();
 });
 
 describe('Dirs exist', () => {
@@ -19,7 +20,7 @@ describe('Dirs exist', () => {
   });
 
   it('Returns true if any of the passed dirs exist', () => {
-    mockFs({
+    vol.fromNestedJSON({
       'my-dir': {},
       'my-dir-two': {},
       'my-dir-three': {},
@@ -29,7 +30,7 @@ describe('Dirs exist', () => {
   });
 
   it('Returns false if none of the passed dirs exist', () => {
-    mockFs({
+    vol.fromNestedJSON({
       'my-dir': {},
       'my-dir-two': {},
       'my-dir-three': {},

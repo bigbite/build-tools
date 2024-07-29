@@ -99,6 +99,7 @@
   },
   "devDependencies": {
     "jest": "^29.4.3",
-    "mock-fs": "^5.2.0"
+    "memfs": "^4.9.4",
+    "unionfs": "^4.5.4"
   }
 }
