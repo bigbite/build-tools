@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const wpScriptsConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
@@ -24,42 +25,49 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
   const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
 
   let webpackConfig = {
+    ...wpScriptsConfig,
     mode,
     entry: entrypoints(__PROJECT_CONFIG__.paths.src),
-
     resolve: {
-      modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
+      ...wpScriptsConfig.resolve,
       alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
+
+    // resolve: {
+    //   modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
+    //   alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
+    //   extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    // },
 
     output: {
-      // @TODO: This should be overridable at some point to allow for custom naming convention.
-      filename: () => (mode === 'production' ? '[name]-[contenthash:8].js' : '[name].js'),
-      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}/scripts`),
+    //   // @TODO: This should be overridable at some point to allow for custom naming convention.
+    //   filename: () => (mode === 'production' ? '[name]-[contenthash:8].js' : '[name].js'),
+      ...wpScriptsConfig.output,
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
     },
 
-    watchOptions: {
-      ignored: ['node_modules'],
-    },
+    // watchOptions: {
+    //   ignored: ['node_modules'],
+    // },
 
-    performance: {
-      assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
-      maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
-      maxAssetSize: 500000, // Set max size to 500kb.
-    },
+    // performance: {
+    //   assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
+    //   maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
+    //   maxAssetSize: 500000, // Set max size to 500kb.
+    // },
 
-    devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
+    // devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
 
-    externals: {
-      moment: 'moment',
-      lodash: ['lodash', 'lodash-es'],
-      react: 'React',
-      'react-dom': 'ReactDOM',
-      jquery: 'jQuery',
-    },
+    // externals: {
+    //   moment: 'moment',
+    //   lodash: ['lodash', 'lodash-es'],
+    //   react: 'React',
+    //   'react-dom': 'ReactDOM',
+    //   jquery: 'jQuery',
+    // },
 
     module: {
+      ...wpScriptsConfig.module,
       rules: [
         ...Rules.typescript(__PROJECT_CONFIG__),
         ...Rules.javascript(__PROJECT_CONFIG__),
@@ -101,7 +109,9 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
     Plugins.AssetMessage(__PROJECT_CONFIG__),
   ];
 
-  webpackConfig.plugins = plugins;
+  // webpackConfig.plugins = plugins;
+
+  console.log(webpackConfig);
 
   return webpackConfig;
 };
