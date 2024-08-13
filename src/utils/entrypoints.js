@@ -18,10 +18,10 @@ module.exports = (src, filteredEntrypoints) => {
 
   return fs.readdirSync(pathToEntryPoints).reduce(
     (accumulator, file) => {
+      const type = file.split('.')[0];
+
       // If types are provided, only watch/build those.
       if (filteredEntrypoints.length > 0) {
-        const type = file.split('.')[0];
-
         if (!filteredEntrypoints.includes(type)) {
           return accumulator;
         }
@@ -29,7 +29,7 @@ module.exports = (src, filteredEntrypoints) => {
 
       return {
         ...accumulator,
-        [file.split('.')[0]]: path.resolve(pathToEntryPoints, file),
+        [type]: path.resolve(pathToEntryPoints, file),
       };
   }, {});
 };
