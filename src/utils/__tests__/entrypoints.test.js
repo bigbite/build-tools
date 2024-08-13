@@ -1,10 +1,12 @@
-const mockFs = require('mock-fs');
+const { vol } = require('memfs');
 const process = require('process');
 
 const entrypoints = require('../entrypoints');
 
+jest.mock('fs');
+
 afterEach(() => {
-  mockFs.restore();
+  vol.reset();
 });
 
 describe('Entrypoints', () => {
@@ -14,7 +16,7 @@ describe('Entrypoints', () => {
   });
 
   it('Returns an entrypoints object if entrypoints directory is found relative to src', () => {
-    mockFs({
+    vol.fromNestedJSON({
       entrypoints: {
         'some-file.js': 'console.log("file content here");',
         'empty-dir': {},
@@ -30,7 +32,7 @@ describe('Entrypoints', () => {
   });
 
   it('Returns an empty object if entrypoints directory is empty', () => {
-    mockFs({
+    vol.fromNestedJSON({
       entrypoints: {},
     });
     const src = './';

@@ -1,16 +1,15 @@
 'use strict';
-const path = require('path');
-const mockFs = require('mock-fs');
+const { vol: mockVol } = require('memfs');
+const { ufs: mockUfs } = require('unionfs');
+
+jest.mock('fs', () => {
+  // combine the virtual file system with the real one so we can use both at the same time.
+  return mockUfs.use(jest.requireActual('fs')).use(mockVol);
+});
 
 jest.mock('ora', () => () => ({
   start: jest.fn(),
 }));
-
-const requiredRealDirs = {
-  node_modules: mockFs.load(path.resolve(__dirname, '../node_modules')),
-  src: mockFs.load(path.resolve(__dirname, '../src')),
-  configs: mockFs.load(path.resolve(__dirname, '../configs')),
-};
 
 describe('CLI Build Command', () => {
   let originalArgv;
@@ -53,13 +52,12 @@ describe('CLI Build Command', () => {
     process.stdout.write = originalWrite;
     process.exit = originalExit;
 
-    mockFs.restore();
+    mockVol.reset();
     jest.resetAllMocks();
   });
 
   it('can read global vars', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       'src/entrypoints': {
         'some-file.js': 'console.log("file content here");',
         'empty-dir': {
@@ -88,8 +86,7 @@ describe('CLI Build Command', () => {
   });
 
   it('detects single project mode based on filesystem', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       'src/entrypoints': {
         'some-file.js': 'console.log("file content here");',
         'empty-dir': {
@@ -110,8 +107,7 @@ describe('CLI Build Command', () => {
   });
 
   it('detects all projects mode based on filesystem', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       plugins: {
         'my-plugin': {
           'package.json': JSON.stringify({
@@ -135,8 +131,7 @@ describe('CLI Build Command', () => {
   });
 
   it('runs specific projects mode when requested', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       plugins: {
         'my-plugin': {
           'package.json': JSON.stringify({
@@ -176,8 +171,7 @@ describe('CLI Build Command', () => {
   });
 
   it('runs specific projects mode if some requested projects are not found', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       plugins: {
         'my-plugin': {
           'package.json': JSON.stringify({
@@ -204,8 +198,7 @@ describe('CLI Build Command', () => {
   });
 
   it('fails to run specific projects mode if no requested projects can be found', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       plugins: {
         'my-plugin': {
           'package.json': JSON.stringify({

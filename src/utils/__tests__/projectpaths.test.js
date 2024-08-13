@@ -1,7 +1,9 @@
 const path = require('path');
-const mockFs = require('mock-fs');
+const { vol } = require('memfs');
 
-const { findProjectPath, findAllProjectPaths } = require('../projectpaths');
+const { findAllProjectPaths } = require('../projectpaths');
+
+jest.mock('fs');
 
 const srcEntrypoints = {
   src: {
@@ -37,8 +39,7 @@ describe('Project paths', () => {
   });
 
   beforeAll(() => {
-    mockFs({
-      node_modules: mockFs.load(path.resolve(__dirname, '../../../node_modules')),
+    vol.fromNestedJSON({
       ...srcEntrypoints,
       ...packageJson,
       plugins: {
@@ -54,7 +55,7 @@ describe('Project paths', () => {
   });
 
   afterAll(() => {
-    mockFs.restore();
+    vol.reset();
   });
 
   describe('findAllProjectPaths', () => {

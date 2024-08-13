@@ -62,7 +62,7 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-import-resolver-typescript": "^3.6.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsdoc": "^39.2.9",
+    "eslint-plugin-jsdoc": "^48.8.3",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
@@ -99,6 +99,7 @@
   },
   "devDependencies": {
     "jest": "^29.4.3",
-    "mock-fs": "^5.2.0"
+    "memfs": "^4.9.4",
+    "unionfs": "^4.5.4"
   }
 }
