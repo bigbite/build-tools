@@ -5,7 +5,7 @@
  */
 module.exports = ({ paths }) => [
   {
-    test: /\.(png|woff|woff2|eot|ttf|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+    test: /\.(png|woff|woff2|eot|ttf|gif|jpg|jpeg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
     loader: 'file-loader',
     issuer: /\.(css|scss|js|jsx|ts|tsx)?$/,
     options: {
