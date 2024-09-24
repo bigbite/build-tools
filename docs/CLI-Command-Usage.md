@@ -33,6 +33,20 @@ build-tools build my-plugin,my-theme
 
 Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide](https://github.com/bigbite/build-tools/wiki/Project-Structuring), seeking through `client-mu-plugins`,`plugins` and `themes`.
 
+## Individual entrypoints
+You can define specific entrypoints to build by specifying them after `@` symbol and seperating entrypoints by `+` symbol.
+
+Build all frontend entrypoints
+```bash
+build-tools build @frontend+editor
+```
+
+Build single project entrypoitns
+```bash
+build-tools build my-plugin@frontend
+```
+
+
 ## Site-wide
 If you need to build an entire sites worth of projects, which will often be the case come deployment, you can build all applicable projects by running the command from within your `wp-content` directory.
 
