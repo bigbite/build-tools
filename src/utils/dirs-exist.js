@@ -16,7 +16,6 @@ module.exports = (targetDirs = []) => {
         throw new Error('Expected dirExists to have at least 1 item passed in array.');
     }
 
-
     const items = targetDirs.filter((dir) => fs.existsSync(path.resolve(`./${dir}`)));
 
     return items.length > 0;
