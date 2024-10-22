@@ -1,1 +1,0 @@
-{"version":3,"file":"../styles/editor-b82a4ac3.css","mappings":"AAAA,KAEE,qBADA,UACA,C","sources":["webpack://test-project/./plugins/test-plugin/src/styles/index.scss"],"sourcesContent":["body {\n  color: blue;\n  background-color: red;\n}\n"],"names":[],"sourceRoot":""}

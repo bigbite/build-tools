@@ -1,1 +1,0 @@
-{"version":3,"file":"frontend.js","mappings":"AAAAA,QAAQC,IAAI","sources":["webpack://test-project/./themes/test-theme/src/entrypoints/frontend.js"],"sourcesContent":["console.log('test frontend');\n"],"names":["console","log"],"sourceRoot":""}

@@ -1,1 +1,0 @@
-{"version":3,"file":"frontend.css","mappings":";;;AAAA;EACE;EACA;AACF,C","sources":["webpack://test-plugin/./src/styles/index.scss"],"sourcesContent":["body {\n  color: #00f;\n  background-color: #f00;\n}\n"],"names":[],"sourceRoot":""}
