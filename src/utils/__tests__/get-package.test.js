@@ -1,14 +1,15 @@
-const path = require('path');
-const mockFs = require('mock-fs');
+const { vol } = require('memfs');
 
 const { getPackage } = require('../get-package');
+
+jest.mock('fs');
 
 beforeAll(() => {
   global.packageList = {};
   global.targetDirs = ['client-mu-plugins', 'plugins', 'themes'];
 });
 afterEach(() => {
-  mockFs.restore();
+  vol.reset();
 });
 
 describe('Get package', () => {
@@ -19,7 +20,7 @@ describe('Get package', () => {
   });
 
   it('Returns a package object if package.json is found', () => {
-    mockFs({
+     vol.fromNestedJSON({
       'package.json': JSON.stringify({ name: '@bigbite/test-package' }),
     });
     const src = '.';
