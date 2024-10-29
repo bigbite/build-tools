@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const Plugins = require('./plugins');
 const Rules = require('./rules');
@@ -21,7 +22,9 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
-  const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
+  const customConfig = fs.existsSync(customWebpackConfigFile)
+    ? require(customWebpackConfigFile)
+    : null;
 
   let webpackConfig = {
     mode,
@@ -47,6 +50,26 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
       assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
       maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
       maxAssetSize: 500000, // Set max size to 500kb.
+    },
+
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            output: {
+              comments: /translators:/i,
+            },
+            compress: {
+              passes: 2,
+            },
+            mangle: {
+              reserved: ['__', '_n', '_nx', '_x'],
+            },
+          },
+          extractComments: false,
+        }),
+      ],
     },
 
     devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
