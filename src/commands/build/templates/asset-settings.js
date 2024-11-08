@@ -1,17 +1,18 @@
 const path = require('path');
 
-const getFileName = (file, mode = 'develop') => {
+const getFileName = (file, assetInfo, mode = 'develop') => {
   const parsedFile = path.parse(file);
+  let name = parsedFile.name;
 
-  let name = parsedFile.name.replace(/-/g, '_').toUpperCase();
+  const info = assetInfo?.get(file);
+  const hash = info?.fullhash ?? info?.contenthash;
 
-  if (mode === 'production') {
-    const splitName = name.split('_');
-    splitName.pop();
-    name = splitName.join('_');
+  if (mode === 'production' && hash) {
+    name = name.replaceAll(hash, '');
   }
 
-  return name;
+  // Remove trailing dash, change dashes to underscores, remove consecutive underscores.
+  return name.replace(/-+$/, '').replaceAll(/-/g, '_').replaceAll(/_{2,}/g, '_').toUpperCase();
 };
 
 const getExtension = (file) => {
@@ -20,13 +21,13 @@ const getExtension = (file) => {
 };
 
 // eslint-disable-next-line arrow-body-style
-const assetSettingsTemplate = (files, project, mode, version = 'v0.0.0') => {
+const assetSettingsTemplate = (files, assetInfo, project, mode, version = 'v0.0.0') => {
   const setProject = project === '.' ? path.basename(path.resolve('./')) : project;
   const projectName = setProject.replace(/-/g, '_').toUpperCase();
 
   const fileDefinitions = (file) => {
     const parsedFile = path.parse(file);
-    const name = getFileName(file, mode);
+    const name = getFileName(file, assetInfo, mode);
     const extension = getExtension(file);
     return `define( '${projectName}_${name}_${extension}', '${parsedFile.base}' );`;
   };
@@ -37,7 +38,7 @@ const assetSettingsTemplate = (files, project, mode, version = 'v0.0.0') => {
     }
 
     const parsedFile = path.parse(file);
-    const name = getFileName(file, mode);
+    const name = getFileName(file, assetInfo, mode);
     const { dependencies } = global.DependencyExtraction[project][parsedFile.name];
     return `define( '${projectName}_${name}_DEPENDENCIES', ${JSON.stringify(dependencies)} );`;
   };

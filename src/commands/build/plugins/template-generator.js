@@ -6,7 +6,7 @@ module.exports = ({ mode, paths, name, version }) =>
     templates: [
       {
         filename: `${paths.project}/inc/asset-settings.php`,
-        templateContent: (config) => assetSettingsTemplate(config, name, mode, version),
+        templateContent: (config, assetInfo) => assetSettingsTemplate(config, assetInfo, name, mode, version),
       },
     ],
   });
