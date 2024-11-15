@@ -60,9 +60,9 @@ exports.handler = async ({
 
   const mode = production ? 'production' : 'development';
   // Use env variables if working on Webpack >=5.
-  const projectsList = projects.split(',').filter((item) => item.length > 0).map((item) => item.split('@')[0]);
+  const projectsList = projects.split(',').map((item) => item.split('@')[0]).filter((item) => item.length > 0);
   const hasTargetDirs = dirsExist(targetDirs);
-  const isAllProjects = (site || hasTargetDirs) && !projects;
+  const isAllProjects = (site || hasTargetDirs) && (!projects || projectsList.length === 0);
 
   let packages = [];
 
