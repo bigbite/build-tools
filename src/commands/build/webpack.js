@@ -28,7 +28,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
 
   let webpackConfig = {
     mode,
-    entry: entrypoints(__PROJECT_CONFIG__.paths.src),
+    entry: entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints),
 
     resolve: {
       modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
