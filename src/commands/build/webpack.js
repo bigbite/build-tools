@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { cloneDeep } = require('lodash');
 const wpScriptsConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 const Rules = require('./rules');
@@ -24,22 +25,38 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
     ? require(customWebpackConfigFile)
     : null;
 
+  const wpConfig = cloneDeep(wpScriptsConfig);
+
+  // @TODO: There's a possibility this can be moved to a plugin.
+  // Using compiler or compilation hooks may resolve the need to
+  // inject here as this context is taken directly from the
+  // WP_SRC_DIRECTORY node environment variable in node.
+  // Usage can be found in the following places:
+  // - https://github.com/WordPress/gutenberg/blob/abe37675d4e25f35828e780c49588e01d26f4e31/packages/scripts/scripts/start.js#L33
+  // - https://github.com/WordPress/gutenberg/blob/abe37675d4e25f35828e780c49588e01d26f4e31/packages/scripts/utils/config.js#L184
+  // This environment variable will be need to be set for each build
+  // run.
+  // Alternatively, more flexible solution can be used where we're
+  // with less predefined array indices.
+  wpConfig.plugins[3].patterns[0].context = __PROJECT_CONFIG__.paths.src;
+  wpConfig.plugins[3].patterns[1].context = __PROJECT_CONFIG__.paths.src;
+
   let webpackConfig = {
-    ...wpScriptsConfig,
+    ...wpConfig,
     mode,
     entry: entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints),
     resolve: {
-      ...wpScriptsConfig.resolve,
+      ...wpConfig.resolve,
       alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
     },
 
     output: {
-      ...wpScriptsConfig.output,
+      ...wpConfig.output,
       path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
     },
 
     module: {
-      ...wpScriptsConfig.module,
+      ...wpConfig.module,
       rules: [
         ...Rules.typescript(__PROJECT_CONFIG__),
         ...Rules.javascript(__PROJECT_CONFIG__),

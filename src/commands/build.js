@@ -4,9 +4,6 @@ const { terminal } = require('terminal-kit');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ora = require('ora');
 
-// process.env.WP_EXPERIMENTAL_MODULES = true;
-process.env.WP_SRC_DIRECTORY = 'themes/test-theme/src';
-
 const webpackConfig = require('./build/webpack');
 
 const spinner = ora();
