@@ -21,7 +21,9 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
-  const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
+  const customConfig = fs.existsSync(customWebpackConfigFile)
+    ? require(customWebpackConfigFile)
+    : null;
 
   const wpConfig = cloneDeep(wpScriptsConfig);
 
@@ -42,7 +44,7 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
   let webpackConfig = {
     ...wpConfig,
     mode,
-    entry: entrypoints(__PROJECT_CONFIG__.paths.src),
+    entry: entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints),
     resolve: {
       ...wpConfig.resolve,
       alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
