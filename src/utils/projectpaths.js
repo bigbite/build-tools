@@ -48,17 +48,36 @@ const findAllProjectPaths = (directories, projectsList) => {
 };
 
 /**
+ * Checks whether there are blocks that exist in the given path.
+ * 
+ * Will check for the existance of {path}/src/blocks/{blockDir}/index.js
+ * 
+ * @param {string} path The path to check where blocks exist.
+ * @returns 
+ */
+const containsBlockFiles = (path) => {
+  let exists = false;
+
+  if (fs.existsSync(`${path}/src/blocks/`)) {
+    exists = fs.readdirSync(`${path}/src/blocks/`).map(dir => fs.existsSync(`${path}/src/blocks/${dir}/index.js`)).every(Boolean);
+  }
+
+  return exists;
+}
+
+/**
  * Confirms the given package.json is a valid build-tools project
  * by looking for src/entrypoints
  */
 const validateProject = (pkg) => {
-  if (fs.existsSync(`${pkg.path}/src/entrypoints`)) {
-    return true;
-  }
-  return false;
+  let hasBlockFiles = containsBlockFiles(pkg.path);
+  const hasEntryPoints = fs.existsSync(`${pkg.path}/src/entrypoints`);
+
+  return !!hasEntryPoints || !!hasBlockFiles;
 };
 
 module.exports = {
   findAllProjectPaths,
+  containsBlockFiles,
   validateProject,
 };

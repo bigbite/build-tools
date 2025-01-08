@@ -13,7 +13,7 @@ module.exports = (src, filteredEntrypoints) => {
   const pathToEntryPoints = path.resolve(process.cwd(), entrypoints);
 
   if (!fs.existsSync(pathToEntryPoints)) {
-    throw new Error(`Unable to find entrypoints folder in ${src}.`);
+    return fs.readdirSync(`${src}/blocks/`).filter(dir => fs.existsSync(`${src}/blocks/${dir}/index.js`)).map(dir => `${src}/blocks/${dir}/index.js`);
   }
 
   return fs.readdirSync(pathToEntryPoints).reduce(
