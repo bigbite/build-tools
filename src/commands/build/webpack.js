@@ -52,15 +52,25 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
       ],
     },
     entry: () => {
+      let projectEntrypoints = {};
+      try {
+        projectEntrypoints = entrypoints(
+          __PROJECT_CONFIG__.paths.src,
+          __PROJECT_CONFIG__.filteredEntrypoints,
+        );
+      } catch (error) {
+        // don't do anything if entrypoints are not found
+      }
+
       if (!containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
-        return entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints);
+        return projectEntrypoints;
       }
 
       process.env.WP_SRC_DIRECTORY = __PROJECT_CONFIG__.paths.dir + '/src';
 
       return {
         ...wpConfig.entry(),
-        ...entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints),
+        ...projectEntrypoints,
       };
     },
   };
