@@ -13,23 +13,22 @@ module.exports = (src, filteredEntrypoints) => {
   const pathToEntryPoints = path.resolve(process.cwd(), entrypoints);
 
   if (!fs.existsSync(pathToEntryPoints)) {
-    return fs.readdirSync(`${src}/blocks/`).filter(dir => fs.existsSync(`${src}/blocks/${dir}/index.js`)).map(dir => `${src}/blocks/${dir}/index.js`);
+    throw new Error(`Unable to find entrypoints folder in ${src}.`);
   }
 
-  return fs.readdirSync(pathToEntryPoints).reduce(
-    (accumulator, file) => {
-      const type = file.split('.')[0];
+  return fs.readdirSync(pathToEntryPoints).reduce((accumulator, file) => {
+    const type = file.split('.')[0];
 
-      // If types are provided, only watch/build those.
-      if (filteredEntrypoints.length > 0) {
-        if (!filteredEntrypoints.includes(type)) {
-          return accumulator;
-        }
+    // If types are provided, only watch/build those.
+    if (filteredEntrypoints.length > 0) {
+      if (!filteredEntrypoints.includes(type)) {
+        return accumulator;
       }
+    }
 
-      return {
-        ...accumulator,
-        [type]: path.resolve(pathToEntryPoints, file),
-      };
+    return {
+      ...accumulator,
+      [type]: path.resolve(pathToEntryPoints, file),
+    };
   }, {});
 };

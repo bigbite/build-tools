@@ -42,6 +42,9 @@ describe('CLI Build Command', () => {
       webpack.util = {
         createHash: jest.fn(),
       };
+      webpack.sources = {
+        RawSource: jest.fn(),
+      };
 
       return webpack;
     });
@@ -171,8 +174,7 @@ describe('CLI Build Command', () => {
   });
 
   it('runs specific projects and entrypoints mode when requested', () => {
-    mockFs({
-      ...requiredRealDirs,
+    mockVol.fromNestedJSON({
       plugins: {
         'my-plugin': {
           'package.json': JSON.stringify({

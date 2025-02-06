@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { cloneDeep } = require('lodash');
-const wpScriptsConfig = require( '@wordpress/scripts/config/webpack.config' );
+const wpScriptsConfig = require('@wordpress/scripts/config/webpack.config');
 
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
@@ -11,8 +11,6 @@ const { containsBlockFiles } = require('./../../utils/projectpaths');
 // Define the bundled BrowserList config location/directory.
 // eslint-disable-next-line no-undef
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
-
-const SRC_DIRECTORY_DEFAULT = process.env?.WP_SRC_DIRECTORY ?? 'src';
 
 /**
  * Build the webpack configuration for the current project.
@@ -24,7 +22,9 @@ const SRC_DIRECTORY_DEFAULT = process.env?.WP_SRC_DIRECTORY ?? 'src';
  */
 module.exports = (__PROJECT_CONFIG__, mode) => {
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
-  const customConfig = fs.existsSync(customWebpackConfigFile) ? require(customWebpackConfigFile) : null;
+  const customConfig = fs.existsSync(customWebpackConfigFile)
+    ? require(customWebpackConfigFile)
+    : null;
 
   const wpConfig = cloneDeep(wpScriptsConfig);
 
@@ -52,23 +52,28 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
       ],
     },
     entry: () => {
-      process.env.WP_SRC_DIRECTORY = SRC_DIRECTORY_DEFAULT; // Default
+      let projectEntrypoints = {};
+      try {
+        projectEntrypoints = entrypoints(
+          __PROJECT_CONFIG__.paths.src,
+          __PROJECT_CONFIG__.filteredEntrypoints,
+        );
+      } catch (error) {
+        // don't do anything if entrypoints are not found
+      }
 
       if (!containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
-        return entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints);
+        return projectEntrypoints;
       }
 
-      if (containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
-        process.env.WP_SRC_DIRECTORY = __PROJECT_CONFIG__.paths.dir + '/src';
-      }
+      process.env.WP_SRC_DIRECTORY = __PROJECT_CONFIG__.paths.dir + '/src';
 
-      return wpConfig.entry();
-    }
+      return {
+        ...wpConfig.entry(),
+        ...projectEntrypoints,
+      };
+    },
   };
-
-  if (!containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
-    webpackConfig.entry = entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints);
-  }
 
   if (customConfig) {
     const shouldExtend = customConfig?.extends ?? true;
