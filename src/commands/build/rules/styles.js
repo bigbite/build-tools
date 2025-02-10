@@ -10,15 +10,6 @@ module.exports = ({ mode }) => [
   {
     test: /\.(sa|sc|c)ss$/,
     use: [
-      // Seperate CSS included in JS.
-      MiniCssExtractPlugin.loader,
-      {
-        loader: 'css-loader',
-        options: {
-          url: false,
-          sourceMap: true,
-        },
-      },
       {
         loader: 'postcss-loader',
         options: {
