@@ -1,7 +1,12 @@
+process.env.WP_EXPERIMENTAL_MODULES = true;
+
 const fs = require('fs');
 const path = require('path');
 const { cloneDeep } = require('lodash');
-const wpScriptsConfig = require('@wordpress/scripts/config/webpack.config');
+const [
+  wpScriptsConfig,
+  wpScriptsModulesConfig,
+] = require('@wordpress/scripts/config/webpack.config');
 
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
@@ -20,7 +25,7 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @param {string} projectName The name of the project - this will be the director target.
  * @returns {object} The full webpack configuration for the current project.
  */
-module.exports = (__PROJECT_CONFIG__, mode) => {
+const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
   const customConfig = fs.existsSync(customWebpackConfigFile)
     ? require(customWebpackConfigFile)
@@ -90,4 +95,29 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
   }
 
   return webpackConfig;
+};
+
+const modulesConfig = (__PROJECT_CONFIG__, mode) => {
+  const wpConfig = cloneDeep(wpScriptsModulesConfig);
+
+  let webpackConfig = {
+    ...wpConfig,
+    mode,
+    resolve: {
+      ...wpConfig.resolve,
+      alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
+    },
+
+    output: {
+      ...wpConfig.output,
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
+    },
+  };
+
+  return webpackConfig;
+};
+
+module.exports = {
+  scriptsConfig,
+  modulesConfig,
 };

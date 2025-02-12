@@ -3,7 +3,7 @@ const { terminal } = require('terminal-kit');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ora = require('ora');
 
-const webpackConfig = require('./build/webpack');
+const { scriptsConfig, modulesConfig } = require('./build/webpack');
 
 const spinner = ora();
 
@@ -63,7 +63,9 @@ exports.handler = async ({
 
   spinner.start('Building webpack configs.\n');
 
-  const configMap = packages.map((packageObject) => {
+  let configMap = [];
+
+  packages.forEach((packageObject) => {
     // Empty array means all entrypoints.
     let filteredEntrypoints = [];
 
@@ -77,7 +79,8 @@ exports.handler = async ({
 
     const projectConfig = getProjectConfig(packageObject, mode, filteredEntrypoints);
 
-    return webpackConfig(projectConfig, mode);
+    configMap.push(scriptsConfig(projectConfig, mode));
+    configMap.push(modulesConfig(projectConfig, mode));
   });
 
   let previousHash = '';
