@@ -1,7 +1,11 @@
-const babelConfig = require('./babel.js');
-const { eslintResolver } = require('./../src/utils/get-alias');
+// const babelConfig = require('./babel.js');
+// const { eslintResolver } = require('./../src/utils/get-alias');
 
 module.exports = {
+  extends: [
+    'plugin:@wordpress/eslint-plugin/recommended-with-formatting', // no prettier, using the version with prettier in the plugin will cause a conflict
+    'plugin:prettier/recommended', // uses our prettier config
+  ],
   globals: {
     __DEV__: true,
     __PROD__: true,
@@ -12,61 +16,13 @@ module.exports = {
     browser: true,
     es2021: true,
     node: true,
+    jest: true, // saves us from having to add this in projects
   },
-  extends: ['airbnb', 'prettier', 'plugin:@typescript-eslint/recommended'],
-  parser: '@babel/eslint-parser',
-  parserOptions: {
-    requireConfigFile: false,
-    babelOptions: {
-      ...babelConfig,
-    },
-    env: {
-      browser: true,
-      es2021: true,
-      node: true,
-    },
-    settings: {
-      'import/resolver': eslintResolver(),
-      'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx'],
-      },
-    },
-  },
-  plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
   rules: {
+    'jsdoc/require-returns-description': 0, // we don't always need a description
+    '@wordpress/i18n-text-domain': 0, // we prefer to always set the text domain, includding when 'default'
+    'jsdoc/no-undefined-types': 0, // turning off until we can get jsdoc type imports working
+    'react-hooks/exhaustive-deps': 'error', // increase wp-scripts rule to from warn to error
     complexity: ['error', 10],
-    'prettier/prettier': 'error',
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: true,
-      },
-    ],
-    'react/jsx-uses-react': 'error',
-    'react/jsx-uses-vars': 'error',
-    'react/jsx-filename-extension': [
-      1,
-      {
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
-      }
-    ],
-    'react/react-in-jsx-scope': 0,
-    'react/prop-types': 0,
-    'react/forbid-prop-types': 0,
-    'react/require-default-props': 0,
-    'arrow-parens': 2,
-    'jsdoc/require-jsdoc': [
-      'error',
-      {
-        require: {
-          ArrowFunctionExpression: true,
-          ClassDeclaration: true,
-          ClassExpression: true,
-          FunctionDeclaration: true,
-          FunctionExpression: true,
-          MethodDefinition: true,
-        },
-      },
-    ],
   },
 };
