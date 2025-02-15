@@ -3,7 +3,8 @@ const path = require('path');
 const { cloneDeep } = require('lodash');
 const wpScriptsConfig = require('@wordpress/scripts/config/webpack.config');
 
-const plugins = require('./plugins');
+const eslintPlugin = require('./plugins/eslint');
+const stylelintPlugin = require('./plugins/stylelint');
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
 const { webpackAlias } = require('./../../utils/get-alias');
@@ -77,8 +78,8 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
 
     plugins: [
       ...wpConfig.plugins,
-      plugins.ESLint(__PROJECT_CONFIG__),
-      plugins.StyleLint(__PROJECT_CONFIG__),
+      eslintPlugin(__PROJECT_CONFIG__),
+      stylelintPlugin(__PROJECT_CONFIG__),
     ],
   };
 
