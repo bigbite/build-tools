@@ -42,6 +42,9 @@ describe('CLI Build Command', () => {
       webpack.util = {
         createHash: jest.fn(),
       };
+      webpack.sources = {
+        RawSource: jest.fn(),
+      };
 
       return webpack;
     });
