@@ -10,12 +10,9 @@ const { eslintResolver } = require('./get-alias');
 module.exports = (projectConfig) => {
   return {
     ...eslintConfig,
-    parserOptions: {
-      ...(eslintConfig.parserOptions || {}),
-      settings: {
-        ...(eslintConfig.parserOptions?.settings || {}),
-        'import/resolver': eslintResolver(projectConfig),
-      },
+    settings: {
+      ...eslintConfig.settings,
+      'import/resolver': eslintResolver(projectConfig),
     },
   };
 };
