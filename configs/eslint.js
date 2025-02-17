@@ -19,5 +19,12 @@ module.exports = {
     '@wordpress/i18n-text-domain': 0, // we prefer to always set the text domain, including when using 'default'
     'react-hooks/exhaustive-deps': 'error', // increase wp-scripts rule to from warn to error
     complexity: ['error', 10],
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+        peerDependencies: true,
+      },
+    ],
   },
 };
