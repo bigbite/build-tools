@@ -8,6 +8,7 @@ const [
   wpScriptsModulesConfig,
 ] = require('@wordpress/scripts/config/webpack.config');
 
+const plugins = require('./plugins');
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
 const { webpackAlias } = require('./../../utils/get-alias');
@@ -78,6 +79,12 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
         ...projectEntrypoints,
       };
     },
+
+    plugins: [
+      ...wpConfig.plugins,
+      plugins.ESLint(__PROJECT_CONFIG__),
+      plugins.StyleLint(__PROJECT_CONFIG__),
+    ],
   };
 
   if (customConfig) {
