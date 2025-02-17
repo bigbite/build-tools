@@ -52,8 +52,6 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
       ...wpConfig.module,
       rules: [
         ...wpConfig.module.rules,
-        ...Rules.typescript(__PROJECT_CONFIG__),
-        ...Rules.javascript(__PROJECT_CONFIG__),
         ...Rules.images(__PROJECT_CONFIG__),
         ...Rules.styles(__PROJECT_CONFIG__),
       ],
