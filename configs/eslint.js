@@ -1,22 +1,18 @@
-// const babelConfig = require('./babel.js');
-// const { eslintResolver } = require('./../src/utils/get-alias');
+const { eslintResolver } = require('./../src/utils/get-alias');
 
 module.exports = {
   extends: [
     'plugin:@wordpress/eslint-plugin/recommended-with-formatting', // no prettier, using the version with prettier in the plugin will cause a conflict
     'plugin:prettier/recommended', // uses our prettier config
   ],
-  globals: {
-    __DEV__: true,
-    __PROD__: true,
-    __TEST__: true,
-    wp: true,
-  },
   env: {
     browser: true,
     es2021: true,
     node: true,
-    jest: true, // saves us from having to add this in projects
+    jest: true,
+  },
+  settings: {
+    'import/resolver': eslintResolver(),
   },
   rules: {
     'jsdoc/require-returns-description': 0, // we don't always need a description
