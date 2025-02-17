@@ -8,7 +8,8 @@ const [
   wpScriptsModulesConfig,
 ] = require('@wordpress/scripts/config/webpack.config');
 
-const plugins = require('./plugins');
+const eslintPlugin = require('./plugins/eslint');
+const stylelintPlugin = require('./plugins/stylelint');
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
 const { webpackAlias } = require('./../../utils/get-alias');
@@ -51,8 +52,6 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
       ...wpConfig.module,
       rules: [
         ...wpConfig.module.rules,
-        ...Rules.typescript(__PROJECT_CONFIG__),
-        ...Rules.javascript(__PROJECT_CONFIG__),
         ...Rules.images(__PROJECT_CONFIG__),
         ...Rules.styles(__PROJECT_CONFIG__),
       ],
@@ -82,8 +81,8 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
 
     plugins: [
       ...wpConfig.plugins,
-      plugins.ESLint(__PROJECT_CONFIG__),
-      plugins.StyleLint(__PROJECT_CONFIG__),
+      eslintPlugin(__PROJECT_CONFIG__),
+      stylelintPlugin(__PROJECT_CONFIG__),
     ],
   };
 
