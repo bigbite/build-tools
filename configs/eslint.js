@@ -16,8 +16,7 @@ module.exports = {
   },
   rules: {
     'jsdoc/require-returns-description': 0, // we don't always need a description
-    '@wordpress/i18n-text-domain': 0, // we prefer to always set the text domain, includding when 'default'
-    'jsdoc/no-undefined-types': 0, // turning off until we can get jsdoc type imports working
+    '@wordpress/i18n-text-domain': 0, // we prefer to always set the text domain, including when using 'default'
     'react-hooks/exhaustive-deps': 'error', // increase wp-scripts rule to from warn to error
     complexity: ['error', 10],
   },
