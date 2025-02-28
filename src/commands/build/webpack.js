@@ -28,6 +28,8 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @returns {object} The full webpack configuration for the current project.
  */
 const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
+  process.env.WP_SOURCE_PATH = __PROJECT_CONFIG__.paths.dir + '/src';
+
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
   const customConfig = fs.existsSync(customWebpackConfigFile)
     ? require(customWebpackConfigFile)
@@ -70,8 +72,6 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
       if (!containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
         return projectEntrypoints;
       }
-
-      process.env.WP_SRC_DIRECTORY = __PROJECT_CONFIG__.paths.dir + '/src';
 
       return {
         ...wpConfig.entry(),
