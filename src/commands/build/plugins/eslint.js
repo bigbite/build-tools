@@ -1,5 +1,6 @@
 const ESLintPlugin = require('eslint-webpack-plugin');
-const ESLintConfigFunc = require('./../../../utils/esllint-config-func');
+const ESLintConfigFunc = require('./../../../utils/eslint-config-func');
+
 /**
  * Sets the config for the ESLint webpack plugin.
  * @returns ESLintPlugin instance.
