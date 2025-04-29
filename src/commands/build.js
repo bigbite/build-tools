@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const { Compilation } = require('webpack');
 const { terminal } = require('terminal-kit');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ora = require('ora');
@@ -64,6 +65,7 @@ exports.handler = async ({
   spinner.start('Building webpack configs.\n');
 
   let configMap = [];
+  let projectConfigMap = {};
 
   packages.forEach((packageObject) => {
     // Empty array means all entrypoints.
@@ -151,4 +153,21 @@ exports.handler = async ({
   } else {
     compiler.run(compilerCallback);
   }
+
+  compiler.compilers.forEach((comp) => {
+    comp.hooks.thisCompilation.tap(
+      'Build Tools',
+      (compilation) => {
+        compilation.hooks.processAssets.tap(
+          {
+            name: 'Replace',
+            stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
+          },
+          () => {
+            process.env.WP_SOURCE_PATH = comp.options.output.path.replace('/dist', '/src').replace(comp.options.context, '')
+          }
+        );
+      }
+    );
+  });
 };
