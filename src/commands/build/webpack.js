@@ -66,8 +66,6 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
         };
         break;
     }
-
-    console.log(wpConfig.plugins[i]);
   }
 
   let webpackConfig = {
