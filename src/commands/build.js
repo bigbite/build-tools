@@ -160,7 +160,7 @@ exports.handler = async ({
       (compilation) => {
         compilation.hooks.processAssets.tap(
           {
-            name: 'Replace',
+            name: 'Assign WP_SOURCE_PATH',
             stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
           },
           () => {
