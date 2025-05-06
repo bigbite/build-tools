@@ -1,16 +1,10 @@
 // @wordpress/script global defaults.
 process.env.WP_EXPERIMENTAL_MODULES = true;
 process.env.WP_COPY_PHP_FILES_TO_DIST = true;
-process.env.WP_SOURCE_PATH = '/src';
 
 const fs = require('fs');
 const path = require('path');
 const { cloneDeep } = require('lodash');
-const [
-  wpScriptsConfig,
-  wpScriptsModulesConfig,
-] = require('@wordpress/scripts/config/webpack.config');
-
 const eslintPlugin = require('./plugins/eslint');
 const stylelintPlugin = require('./plugins/stylelint');
 const Rules = require('./rules');
@@ -31,15 +25,21 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @returns {object} The full webpack configuration for the current project.
  */
 const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
+  // This is needed to ensure that code resolved in the wp scripts
+  // webpack config utilises the correct source path for each project.
+  const configPath = '@wordpress/scripts/config/webpack.config';
+  delete require.cache[require.resolve(configPath)];
   process.env.WP_SOURCE_PATH = __PROJECT_CONFIG__.paths.dir + '/src';
-  
+
+  const [wpScriptsConfig] = require(configPath);
+  const wpConfig = cloneDeep(wpScriptsConfig);
+  const wpScriptsEntrypoints = wpConfig.entry();
+
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
   const customConfig = fs.existsSync(customWebpackConfigFile)
     ? require(customWebpackConfigFile)
     : null;
 
-  const wpConfig = cloneDeep(wpScriptsConfig);
-    
   // @TODO: There's a possibility this can be moved to a plugin.
   // Using compiler or compilation hooks may resolve the need to
   // inject here as this context is taken directly from the
@@ -51,21 +51,15 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
   // run.
   // Alternatively, more flexible solution can be used where we're
   // with less predefined array indices.
-  for(let i in wpConfig.plugins) {
+  for (let i in wpConfig.plugins) {
     let { constructor } = wpConfig.plugins[i];
 
-    switch(constructor.name) {
+    switch (constructor.name) {
       case 'CopyPlugin':
-        wpConfig.plugins[i].patterns = wpConfig.plugins[i].patterns.map(pattern => ({
+        wpConfig.plugins[i].patterns = wpConfig.plugins[i].patterns.map((pattern) => ({
           ...pattern,
           context: __PROJECT_CONFIG__.paths.src,
         }));
-        break;
-      case 'PhpFilePathsPlugin':
-        wpConfig.plugins[i].options = {
-          ...wpConfig.plugins[i].options,
-          context: __PROJECT_CONFIG__.paths.src,
-        };
         break;
     }
   }
@@ -107,7 +101,7 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
       }
 
       return {
-        ...wpConfig.entry(),
+        ...wpScriptsEntrypoints,
         ...projectEntrypoints,
       };
     },
@@ -137,6 +131,8 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
 };
 
 const modulesConfig = (__PROJECT_CONFIG__, mode) => {
+  const [wpScriptsModulesConfig] = require('@wordpress/scripts/config/webpack.config');
+
   const wpConfig = cloneDeep(wpScriptsModulesConfig);
 
   let webpackConfig = {
