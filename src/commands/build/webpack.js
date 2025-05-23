@@ -55,11 +55,7 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
 
     module: {
       ...wpConfig.module,
-      rules: [
-        ...wpConfig.module.rules,
-        ...Rules.images(__PROJECT_CONFIG__),
-        ...Rules.styles(__PROJECT_CONFIG__),
-      ],
+      rules: [...wpConfig.module.rules, ...Rules.styles(__PROJECT_CONFIG__)],
     },
     entry: () => {
       let projectEntrypoints = {};

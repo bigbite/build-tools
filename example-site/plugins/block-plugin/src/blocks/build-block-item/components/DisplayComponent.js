@@ -1,5 +1,5 @@
-import SVGAsComponent from '@Static/logo.svg';
-import SVGAsURL from '@Static/svg-file.svg?url';
+import { SVGAsComponent } from '@Static/logo.svg';
+import SVGAsURL from '@Static/svg-file.svg';
 import MailIconPNG from '@Static/mail-icon.png';
 import { __, _n, sprintf } from '@wordpress/i18n';
 
