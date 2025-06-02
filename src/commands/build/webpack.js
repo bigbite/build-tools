@@ -16,6 +16,8 @@ const { containsBlockFiles } = require('./../../utils/projectpaths');
 // eslint-disable-next-line no-undef
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
 
+const CONFIG_PATH = '@wordpress/scripts/config/webpack.config';
+
 /**
  * Build the webpack configuration for the current project.
  *
@@ -25,13 +27,13 @@ BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
  * @returns {object} The full webpack configuration for the current project.
  */
 const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
-  // This is needed to ensure that code resolved in the wp scripts
-  // webpack config utilises the correct source path for each project.
-  const configPath = '@wordpress/scripts/config/webpack.config';
-  delete require.cache[require.resolve(configPath)];
+  /**
+   * This is needed to ensure that code resolved in the wp scripts
+   * webpack config utilises the correct source path for each project.
+   */
+  delete require.cache[require.resolve(CONFIG_PATH)];
   process.env.WP_SOURCE_PATH = '.' + __PROJECT_CONFIG__.paths.dir + '/src';
-
-  const [wpScriptsConfig] = require(configPath);
+  const [wpScriptsConfig] = require(CONFIG_PATH);
   const wpConfig = cloneDeep(wpScriptsConfig);
   const wpScriptsEntrypoints = wpConfig.entry();
 
@@ -103,9 +105,15 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
 };
 
 const modulesConfig = (__PROJECT_CONFIG__, mode) => {
-  const [wpScriptsModulesConfig] = require('@wordpress/scripts/config/webpack.config');
-
+  /**
+   * This is needed to ensure that code resolved in the wp scripts
+   * webpack config utilises the correct source path for each project.
+   */
+  delete require.cache[require.resolve(CONFIG_PATH)];
+  process.env.WP_SOURCE_PATH = '.' + __PROJECT_CONFIG__.paths.dir + '/src';
+  const [, wpScriptsModulesConfig] = require(CONFIG_PATH);
   const wpConfig = cloneDeep(wpScriptsModulesConfig);
+  const wpScriptsEntrypoints = wpConfig.entry();
 
   let webpackConfig = {
     ...wpConfig,
@@ -119,6 +127,7 @@ const modulesConfig = (__PROJECT_CONFIG__, mode) => {
       ...wpConfig.output,
       path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
     },
+    entry: () => wpScriptsEntrypoints,
   };
 
   return webpackConfig;
