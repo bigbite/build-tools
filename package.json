@@ -4,7 +4,7 @@
   "description": "Provides configuration for the Big Bite Build Tools.",
   "author": "Paul Taylor <paul@bigbite.net> (https://github.com/ampersarnie)",
   "engines": {
-    "node": ">=18.20.6",
+    "node": ">=22.0.0",
     "npm": ">=8.19.2"
   },
   "keywords": [
