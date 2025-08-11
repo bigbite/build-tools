@@ -26,5 +26,22 @@ module.exports = {
         peerDependencies: true,
       },
     ],
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        },
+        warnOnUnassignedImports: true,
+        'newlines-between': 'always',
+        pathGroups: [
+          {
+            pattern: '@wordpress/**',
+            group: 'builtin',
+            position: 'before',
+          },
+        ],
+      },
+    ],
   },
 };
