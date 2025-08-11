@@ -1,5 +1,5 @@
 module.exports = {
-  plugins: ['stylelint-scss'],
+  plugins: ['stylelint-scss', 'stylelint-use-logical'],
   customSyntax: 'postcss-scss',
   rules: {
     'color-hex-length': 'short',
@@ -35,5 +35,6 @@ module.exports = {
     'scss/at-else-empty-line-before': 'never',
     'scss/at-if-closing-brace-newline-after': 'always-last-in-chain',
     'scss/at-if-closing-brace-space-after': 'always-intermediate',
+    "csstools/use-logical": "always",
   },
 };
