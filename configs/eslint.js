@@ -3,7 +3,7 @@ const prettierConfig = require('./prettier.js');
 const { eslintResolver } = require('./../src/utils/get-alias');
 
 module.exports = {
-	root: true,
+  root: true,
   globals: {
     __DEV__: true,
     __PROD__: true,
@@ -38,12 +38,12 @@ module.exports = {
   rules: {
     complexity: ['error', 10],
     'prettier/prettier': [
-			'error',
-			prettierConfig,
-			{
-				usePrettierrc: false
-			}
-		],
+      'error',
+      prettierConfig,
+      {
+        usePrettierrc: false
+      }
+    ],
     'import/no-extraneous-dependencies': [
       'error',
       {

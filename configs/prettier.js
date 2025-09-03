@@ -1,5 +1,5 @@
 const config = {
-	tabs: false,
+  tabs: false,
   printWidth: 100,
   trailingComma: 'all',
   arrowParens: 'always',
