@@ -1,4 +1,5 @@
 const babelConfig = require('./babel.js');
+const prettierConfig = require('./prettier.js');
 const { eslintResolver } = require('./../src/utils/get-alias');
 
 module.exports = {
@@ -35,7 +36,13 @@ module.exports = {
   plugins: ['@babel', 'react', 'prettier', 'jsdoc', 'import', '@typescript-eslint/eslint-plugin'],
   rules: {
     complexity: ['error', 10],
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+			'error',
+			prettierConfig,
+			{
+				usePrettierrc: false
+			}
+		],
     'import/no-extraneous-dependencies': [
       'error',
       {
