@@ -2,5 +2,4 @@
 .yalc
 yalc.lock
 node_modules
-example-site/**/dist
-example-site/**/inc/asset-settings.php
+example-site/**/build

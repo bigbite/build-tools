@@ -52,7 +52,7 @@ const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
 
     output: {
       ...wpConfig.output,
-      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.build}`),
     },
 
     module: {
@@ -125,7 +125,7 @@ const modulesConfig = (__PROJECT_CONFIG__, mode) => {
 
     output: {
       ...wpConfig.output,
-      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}`),
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.build}`),
     },
     entry: () => wpScriptsEntrypoints,
   };
