@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const { packageList, targetDirs } = global;
+
 /**
  * Retrieves the package.json file from a given directory and compiles it
  * along with additional data into a parse-able format by the rest of the script.
