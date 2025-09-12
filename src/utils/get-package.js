@@ -1,7 +1,5 @@
 const fs = require('fs');
 
-const { packageList, targetDirs } = global;
-
 /**
  * Retrieves the package.json file from a given directory and compiles it
  * along with additional data into a parse-able format by the rest of the script.
@@ -11,6 +9,7 @@ const { packageList, targetDirs } = global;
  * @return {Object|boolean} The package data object or false if not found
  */
 const getPackage = (path) => {
+  const { packageList, targetDirs } = global;
   const absolutePath = `${path}/package.json`;
 
   if (packageList[absolutePath]) {
