@@ -1,16 +1,10 @@
-/**
- * External dependencies
- */
 import { registerBlockType } from '@wordpress/blocks';
 
-/**
- * Internal dependencies
- */
+import metadata from './block.json';
 import Edit from './edit';
 import Save from './save';
-import './styles/style.scss';
 import './styles/editor.scss';
-import metadata from './block.json';
+import './styles/style.scss';
 
 registerBlockType(metadata.name, {
   edit: Edit,

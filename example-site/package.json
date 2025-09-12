@@ -1,10 +1,7 @@
 {
-    "name": "test-project",
-    "prettier": "./../configs/prettier",
-    "eslintConfig": {
-        "extends": "./../configs/eslint"
-      },
-    "dependencies": {
-        "prop-types": "^15.8.1"
-    }
+  "name": "test-project",
+  "prettier": "./../configs/prettier",
+  "eslintConfig": {
+    "extends": "./../configs/eslint"
+  }
 }
