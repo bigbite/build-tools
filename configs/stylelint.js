@@ -35,6 +35,6 @@ module.exports = {
     'scss/at-else-empty-line-before': 'never',
     'scss/at-if-closing-brace-newline-after': 'always-last-in-chain',
     'scss/at-if-closing-brace-space-after': 'always-intermediate',
-    "csstools/use-logical": "always",
+    'csstools/use-logical': 'always',
   },
 };

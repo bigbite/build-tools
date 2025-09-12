@@ -1,15 +1,14 @@
-const webpack = require('webpack');
-const { terminal } = require('terminal-kit');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const ora = require('ora');
+const { terminal } = require('terminal-kit');
+const webpack = require('webpack');
 
+const getPackagesForCommand = require('../utils/get-packages-for-command');
+const getProjectConfig = require('../utils/get-project-config');
+
+const { getFilteredEntryPoints } = require('./../utils/get-filtered-entrypoints');
 const { scriptsConfig, modulesConfig } = require('./build/webpack');
 
 const spinner = ora();
-
-const { getFilteredEntryPoints } = require('./../utils/get-filtered-entrypoints');
-const getProjectConfig = require('../utils/get-project-config');
-const getPackagesForCommand = require('../utils/get-packages-for-command');
 
 global.buildCount = 0;
 
@@ -63,7 +62,7 @@ exports.handler = async ({
 
   spinner.start('Building webpack configs.\n');
 
-  let configMap = [];
+  const configMap = [];
 
   packages.forEach((packageObject) => {
     // Empty array means all entrypoints.

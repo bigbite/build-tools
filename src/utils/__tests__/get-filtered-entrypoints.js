@@ -16,6 +16,6 @@ describe('Get filtered entrypoints', () => {
   it('Return object with entrypoints where @ is present and empty array if non defined', () => {
     const projects = 'test-project@editor,test-project-2';
     const result = getFilteredEntryPoints(projects);
-    expect(result).toEqual({ 'test-project': ['editor'], 'test-project-2': []});
+    expect(result).toEqual({ 'test-project': ['editor'], 'test-project-2': [] });
   });
 });

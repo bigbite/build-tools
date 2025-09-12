@@ -1,11 +1,13 @@
 const path = require('path');
+
 const getProjectConfig = require('./get-project-config');
 
 /**
  * Get a list of aliases structured for webpack.
  *
  * @param {string} src Path to the current target src directory
- * @returns
+ *
+ * @return {Object} The webpack alias configuration
  */
 const webpackAlias = (src) => {
   return {
@@ -21,8 +23,9 @@ const webpackAlias = (src) => {
 /**
  * Get and map aliases to the eslint resolver structure.
  *
- * @param {mixed} paths Paths to the current target directories
- * @returns
+ * @param {*} paths Paths to the current target directories
+ *
+ * @return {Object} The eslint resolver configuration
  */
 const eslintResolver = (paths = null) => {
   paths = paths ?? getProjectConfig();
@@ -42,7 +45,7 @@ const eslintResolver = (paths = null) => {
     node: {
       paths: pathsList,
     },
-  }
+  };
 };
 
 module.exports = {

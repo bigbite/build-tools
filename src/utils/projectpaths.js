@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 const { terminal } = require('terminal-kit');
 
 const directoryExists = (directory) => {
@@ -17,9 +18,10 @@ const directoryExists = (directory) => {
 /**
  * Searches a set of directories for sub-directories that contain a package.json
  *
- * @param {string[]} directories the directories to search
+ * @param {string[]} directories  the directories to search
  * @param {string[]} projectsList an optional list of sub-directories to limit the search to
- * @returns {string[]} the complete paths to all project directories
+ *
+ * @return {string[]} the complete paths to all project directories
  * @throws if no projects have been discovered
  */
 const findAllProjectPaths = (directories, projectsList) => {
@@ -35,6 +37,7 @@ const findAllProjectPaths = (directories, projectsList) => {
               fs.existsSync(`${directory}/${dirent.name}/package.json`) && dirent.isDirectory()
             );
           }
+          return false;
         })
         .map((dirent) => path.resolve(process.cwd(), `./${directory}/${dirent.name}`)),
     );
@@ -50,19 +53,19 @@ const findAllProjectPaths = (directories, projectsList) => {
 /**
  * Checks whether there are blocks that exist in the given path.
  *
- * Will check for the existence of {path}/src/blocks/{blockDir}/block.json
+ * Will check for the existence of {entrypointPath}/src/blocks/{blockDir}/block.json
  *
- * @param {string} path The path to check where blocks exist.
+ * @param {string} entrypointPath The path to check where blocks exist
  *
- * @return {boolean} Whether or not block files exist.
+ * @return {boolean} Whether or not block files exist
  */
-const containsBlockFiles = (path) => {
+const containsBlockFiles = (entrypointPath) => {
   let exists = false;
 
-  if (fs.existsSync(`${path}/src/blocks/`)) {
+  if (fs.existsSync(`${entrypointPath}/src/blocks/`)) {
     exists = fs
-      .readdirSync(`${path}/src/blocks/`)
-      .find((dir) => fs.existsSync(`${path}/src/blocks/${dir}/block.json`));
+      .readdirSync(`${entrypointPath}/src/blocks/`)
+      .find((dir) => fs.existsSync(`${entrypointPath}/src/blocks/${dir}/block.json`));
   }
 
   return exists;
@@ -71,9 +74,13 @@ const containsBlockFiles = (path) => {
 /**
  * Confirms the given package.json is a valid build-tools project
  * by looking for src/entrypoints
+ *
+ * @param {Object} pkg The package.json object to validate
+ *
+ * @return {boolean} Whether or not the project is valid
  */
 const validateProject = (pkg) => {
-  let hasBlockFiles = containsBlockFiles(pkg.path);
+  const hasBlockFiles = containsBlockFiles(pkg.path);
   const hasEntryPoints = fs.existsSync(`${pkg.path}/src/entrypoints`);
 
   return !!hasEntryPoints || !!hasBlockFiles;

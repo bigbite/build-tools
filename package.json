@@ -24,6 +24,9 @@
   "license": "MIT",
   "prettier": "./configs/prettier.js",
   "tsconfig": "./configs/tsconfig.json",
+  "eslintConfig": {
+    "extends": "./configs/eslint"
+  },
   "bin": {
     "build-tools": "./src/cli.js"
   },

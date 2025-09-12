@@ -20,7 +20,7 @@ describe('Get package', () => {
   });
 
   it('Returns a package object if package.json is found', () => {
-     vol.fromNestedJSON({
+    vol.fromNestedJSON({
       'package.json': JSON.stringify({ name: '@bigbite/test-package' }),
     });
     const src = '.';

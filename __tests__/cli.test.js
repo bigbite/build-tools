@@ -28,7 +28,7 @@ describe('CLI Build Command', () => {
     process.stdout.write = jest.fn();
     process.exit = jest.fn();
 
-    mockWebpack = jest.fn().mockImplementation((config) => {
+    mockWebpack = jest.fn().mockImplementation(() => {
       return {
         run: jest.fn(),
         watch: jest.fn(),

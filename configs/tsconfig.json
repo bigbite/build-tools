@@ -18,15 +18,8 @@
     "noUncheckedIndexedAccess": true,
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
-    "typeRoots": [
-      "./types"
-    ]
+    "typeRoots": ["./types"]
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.d.ts",
-    "typescript/images.d.ts"
-  ],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.d.ts", "typescript/images.d.ts"],
   "exclude": ["node_modules"]
 }
