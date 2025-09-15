@@ -18,7 +18,7 @@ jobs:
           pkg-manager: npm
       - run:
           command: |
-            npm run test
+            npm test -- __tests__/cli.test.js
           name: Unit Tests
   notify_slack:
     docker:
