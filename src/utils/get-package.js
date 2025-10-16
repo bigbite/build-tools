@@ -4,11 +4,12 @@ const fs = require('fs');
  * Retrieves the package.json file from a given directory and compiles it
  * along with additional data into a parse-able format by the rest of the script.
  *
- * @param {string} path The project directory path where package.json is expected.
- * @param {boolean} throwError Whether to throw errors when package.json does not exist.
- * @returns
+ * @param {string} path The project directory path where package.json is expected
+ *
+ * @return {Object|boolean} The package data object or false if not found
  */
 const getPackage = (path) => {
+  const { packageList, targetDirs } = global;
   const absolutePath = `${path}/package.json`;
 
   if (packageList[absolutePath]) {

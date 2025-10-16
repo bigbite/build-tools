@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs');
-const globalVars = require('./globals');
+
+require('./globals');
 
 yargs.scriptName('build-tools');
 yargs.usage('Usage: build-tools <command>');

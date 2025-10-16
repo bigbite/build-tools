@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "bigbite/build-block-item",
+    "title": "Build Block Item",
+    "version": "0.0.1",
+    "icon": "format-gallery",
+    "description": "Example block for build tools",
+    "attributes": {
+    },
+    "supports": {
+        "anchor": true,
+        "align": true,
+        "html": false
+    },
+    "textdomain": "bigbite-build-tools",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css",
+    "style": "file:./style-index.css",
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php"
+}

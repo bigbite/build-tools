@@ -1,11 +1,12 @@
 {
-    "name": "test-plugin",
-    "dependencies": {
-        "@wordpress/blocks": "^11.21.0",
-        "@wordpress/i18n": "^4.22.0",
-        "prop-types": "^15.8.1"
-    },
-    "devDependencies": {
-        "@types/wordpress__blocks": "^12.5.0"
-    }
+  "name": "test-plugin",
+  "version": "16.0.0-rc.1",
+  "dependencies": {
+    "@wordpress/blocks": "^11.21.0",
+    "@wordpress/i18n": "^4.22.0",
+    "prop-types": "^15.8.1"
+  },
+  "devDependencies": {
+    "@types/wordpress__blocks": "^12.5.0"
+  }
 }

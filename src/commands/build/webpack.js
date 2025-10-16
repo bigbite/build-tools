@@ -1,95 +1,90 @@
+// @wordpress/script global defaults.
+process.env.WP_EXPERIMENTAL_MODULES = true;
+process.env.WP_COPY_PHP_FILES_TO_DIST = true;
+
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
-
-const Plugins = require('./plugins');
+const { cloneDeep } = require('lodash');
+const eslintPlugin = require('./plugins/eslint');
+const stylelintPlugin = require('./plugins/stylelint');
 const Rules = require('./rules');
 const entrypoints = require('../../utils/entrypoints');
 const { webpackAlias } = require('./../../utils/get-alias');
+const { containsBlockFiles } = require('./../../utils/projectpaths');
 
 // Define the bundled BrowserList config location/directory.
 // eslint-disable-next-line no-undef
 BROWSERSLIST_CONFIG = path.resolve(`${__dirname}/config`);
 
+const CONFIG_PATH = '@wordpress/scripts/config/webpack.config';
+
 /**
- * Build the webpack configutation for the current project.
+ * Build the webpack configuration for the current project.
  *
  * @param {string} package.path The current directory path of the project.
  * @param {string} mode The build mode in which webpack is currently running (e.g. development or production).
  * @param {string} projectName The name of the project - this will be the director target.
  * @returns {object} The full webpack configuration for the current project.
  */
-module.exports = (__PROJECT_CONFIG__, mode) => {
+const scriptsConfig = (__PROJECT_CONFIG__, mode) => {
+  /**
+   * This is needed to ensure that code resolved in the wp scripts
+   * webpack config utilises the correct source path for each project.
+   */
+  delete require.cache[require.resolve(CONFIG_PATH)];
+  process.env.WP_SOURCE_PATH = '.' + __PROJECT_CONFIG__.paths.dir + '/src';
+  const [wpScriptsConfig] = require(CONFIG_PATH);
+  const wpConfig = cloneDeep(wpScriptsConfig);
+  const wpScriptsEntrypoints = wpConfig.entry();
+
   const customWebpackConfigFile = __PROJECT_CONFIG__.paths.project + '/webpack.config.js';
   const customConfig = fs.existsSync(customWebpackConfigFile)
     ? require(customWebpackConfigFile)
     : null;
 
   let webpackConfig = {
+    ...wpConfig,
     mode,
-    entry: entrypoints(__PROJECT_CONFIG__.paths.src, __PROJECT_CONFIG__.filteredEntrypoints),
-
     resolve: {
-      modules: [__PROJECT_CONFIG__.paths.node_modules, 'node_modules'],
+      ...wpConfig.resolve,
       alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
 
     output: {
-      // @TODO: This should be overridable at some point to allow for custom naming convention.
-      filename: () => (mode === 'production' ? '[name]-[contenthash:8].js' : '[name].js'),
-      path: path.resolve(`${__PROJECT_CONFIG__.paths.dist}/scripts`),
-    },
-
-    watchOptions: {
-      ignored: ['node_modules'],
-    },
-
-    performance: {
-      assetFilter: (assetFilename) => /\.(js|css)$/.test(assetFilename),
-      maxEntrypointSize: 20000000, // Large entry point size as we only need asset size. (2mb)
-      maxAssetSize: 500000, // Set max size to 500kb.
-    },
-
-    optimization: {
-      minimizer: [
-        new TerserPlugin({
-          parallel: true,
-          terserOptions: {
-            output: {
-              comments: /translators:/i,
-            },
-            compress: {
-              passes: 2,
-            },
-            mangle: {
-              reserved: ['__', '_n', '_nx', '_x'],
-            },
-          },
-          extractComments: false,
-        }),
-      ],
-    },
-
-    devtool: mode === 'production' ? 'source-map' : 'inline-cheap-module-source-map',
-
-    externals: {
-      moment: 'moment',
-      lodash: ['lodash', 'lodash-es'],
-      react: 'React',
-      'react-dom': 'ReactDOM',
-      jquery: 'jQuery',
+      ...wpConfig.output,
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.build}`),
     },
 
     module: {
-      rules: [
-        ...Rules.typescript(__PROJECT_CONFIG__),
-        ...Rules.javascript(__PROJECT_CONFIG__),
-        ...Rules.images(__PROJECT_CONFIG__),
-        ...Rules.styles(__PROJECT_CONFIG__),
-      ],
+      ...wpConfig.module,
+      rules: [...wpConfig.module.rules, ...Rules.styles(__PROJECT_CONFIG__)],
     },
+    entry: () => {
+      let projectEntrypoints = {};
+      try {
+        projectEntrypoints = entrypoints(
+          __PROJECT_CONFIG__.paths.src,
+          __PROJECT_CONFIG__.filteredEntrypoints,
+        );
+      } catch (error) {
+        // don't do anything if entrypoints are not found
+      }
+
+      if (!containsBlockFiles(__PROJECT_CONFIG__.paths.project)) {
+        return projectEntrypoints;
+      }
+
+      return {
+        ...wpScriptsEntrypoints,
+        ...projectEntrypoints,
+      };
+    },
+
+    plugins: [
+      ...wpConfig.plugins,
+      eslintPlugin(__PROJECT_CONFIG__),
+      stylelintPlugin(__PROJECT_CONFIG__),
+    ],
   };
 
   if (customConfig) {
@@ -106,25 +101,39 @@ module.exports = (__PROJECT_CONFIG__, mode) => {
     delete webpackConfig.extends;
   }
 
-  const plugins = [
-    // Global vars for checking dev environment.
-    new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(mode === 'development'),
-      __PROD__: JSON.stringify(mode === 'production'),
-      __TEST__: JSON.stringify(process.env.NODE_ENV === 'test'),
-    }),
+  return webpackConfig;
+};
 
-    Plugins.DependencyExtraction(__PROJECT_CONFIG__, webpackConfig.externals),
-    Plugins.ESLint(__PROJECT_CONFIG__),
-    Plugins.MiniCssExtract(__PROJECT_CONFIG__),
-    Plugins.StyleLint(__PROJECT_CONFIG__),
-    Plugins.Clean(__PROJECT_CONFIG__),
-    Plugins.Copy(__PROJECT_CONFIG__),
-    Plugins.TemplateGenerator(__PROJECT_CONFIG__),
-    Plugins.AssetMessage(__PROJECT_CONFIG__),
-  ];
+const modulesConfig = (__PROJECT_CONFIG__, mode) => {
+  /**
+   * This is needed to ensure that code resolved in the wp scripts
+   * webpack config utilises the correct source path for each project.
+   */
+  delete require.cache[require.resolve(CONFIG_PATH)];
+  process.env.WP_SOURCE_PATH = '.' + __PROJECT_CONFIG__.paths.dir + '/src';
+  const [, wpScriptsModulesConfig] = require(CONFIG_PATH);
+  const wpConfig = cloneDeep(wpScriptsModulesConfig);
+  const wpScriptsEntrypoints = wpConfig.entry();
 
-  webpackConfig.plugins = plugins;
+  let webpackConfig = {
+    ...wpConfig,
+    mode,
+    resolve: {
+      ...wpConfig.resolve,
+      alias: webpackAlias(__PROJECT_CONFIG__.paths.src),
+    },
+
+    output: {
+      ...wpConfig.output,
+      path: path.resolve(`${__PROJECT_CONFIG__.paths.build}`),
+    },
+    entry: () => wpScriptsEntrypoints,
+  };
 
   return webpackConfig;
+};
+
+module.exports = {
+  scriptsConfig,
+  modulesConfig,
 };

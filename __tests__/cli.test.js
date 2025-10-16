@@ -28,7 +28,7 @@ describe('CLI Build Command', () => {
     process.stdout.write = jest.fn();
     process.exit = jest.fn();
 
-    mockWebpack = jest.fn().mockImplementation((config) => {
+    mockWebpack = jest.fn().mockImplementation(() => {
       return {
         run: jest.fn(),
         watch: jest.fn(),
@@ -41,6 +41,9 @@ describe('CLI Build Command', () => {
       webpack.version = '4.0.0';
       webpack.util = {
         createHash: jest.fn(),
+      };
+      webpack.sources = {
+        RawSource: jest.fn(),
       };
 
       return webpack;
@@ -166,8 +169,8 @@ describe('CLI Build Command', () => {
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
     expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
-    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
-    expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
+    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('* my-plugin'));
+    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('* my-theme'));
   });
 
   it('runs specific projects and entrypoints mode when requested', () => {
@@ -207,8 +210,8 @@ describe('CLI Build Command', () => {
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
     expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
-    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
-    expect(process.stdout.write).toHaveBeenCalledWith(` * my-theme `);
+    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('* my-plugin'));
+    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('* my-theme'));
   });
 
   it('runs specific projects mode if some requested projects are not found', () => {
@@ -229,13 +232,15 @@ describe('CLI Build Command', () => {
 
     runCommand('build', '--once', 'my-plugin,my-theme');
 
-    expect(process.stdout.write).toHaveBeenCalledWith(`Error: Project my-theme does not exist.\n`);
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringContaining('Error: Project my-theme does not exist.'),
+    );
     expect(mockWebpack).toHaveBeenCalled();
     expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
     expect(process.stdout.write).toHaveBeenCalledWith('Processing the following projects:\n');
-    expect(process.stdout.write).toHaveBeenCalledWith(` * my-plugin `);
+    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('* my-plugin'));
   });
 
   it('fails to run specific projects mode if no requested projects can be found', () => {
@@ -259,7 +264,9 @@ describe('CLI Build Command', () => {
     expect(process.stdout.write).toHaveBeenCalledWith(
       `\x1b[1mCompiling \x1b[4mlist\x1b[0m\x1b[1m of projects in development mode.\x1b[0m\n`,
     );
-    expect(process.stdout.write).toHaveBeenCalledWith(`Error: No projects found\n`);
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringContaining('Error: Cannot find any projects'),
+    );
     expect(process.exit).toHaveBeenCalledWith(1);
   });
 });

@@ -1,24 +1,17 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const postcssConfig = require('../../../../configs/postcss');
 
 /**
- * Compiles rules and presets for styles.
- * @param {object} config The project configuration object.
- * @returns {object} Rules and presets for styles.
+ * Compiles rules and presets for styles
+ *
+ * @param {Object} config      The project configuration object
+ * @param {string} config.mode The current build mode
+ *
+ * @return {Object} Rules and presets for styles
  */
 module.exports = ({ mode }) => [
   {
     test: /\.(sa|sc|c)ss$/,
     use: [
-      // Seperate CSS included in JS.
-      MiniCssExtractPlugin.loader,
-      {
-        loader: 'css-loader',
-        options: {
-          url: false,
-          sourceMap: true,
-        },
-      },
       {
         loader: 'postcss-loader',
         options: {

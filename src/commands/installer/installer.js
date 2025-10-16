@@ -1,6 +1,8 @@
-const { terminal } = require('terminal-kit');
 const { execSync } = require('child_process');
+
+const { terminal } = require('terminal-kit');
 const yargs = require('yargs');
+
 const args = yargs.argv._;
 
 const getPackagesForCommand = require('./../../utils/get-packages-for-command');

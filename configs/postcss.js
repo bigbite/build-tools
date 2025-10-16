@@ -1,9 +1,9 @@
 const autoprefixer = require('autoprefixer');
-const pxtorem = require('postcss-pxtorem');
-const pseudoEnter = require('postcss-pseudo-class-enter');
-const reporter = require('postcss-reporter');
-const msUnit = require('postcss-ms-unit');
 const cssnano = require('cssnano');
+const msUnit = require('postcss-ms-unit');
+const pseudoEnter = require('postcss-pseudo-class-enter');
+const pxtorem = require('postcss-pxtorem');
+const reporter = require('postcss-reporter');
 
 module.exports = (env = 'development') => {
   const plugins = [

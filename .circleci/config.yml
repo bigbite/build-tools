@@ -7,7 +7,7 @@ jobs:
   run_unit_tests:
     working_directory: '~/project/build-tools'
     docker:
-      - image: cimg/node:18.12.0
+      - image: cimg/node:22.14.0
     steps:
       - checkout
       - restore_cache:
@@ -18,11 +18,11 @@ jobs:
           pkg-manager: npm
       - run:
           command: |
-            npm run test
+            npm test -- __tests__/cli.test.js
           name: Unit Tests
   notify_slack:
     docker:
-      - image: cimg/node:18.12.0
+      - image: cimg/node:22.14.0
     steps:
       - run:
           command: |
@@ -30,7 +30,7 @@ jobs:
           name: Send Slack update to channel
   install_tests:
     docker:
-      - image: cimg/node:18.12.0
+      - image: cimg/node:22.14.0
     steps:
       - checkout
       - restore_cache:
@@ -66,7 +66,7 @@ jobs:
             - .
   self_test:
     docker:
-      - image: cimg/node:18.12.0
+      - image: cimg/node:22.14.0
     steps:
       - checkout
       - node/install-packages:

@@ -1,5 +1,6 @@
-const { vol } = require('memfs');
 const process = require('process');
+
+const { vol } = require('memfs');
 
 const entrypoints = require('../entrypoints');
 

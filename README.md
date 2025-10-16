@@ -9,8 +9,8 @@ npm i -D @bigbite/build-tools
 ```
 
 ## Documentation
-* [Configuration](https://github.com/bigbite/build-tools/wiki/Config)
-* [CLI Command Usage](https://github.com/bigbite/build-tools/wiki/CLI-Command-Usage)
-* [Project Structuring](https://github.com/bigbite/build-tools/wiki/Project-Structuring)
-* [Working with your assets](https://github.com/bigbite/build-tools/wiki/Working-with-your-assets)
-* [Development & Contribution](https://github.com/bigbite/build-tools/wiki/Development-&-Contribution)
+* [Configuration](https://github.com/bigbite/build-tools/blob/main/docs/Config)
+* [CLI Command Usage](https://github.com/bigbite/build-tools/blob/main/docs/CLI-Command-Usage)
+* [Project Structuring](https://github.com/bigbite/build-tools/blob/main/docs/Project-Structuring)
+* [Working with your assets](https://github.com/bigbite/build-tools/blob/main/docs/Working-with-your-assets)
+* [Development & Contribution](https://github.com/bigbite/build-tools/blob/main/docs/Development-&-Contribution)

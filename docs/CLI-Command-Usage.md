@@ -35,7 +35,7 @@ The `project` positional can also take comma separated values if you need to bui
 build-tools build my-plugin,my-theme
 ```
 
-Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide](https://github.com/bigbite/build-tools/wiki/Project-Structuring), seeking through `client-mu-plugins`,`plugins` and `themes`.
+Notice that each defined project is not a full path, nor an entry point. We use the directory name as the project and the build tools then look for those as defined in the [Structuring Your Project guide](https://github.com/bigbite/build-tools/blob/main/docs/config/Project-Structuring), seeking through `client-mu-plugins`,`plugins` and `themes`.
 
 ### Individual entrypoints
 You can define specific entrypoints to build by specifying them after `@` symbol and seperating entrypoints by `+` symbol.
